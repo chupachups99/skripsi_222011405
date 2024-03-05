@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pariwisita KTIP BPS</title>
+  <link href="../assets/styles.css" rel="stylesheet">
+
+  <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" /> -->
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+    rel="stylesheet">
+  <style>
+    div {
+      font-family: 'Lora';
+    }
+
+    a {
+      text-decoration: underline;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+
+
+
+
+</head>
+
+<body>
+
+  <%- include('header'); %>
+
+    <div class="font-sans grid h-svh w-auto overflow-scroll gap-y-4 bg-slate-200">
+      <!-- first section -->
+      <!-- <div class="font-bold text-center ml-3 mr-3 pt-24 text-[36px]"> Wisatawan Nusantara</div> -->
+
+      <div class="bg-white grid ml-3 mr-3 rounded shadow" style="margin-top:4.6rem;">
+        <div class="font-semibold text-center text-2xl rounded-t-lg bg-gray-700 text-white p-4">
+          <h1>Wisatawan Nusantara</h1>
+        </div>
+        <div class="p-4 m-auto left-0 right-0 text-center w-1/4">
+          <p class="text-xl font-semibold"><span class='font-semibold text-2xl'>K</span>ondisi Wisatawan Nusantara Waktu
+            ke Waktu</p>
+        </div>
+        <div class="p-4 ml-1 mr-1">
+          <select id="provWisnus"
+            class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
+            <option value="9999" disabled selected hidden>Pilih Provinsi atau Pulau</option>
+            <option value="9999">Indonesia</option>
+            <option value="1">Pulau Sumatera</option>
+            <option value="2">Pulau Jawa</option>
+            <option value="3">Pulau Bali Nusra</option>
+            <option value="4">Pulau Kalimantan</option>
+            <option value="5">Pulau Sulawesi</option>
+            <option value="6">Pulau Maluku</option>
+            <option value="7">Pulau Papua</option>
+            
+          </select>
+        </div>
+        <div class="text-right font-medium mr-8">Export: <a id="exportChart1" href="#">All</a> | <a
+          href="#">Selected</a> </div>
+        <div class="flex">
+
+          <!-- <div class="text-right font-medium mr-8">Export: <a id="exportChart2" href="#">All</a> | <a
+              href="#">Selected</a></div> -->
+          <div id="barYearWisnus" class="w-3/4 h-96 pt-4"></div>
+          <div class="w-1/4 flex items-center justify-center ">          
+            <div id="textIndicator" class="h-64 text-center text-2xl bg-sky-700 text-white rounded-xl font-semibold mr-3 shadow flex items-center justify-center">Total Perjalanan Wisatawan Nusantara :</div>
+        </div>
+          <!-- <div id="changeWisnus" class="h-96 pt-4"></div> -->
+          
+        </div>
+        <div id="lineYearWisnus" class="h-96 pt-4"></div>
+        <div class="p-4 m-auto left-0 right-0 text-center w-1/4">
+          <p class="font-semibold text-xl"><span class='font-semibold text-2xl'>P</span>erbandingan Kondisi Wisatawan
+            Nusantara Antarwilayah
+        </div>
+        <div class="text-center text-xl font-semibold p-4">Menurut Provinsi Tujuan</div>
+        <div class="text-center">
+          <select id="sAwalTujuan"
+            class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
+            <option value="0" disabled selected hidden>Pilih Rentang Waktu Awal</option>
+          </select>
+          <select id="sAkhirTujuan"
+            class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
+            <option value="-1" disabled selected hidden>Pilih Rentang Waktu Akhir</option>
+          </select>
+          <button id="btnInterval" class="bg-sky-600 text-white rounded-xl p-2"> Apply</button>
+        </div>
+        <div class="md:grid md:grid-cols-2">
+          <div id="cPlethTujuan" class="h-[50rem]"></div>
+          <div id="donutTujuan" class="h-[50rem]"></div>
+        </div>
+        <!-- <div class="md:flex">
+          <div id="checkBoxRaceBarTujuan" class="text-center h-48 md:w-1/5 pl-8 relative">
+            <button id="dropdownCheckboxButtonWilayah" data-dropdown-toggle="dropdownDefaultCheckbox"
+              class="md:block md:w-full mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              type="button">Pilih Wilayah
+            </button>
+
+            <div id="listCheckBoxWilayahTujuan"
+              class="border-solid md:w-full border-2 border-black bg-white h-48 absolute overflow-y-scroll m-auto left-0 right-0 hidden text-left w-1/4 p-8">
+              <a href="#" class="underline" id="closeCheckBox">Close</a>
+              <br>
+              <input id="selectAllWilTujuan" type="checkBox" checked="true">Select All</input>
+              <br>
+
+            </div>
+
+            <select id="selectTahunTujuan"
+              class="md:block mt-2 md:w-full text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            </select>
+
+
+            <select id="selectBulanTujuan"
+              class="md:block mt-2 md:w-full text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <option value="13">Tahunan</option>
+              <option value="1">Jan</option>
+              <option value="2">Feb</option>
+              <option value="3">Mar</option>
+              <option value="4">Apr</option>
+              <option value="5">Mei</option>
+              <option value="6">Jun</option>
+              <option value="7">Jul</option>
+              <option value="8">Aug</option>
+              <option value="9">Sep</option>
+              <option value="10">Okt</option>
+              <option value="11">Nov</option>
+              <option value="12">Des</option>
+            </select>
+            <div>
+              <button id="normalBtn"
+                class="md:block mt-2 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Preview Normal</button>
+              <button id="raceBtn"
+                class="md:block mt-2 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Preview Selang Waktu</button>
+
+            </div>
+
+          </div>
+          <div id="raceBarTujuan" class="h-[50rem] md:w-4/5"></div>
+          <div id="raceBarTujuan2" class="h-[50rem] md:w-4/5 hidden"></div> 
+
+        </div> -->
+
+        <div  class="font-bold text-xl p-4 m-auto left-0 right-0 text-center w-1/4">Tabulasi</div>
+        <div>
+          <select id="sTabTujuan"
+            class="md:block mt-2 w-2/3 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <option value="0">Provinsi</option>
+          </select>
+          <select id="sTabJumlah"
+            class="md:block mt-2 w-2/3 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <option value="0">Tahunan</option>
+            <option value="1">Bulanan</option>
+            <option value="2">Dwiwulanan</option>
+            <option value="3">Triwulanan</option>
+            <option value="4">Caturwulanan</option>
+            <option value="5">Semesteran</option>
+          </select>
+        </div>
+        <div class="text-right"><button id="btnExportTab" >Export Table</button></div>
+        <div id="tabulasiWisnus" class="h-96 overflow-y-scroll ml-3 mr-3"></div>
+      
+
+
+        <div class="text-center text-[18px] font-bold">Menurut Provinsi Asal</div>
+        <div class="md:grid md:grid-cols-2">
+          <div id="cPlethAsal" class="h-[50rem]"></div>
+          <div id="donutAsal" class="h-[50rem]"></div>
+        </div>
+        <!-- <div class="md:flex">
+          <div id="checkBoxRaceBarTujuan" class="text-center h-48 md:w-1/5 pl-8 relative">
+            <button id="dropdownCheckboxButtonWilayahAsal" data-dropdown-toggle="dropdownDefaultCheckbox"
+              class="md:block md:w-full mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-left inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              type="button">Pilih Wilayah
+            </button>
+
+            <div id="listCheckBoxWilayahAsal"
+              class="border-solid md:w-full border-2 border-black bg-white h-48 absolute overflow-y-scroll m-auto left-0 right-0 hidden text-left w-1/4 p-8">
+              <a href="#" class="underline" id="closeCheckBoxAsal">Close</a>
+              <br>
+              <input id="selectAllWilAsal" type="checkBox" checked="true">Select All</input>
+              <br>
+
+            </div>
+
+            <select id="selectTahunAsal"
+              class="md:block mt-2 md:w-full text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            </select>
+
+
+            <select id="selectBulanAsal"
+              class="md:block mt-2 md:w-full text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <option value="13">Tahunan</option>
+              <option value="1">Jan</option>
+              <option value="2">Feb</option>
+              <option value="3">Mar</option>
+              <option value="4">Apr</option>
+              <option value="5">Mei</option>
+              <option value="6">Jun</option>
+              <option value="7">Jul</option>
+              <option value="8">Aug</option>
+              <option value="9">Sep</option>
+              <option value="10">Okt</option>
+              <option value="11">Nov</option>
+              <option value="12">Des</option>
+            </select>
+            <div>
+              <button id="normalBtnAsal"
+                class="md:block mt-2 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Preview Normal</button>
+              <button id="raceBtnAsal"
+                class="md:block mt-2 text-left text-white bg-blue-500 hover:bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Preview Selang Waktu</button>
+
+            </div>
+
+          </div>
+          <div id="raceBarAsal" class="h-[50rem] md:w-4/5"></div>
+          <div id="raceBarAsal2" class="h-[50rem] md:w-4/5 hidden"></div>
+
+
+
+        </div> -->
+
+  
+
+
+
+        
+
+      </div>
+      <!-- batas div -->
+      <div class="bg-white grid ml-3 mr-3 rounded shadow">
+        <div class="font-semibold text-center text-2xl rounded-t-lg bg-gray-700 text-white p-4">
+          <h1>Wisatawan Mancanegara</h1>
+        </div>
+        <div id="wismanScatter"class="h-96"></div>
+      </div>
+      <div class=""><%- include('footer'); %></div>
+    </div>
+
+      <script>
+
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"
+        integrity="sha512-k37wQcV4v2h6jgYf5IUz1MoSKPpDs630XGSmCaCCOXxy2awgAWKHGZWr9nMyGgk3IOxA1NxdkN8r1JHgkUtMoQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+      <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+      <script type="module" src="http://localhost:4000/assets/script_index.js"></script>
+      
+</body>
+
+</html>
