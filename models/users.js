@@ -1,4 +1,5 @@
  const dbPool = require('../config/db.js');
+ //const dbPool2 = require('../config/db2.js');
 // belum nambahin update password
 
 const getAlluserid = () => {
@@ -24,17 +25,19 @@ const deleteUser = (idUser) => {
     return dbPool.execute(SQLQuery);
 }
 
-const ifUser = (body,cb)=>{
-    // const SQLQuery = `SELECT * FROM userid WHERE email='${body.email}' AND pwd='${body.password}`;
-    const SQLQuery = `SELECT * FROM userid WHERE email='admin@bps.id' AND pwd='123'`;
-    dbPool.query(SQLQuery,function(err,rows,fields){
-        if(err) throw err;
-        if (rows.length > 0) {
-            cb(null, rows[0]);
-        } else {
-           return cb(null, null);
-        }
-    });;
+const ifUser = (body)=>{
+     const SQLQuery = `SELECT * FROM userid WHERE email='${body.email}' AND pwd='${body.password}'`;
+     const data = dbPool.execute(SQLQuery); 
+     return data;
+    //const SQLQuery = `SELECT * FROM userid WHERE email='admin@bps.id' AND pwd='123'`;
+    // dbPool.query(SQLQuery,function(err,rows,fields){
+    //     if(err) throw err;
+    //     if (rows.length > 0) {
+    //         cb(null, rows[0]);
+    //     } else {
+    //        return cb(null, null);
+    //     }
+    // });
 }
 
 module.exports = {

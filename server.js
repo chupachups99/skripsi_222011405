@@ -4,17 +4,20 @@ const path = require("path");
 const bodyParser = require('body-parser');
 const csvToJson = require('convert-csv-to-json');
 const usersRoutes = require('./router/users');
+const indexRoutes = require('./router/indikator');
 const session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 const passport = require('passport');
 const model = require('./models/users');
 const { isNull } = require("util");
+const dbPool = require('./config/db');
 const LocalStrategy = require('passport-local').Strategy;
 // var user=[];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
+app.use('/indicator', indexRoutes);
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,16 +65,21 @@ checkAuthenticated = (req, res, next) => {
 }
 
 
+
+
 passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password'
-},function(username, password, cb) {
-  temp = {email:username,password:password};
-  model.ifUser(temp, function(err, user) {
-    if (err) { return cb(err); }
-    if (!user) { return cb(null, false); }
-    return cb(null, user);
-  });
+},async function(username, password, cb) {
+  let temp = {email:username,password:password};
+  const response = await model.ifUser(temp);
+  console.log(response);
+  if(response[0].length>0){
+    cb(null,response[0]);
+  }
+  else{
+    cb(null,null);
+  }
 }
 ));
 
@@ -83,11 +91,17 @@ app.get('/google',
   }
   ));
 
-app.get('/logout', (req, res) => {
+app.get('/signout', (req, res) => {
   req.logout();
   req.session.destroy();
   res.send('Goodbye!');
 });
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.send('Goodbye!');
+});
+
 
 
 app.get('/google/callback',
@@ -107,14 +121,14 @@ app.get('/fail', (req, res) => {
 })
 
 
-// app.get('/index', checkAuthenticated, (req, res) => {
-//   res.render('index');
-//   //res.send(req.user.name);
-// });
-app.get('/index', (req, res) => {
+app.get('/index', checkAuthenticated, (req, res) => {
   res.render('index');
   //res.send(req.user.name);
 });
+// app.get('/index', (req, res) => {
+//   res.render('index');
+//   //res.send(req.user.name);
+// });
 
 app.get('/dataAsal', (req, res) => {
   let json = csvToJson.getJsonFromCsv('./assets/Prov_Asal.csv');

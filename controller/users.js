@@ -2,15 +2,15 @@ const UsersModel = require('../models/users.js');
 
 const getAllUsers = async(req, res) => {
     try {
-        const [data] =await UsersModel.getAlluserid();
+        const rows =await UsersModel.getAlluserid();
 
-        res.json({
+        res.send({
             message: 'GET all users success',
-            buku : data,
+            data :rows[0]
         })
     } catch (error) {
         res.status(500).json({
-            message: 'Server Error',
+            message: 'Server Error tes',
             serverMessage: error,
         })
     }
@@ -81,14 +81,16 @@ const ifUser = async (req, res) => {
     const {body} = req;
     const user=await UsersModel.ifUser(body);
     
+    
     try {
-        // res.json({
-        //     message: 'Login success',
-        //     data: data
-        // })
-        // var user = data;
-       // await UsersModel.ifUser(body);
-       res.redirect('http://localhost:4000/index');
+        if(user[0].length>0){
+            console.log(user[0]);
+            res.redirect('http://localhost:4000/index');
+        }
+        else {
+            return cb(null, null);
+         }
+       
         
     } catch (error) {
         res.status(500).json({

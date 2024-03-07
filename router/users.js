@@ -10,21 +10,6 @@ router.post('/', UserController.createNewUser);
 
 // READ - GET
 router.get('/', UserController.getAllUsers);
-// CHECK - POST
-// router.post('/auth',function());
-
-// '/api/login' route
-// router.route('/auth').post(
-//   // Using local strategy to redirect back to the signin page if there is an error
-//   passport.authenticate('local', {
-//     successRedirect: '/',
-//     failureRedirect: '/login'
-//   }
-//   (req, res) => {
-//     console.log('req.sessionID: ', req.sessionID)
-//     res.status(200).json({ user: req.user })
-//   }
-// )
 
 // UPDATE - PATCH
 router.patch('/:idUser', UserController.updateUser);

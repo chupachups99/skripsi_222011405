@@ -52,7 +52,7 @@
         <div class="font-semibold text-center text-2xl rounded-t-lg bg-gray-700 text-white p-4">
           <h1>Wisatawan Nusantara</h1>
         </div>
-        <div class="p-4 m-auto left-0 right-0 text-center w-1/4">
+        <div class="p-4 m-auto left-0 right-0 text-center lg:w-1/4">
           <p class="text-xl font-semibold"><span class='font-semibold text-2xl'>K</span>ondisi Wisatawan Nusantara Waktu
             ke Waktu</p>
         </div>
@@ -68,24 +68,26 @@
             <option value="5">Pulau Sulawesi</option>
             <option value="6">Pulau Maluku</option>
             <option value="7">Pulau Papua</option>
-            
+
           </select>
         </div>
         <div class="text-right font-medium mr-8">Export: <a id="exportChart1" href="#">All</a> | <a
-          href="#">Selected</a> </div>
+            href="#">Selected</a> </div>
         <div class="flex">
 
           <!-- <div class="text-right font-medium mr-8">Export: <a id="exportChart2" href="#">All</a> | <a
               href="#">Selected</a></div> -->
           <div id="barYearWisnus" class="w-3/4 h-96 pt-4"></div>
-          <div class="w-1/4 flex items-center justify-center ">          
-            <div id="textIndicator" class="h-64 text-center text-2xl bg-sky-700 text-white rounded-xl font-semibold mr-3 shadow flex items-center justify-center">Total Perjalanan Wisatawan Nusantara :</div>
-        </div>
+          <div class="w-1/4 flex items-center justify-center ">
+            <div id="textIndicator"
+              class="h-64 text-center text-2xl bg-sky-700 text-white rounded-xl font-semibold mr-3 shadow flex items-center justify-center">
+              Total Perjalanan Wisatawan Nusantara :</div>
+          </div>
           <!-- <div id="changeWisnus" class="h-96 pt-4"></div> -->
-          
+
         </div>
         <div id="lineYearWisnus" class="h-96 pt-4"></div>
-        <div class="p-4 m-auto left-0 right-0 text-center w-1/4">
+        <div class="p-4 m-auto left-0 right-0 text-center lg:w-1/4">
           <p class="font-semibold text-xl"><span class='font-semibold text-2xl'>P</span>erbandingan Kondisi Wisatawan
             Nusantara Antarwilayah
         </div>
@@ -101,7 +103,7 @@
           </select>
           <button id="btnInterval" class="bg-sky-600 text-white rounded-xl p-2"> Apply</button>
         </div>
-        <div class="md:grid md:grid-cols-2">
+        <div class="lg:grid lg:grid-cols-2">
           <div id="cPlethTujuan" class="h-[50rem]"></div>
           <div id="donutTujuan" class="h-[50rem]"></div>
         </div>
@@ -158,11 +160,11 @@
 
         </div> -->
 
-        <div  class="font-bold text-xl p-4 m-auto left-0 right-0 text-center w-1/4">Tabulasi</div>
+        <div class="font-bold text-xl p-4 m-auto left-0 right-0 text-center w-1/4">Tabulasi</div>
         <div class="text-center ml-3 mr-3">
           <button id="checkBoxTabTujuan"
             class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
-            Pilih Provinsi 
+            Pilih Provinsi
           </button>
           <select id="sTabJumlah"
             class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
@@ -170,17 +172,17 @@
             <option value="1">Bulanan</option>
             <option value="2">Dwiwulanan</option>
             <option value="3">Triwulanan</option>
-            <option value="4">Caturwulanan</option> 
+            <option value="4">Caturwulanan</option>
             <option value="5">Semesteran</option>
           </select>
         </div>
-        <div class="text-right ml-3 mr-3 p-4 "><button id="btnExportTab" >Export Table</button></div>
+        <div class="text-right ml-3 mr-3 p-4 "><button id="btnExportTab">Export Table</button></div>
         <div id="tabulasiWisnus" class="h-96 overflow-y-scroll overflow-x-scroll ml-3 mr-3"></div>
-      
+
 
 
         <div class="text-center text-[18px] font-bold">Menurut Provinsi Asal</div>
-        <div class="md:grid md:grid-cols-2">
+        <div class="lg:grid lg:grid-cols-2">
           <div id="cPlethAsal" class="h-[50rem]"></div>
           <div id="donutAsal" class="h-[50rem]"></div>
         </div>
@@ -239,34 +241,49 @@
 
         </div> -->
 
-  
 
 
 
-        
+
+
 
       </div>
       <!-- batas div -->
       <div class="bg-white grid ml-3 mr-3 rounded shadow">
         <div class="font-semibold text-center text-2xl rounded-t-lg bg-gray-700 text-white p-4">
-          <h1>Wisatawan Mancanegara</h1>
+          <h1>Data Wisatawan</h1>
         </div>
-        <div id="wismanScatter"class="h-96"></div>
+        <div class="flex">
+          <div id="mapStory" class="w-3/4 h-96"></div>
+          <div class="w-1/4 h-96"></div>
+        </div>
+        <div class="text-center p-4">
+          <button
+            class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300">&lt;
+            Previous </button>
+
+          <button
+            class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300">Next
+            &gt; </button>
+        </div>
+        <div id="dbMap" class="h-96"></div>
       </div>
+
+      <!-- footer -->
       <div class=""><%- include('footer'); %></div>
     </div>
 
-      <script>
+    <script>
 
-      </script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"
-        integrity="sha512-k37wQcV4v2h6jgYf5IUz1MoSKPpDs630XGSmCaCCOXxy2awgAWKHGZWr9nMyGgk3IOxA1NxdkN8r1JHgkUtMoQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
-      <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-      <script type="module" src="http://localhost:4000/assets/script_index.js"></script>
-      
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"
+      integrity="sha512-k37wQcV4v2h6jgYf5IUz1MoSKPpDs630XGSmCaCCOXxy2awgAWKHGZWr9nMyGgk3IOxA1NxdkN8r1JHgkUtMoQ=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script type="module" src="http://localhost:4000/assets/script_index.js"></script>
+
 </body>
 
 </html>
