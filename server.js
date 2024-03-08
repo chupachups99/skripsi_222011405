@@ -4,7 +4,7 @@ const path = require("path");
 const bodyParser = require('body-parser');
 const csvToJson = require('convert-csv-to-json');
 const usersRoutes = require('./router/users');
-const indexRoutes = require('./router/indikator');
+ const indexRoutes = require('./router/indikator');
 const session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 const passport = require('passport');
@@ -121,14 +121,14 @@ app.get('/fail', (req, res) => {
 })
 
 
-app.get('/index', checkAuthenticated, (req, res) => {
-  res.render('index');
-  //res.send(req.user.name);
-});
-// app.get('/index', (req, res) => {
+// app.get('/index', checkAuthenticated, (req, res) => {
 //   res.render('index');
 //   //res.send(req.user.name);
 // });
+app.get('/index', (req, res) => {
+  res.render('index');
+  //res.send(req.user.name);
+});
 
 app.get('/dataAsal', (req, res) => {
   let json = csvToJson.getJsonFromCsv('./assets/Prov_Asal.csv');

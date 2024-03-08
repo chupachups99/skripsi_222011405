@@ -1977,11 +1977,15 @@ function tabulasiWisnus(url,sumFunction,tahun){
   })
 
 }
-
+var page = 1;
 function mapStory(){
+  var mapCanvas = echarts.init(document.getElementById("mapStory"));
+  mapCanvas.showLoading()
   $.get("http://localhost:4000/indicator",function(data,status){
     echarts.registerMap('CInd', CityINAJSON);
-    var mapCanvas = echarts.init(document.getElementById("mapStory"));
+    let storyData = data.database;
+    let idx = data.index;
+    
     var option = {
       // title: {
       //   text: 'Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan (Kumulatif)',
@@ -2001,17 +2005,7 @@ function mapStory(){
         //   return value
         // }
       },
-      toolbox: {
-        show: true,
-        dataView:{show:true},
-        top: '15%',
-        right: '10%',
-        feature: {
-          restore: { title: 'Restore' },
-          saveAsImage: { title: 'Save' }
-        }
-
-      }, 
+       
       // visualMap: {
       //   right: 'center',
       //   bottom: '15%',
@@ -2039,17 +2033,90 @@ function mapStory(){
         bottom: '3%',
         containLabel: true
       },
-      animation: true,
+      geo:[{map:"CInd",
+      zoom:1.25
+    }],
+
       series: [{
-        name: 'Provinsi Tujuan',
-        type: 'map',
-        zoom: '1.2',
-        map: "CInd",
-        roam: 'scale',
-        // data: group,
+        name: 'TPK',
+        type: 'scatter',
+        coordinateSystem:'geo',
+        data:storyData,
+        encode:{value:3},
+        symbolSize:function(val){
+          return val[3]/2
+        },
+        itemStyle:{
+          borderColor:"blue",
+          borderWidth:2,
+          color:"white"
+        }
+        
       }]
     };
     option && mapCanvas.setOption(option);
+    mapCanvas.hideLoading();
+    $('#nextBtnStory').click(function(){
+      let row = storyData[idx[1]];
+      if(page==1){
+        option.geo[0].zoom =30;
+        //console.log(storyData);
+        
+        //console.log(row);
+        option.geo[0].center = [row.value[0],row.value[1]];
+        //console.log(option.geo.center);
+        mapCanvas.setOption(option);
+        setTimeout(()=>mapCanvas.dispatchAction({
+          type: 'highlight',
+          geoIndex:0,
+          name: row.name
+        }),700);
+        setTimeout(()=>mapCanvas.dispatchAction({
+          type: 'showTip',
+          seriesIndex:0,
+          dataIndex:idx[1]
+        }),1000);
+        page=page+1
+        //alert('Hi');
+      }
+      else if(page==2){
+        mapCanvas.dispatchAction({
+          type: 'downplay',
+          geoIndex:0,
+          name: row.name
+        });
+        mapCanvas.dispatchAction({
+          type: 'hideTip',
+        });
+        option.geo[0].zoom =1.25;
+        option.geo[0].center ="";
+        
+        option.series = [{
+          name: 'Tamu Nusantara',
+          type: 'scatter',
+          coordinateSystem:'geo',
+          data:storyData,
+          encode:{value:3},
+          symbolSize:function(val){
+            return val[2]/100000
+          },
+          itemStyle:{
+            borderColor:"purple",
+            borderWidth:2,
+            color:"white"
+          }
+          
+        }];
+        option.tooltip={trigger:'item',
+          formatter: function (params) {
+             var value = params.seriesName + "<br>" + params.name + ' : ' + (params.value / 100000).toFixed(2) + ' ratus ribu';
+          return value}};
+        mapCanvas.setOption(option);
+        page=page+1;
+
+
+      }
+    })
 
 
   })
