@@ -166,6 +166,7 @@ function firstSection(url, id, kode) {
         left: '3%',
         right: '4%',
         bottom: '7%',
+        containLabel:true
       },
       color: '#0284C7',
       xAxis: [
@@ -185,7 +186,20 @@ function firstSection(url, id, kode) {
       yAxis: [
         {
           type: 'value',
-          show:false
+          show:true,
+          splitLine:{
+            show:false
+          },
+          axisLine:{
+            show:true
+          },
+          axisLabel:{
+            show:true,
+            formatter:function(params){
+              return (params/1000000).toFixed(0);
+            }
+          }
+          
         }
       ],
       //color:'rgb(55 48 163)',
@@ -251,12 +265,16 @@ function firstSection(url, id, kode) {
       },
       dataZoom: [{}],
       yAxis: {
-        show:false,
+        show:true,
         type: 'value',
         axisLabel:{
           formatter:function (value) {
             return (value/satuan[1]).toFixed(0);
         }
+        },
+        splitLine:{show:false},
+        axisLine:{
+          show:true
         }
       },
       series: {
@@ -1106,8 +1124,12 @@ function sectionTwo(url) {
       tooltip: {
         trigger: 'item',
         formatter: function (params) {
-          var value = params.seriesName + "<br>" + params.name + ' : ' + (params.value / 1000000).toFixed(2) + ' juta';
+          var value = params.seriesName + "<br>" + params.name + ' : <span style="font-weight:bold">' + (params.value / 1000000).toFixed(2) + '</span> juta';
           return value
+        },
+        textStyle:{
+          fontFamily:"serif",
+          fontSize:15
         }
       },
       toolbox: {
@@ -1155,6 +1177,9 @@ function sectionTwo(url) {
         map: "Ind",
         roam: 'scale',
         data: group,
+        emphasis:{
+          label:{show:false}
+        }
       }]
     };
     optionCPleth && cPlethTujuan.setOption(optionCPleth);
@@ -1184,21 +1209,23 @@ function sectionTwo(url) {
           ;
         }
       },
-      xAxis: { show: false, 
+      xAxis: { show: true, 
         type: 'value', 
         max: 'dataMax',
         axisLabel:{
-          show :true,
+          show :false,
           fontFamily:'sans-serif',
           fontSize:'15',
           
-        }
+        },
+        axisLine:{show:true},
+        splitLine:{show:false}
        },
       yAxis: {
         axisLabel:{
           show :true,
           fontFamily:'sans-serif',
-          fontSize:'12',
+          fontSize:'10',
           fontWeight:'bold',
           color:'black'
           
@@ -1208,7 +1235,7 @@ function sectionTwo(url) {
       },
       graphic: {
         type: 'text',
-        bottom: '9%',
+        bottom: '7%',
         right: '9%',
         style: {
           fill: '#333',
@@ -1216,7 +1243,7 @@ function sectionTwo(url) {
           overflow: 'break',
           text: 'Total : 100%',
           fontFamily: 'san-serif',
-          fontSize:18,
+          fontSize:15,
           fontWeight:'bolder'
         }
       },
@@ -1248,10 +1275,10 @@ function sectionTwo(url) {
           ],
           label:{
             show:true,
-            position:['75%','100%'],
+            position:['65%','100%'],
             color:'black',
             fontFamily:'sans-serif',
-            fontSize:'16px'
+            fontSize:'14px'
             // verticalAlign:'bottom'
           }
        },
@@ -1263,16 +1290,32 @@ function sectionTwo(url) {
             position: 'right',
             fontFamily: 'sans-serif',
             fontWeight:'bold',
-            fontSize: '15'
+            fontSize: '12'
           },
           backgroundStyle: {
             color: 'rgba(180, 180, 180, 0.2)'
+          },
+          emphasis:{
+            itemStyle:{
+              color:"yellow",
+            }
           }
         }
       ]
     }
 
     optionDonut && donutTujuan.setOption(optionDonut);
+    donutTujuan.dispatchAction({
+      type:'highlight',
+      seriesIndex:0,
+      name:"BANTEN"
+    }
+    )
+    // donutTujuan.dispatchAction({
+    //   type:'showTip',
+    //   name:"JAWA TIMUR",
+    //   position: [10,10]
+    // })
 
 
   });
@@ -1902,15 +1945,15 @@ function tabulasiWisnus(url,sumFunction,tahun){
     }
     else if(sumFunction==5){
       var headers = $('<tr></tr>');
-      headers.append('<th rowspan="1">Provinsi Tujuan</th>');
+      headers.append('<th class="border-x-4 border-black" rowspan="1">Provinsi Tujuan</th>');
          
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<2;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th>Semester-'+roman[m] +' '+temp+'</th>');
+                headers.append('<th class="border-x-4 border-black">Semester-'+roman[m] +' '+temp+'</th>');
               }
           }
-      headers.append('<th rowspan="1">Total</th>');
+      headers.append('<th class="border-x-4 border-black" rowspan="1">Total</th>');
       table.append(headers);
       //table.append(subhead);
 
@@ -2431,12 +2474,12 @@ window.onload = function () {
   //     reloadDataAsal(urlAsal);
   //     }
   //     });
-  //firstSection(url, ["barYearWisnus", "lineYearWisnus"], '9999');
-  //sectionTwo(url+APIkey);
-  //sectionTwoAsal(urlAsal);
+  firstSection(url, ["barYearWisnus", "lineYearWisnus"], '9999');
+  sectionTwo(url+APIkey);
+  sectionTwoAsal(urlAsal);
   //reloadData(url+APIkey);
   //reloadDataAsal(urlAsal);  
-  //tabulasiWisnus(url+APIkey,5,['119','120','121','122','123']);
+  tabulasiWisnus(url+APIkey,5,['119','120','121','122','123']);
   mapStory();
   
 }

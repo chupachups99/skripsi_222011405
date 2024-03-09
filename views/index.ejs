@@ -29,9 +29,14 @@
 
     th,
     td {
-      border: 1px solid black;
       padding: 8px;
       text-align: left;
+    }
+    th{
+        border-top-width: 2px;
+        border-bottom-width: 2px;
+        border-color: rgb(0 0 0);
+
     }
   </style>
 
@@ -52,7 +57,7 @@
         <div class="font-semibold text-center text-2xl rounded-t-lg bg-gray-700 text-white p-4">
           <h1>Wisatawan Nusantara</h1>
         </div>
-        <div class="p-4 m-auto left-0 right-0 text-center lg:w-1/4">
+        <div class="p-4 m-auto left-0 right-0 text-center md:w-1/4">
           <p class="text-xl font-semibold"><span class='font-semibold text-2xl'>K</span>ondisi Wisatawan Nusantara Waktu
             ke Waktu</p>
         </div>
@@ -87,12 +92,12 @@
 
         </div>
         <div id="lineYearWisnus" class="h-96 pt-4"></div>
-        <div class="p-4 m-auto left-0 right-0 text-center lg:w-1/4">
+        <div class="p-4 m-auto left-0 right-0 text-center md:w-1/4">
           <p class="font-semibold text-xl"><span class='font-semibold text-2xl'>P</span>erbandingan Kondisi Wisatawan
             Nusantara Antarwilayah
         </div>
         <div class="text-center text-xl font-semibold p-4">Menurut Provinsi Tujuan</div>
-        <div class="text-center">
+        <div class="text-center p-4">
           <select id="sAwalTujuan"
             class="text-left text-black bg-white border-2 border-neutral-400 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300 w-1/3">
             <option value="0" disabled selected hidden>Pilih Rentang Waktu Awal</option>
@@ -103,9 +108,9 @@
           </select>
           <button id="btnInterval" class="bg-sky-600 text-white rounded-xl p-2"> Apply</button>
         </div>
-        <div class="lg:grid lg:grid-cols-2">
-          <div id="cPlethTujuan" class="h-[50rem]"></div>
-          <div id="donutTujuan" class="h-[50rem]"></div>
+        <div class="md:grid md:grid-cols-2">
+          <div id="cPlethTujuan" class="h-[40rem]"></div>
+          <div id="donutTujuan" class="h-[40rem]"></div>
         </div>
         <!-- <div class="md:flex">
           <div id="checkBoxRaceBarTujuan" class="text-center h-48 md:w-1/5 pl-8 relative">
