@@ -576,6 +576,10 @@ video {
   position: relative;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -757,10 +761,6 @@ video {
 
 .h-\[40rem\] {
   height: 40rem;
-}
-
-.h-\[45rem\] {
-  height: 45rem;
 }
 
 .h-\[50rem\] {
@@ -2185,3 +2185,5 @@ video {
     }
   }
 }
+
+  

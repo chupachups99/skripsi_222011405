@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const csvToJson = require('convert-csv-to-json');
 const usersRoutes = require('./router/users');
  const indexRoutes = require('./router/indikator');
+ const brsRoutes = require('./router/brs');
 const session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
 const passport = require('passport');
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
 app.use('/indicator', indexRoutes);
+app.use('/brs', brsRoutes);
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -127,6 +129,10 @@ app.get('/fail', (req, res) => {
 // });
 app.get('/index', (req, res) => {
   res.render('index');
+  //res.send(req.user.name);
+});
+app.get('/link_brs', (req, res) => {
+  res.render('brs');
   //res.send(req.user.name);
 });
 

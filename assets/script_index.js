@@ -1297,7 +1297,12 @@ function sectionTwo(url) {
           },
           emphasis:{
             itemStyle:{
-              color:"yellow",
+              color:"yellow"
+              
+            },
+            label:{
+              show: true,
+              color:'red'
             }
           }
         }
@@ -1305,12 +1310,40 @@ function sectionTwo(url) {
     }
 
     optionDonut && donutTujuan.setOption(optionDonut);
-    donutTujuan.dispatchAction({
-      type:'highlight',
-      seriesIndex:0,
-      name:"BANTEN"
-    }
-    )
+    // donutTujuan.dispatchAction({
+    //   type:'highlight',
+    //   seriesIndex:0,
+    //   name:"BANTEN"
+    // }
+    // )
+    cPlethTujuan.on("mouseover",function(params){
+      donutTujuan.dispatchAction({
+        type:'highlight',
+        seriesIndex:0,
+        name: params.name
+      })
+    })
+    cPlethTujuan.on("mouseout",function(params){
+      donutTujuan.dispatchAction({
+        type:'downplay',
+        seriesIndex:0,
+        name: params.name
+      })
+    })
+    donutTujuan.on("mouseover",function(params){
+      cPlethTujuan.dispatchAction({
+        type:'highlight',
+        seriesIndex:0,
+        name:params.name
+      })
+    })
+    donutTujuan.on("mouseout",function(params){
+      cPlethTujuan.dispatchAction({
+        type:'downplay',
+        seriesIndex:0,
+        name:params.name
+      })
+    })
     // donutTujuan.dispatchAction({
     //   type:'showTip',
     //   name:"JAWA TIMUR",
@@ -1629,26 +1662,26 @@ function tabulasiWisnus(url,sumFunction,tahun){
     let roman = ["I","II","III","IV","V","VI"] ;
     let max=0 ;
     let min=Infinity;
-    var table = $('<table id="tWisnus" clas="table-auto"></table>');
+    var table = $('<table id="tWisnus" class="table-auto"></table>');
     if(sumFunction==0){
       // Create table headers
-      var headers = $('<tr></tr>');
-      headers.append('<th rowspan="2">Provinsi</th>');
-      let text = '<th colspan="'+tahun.length+'">Tahun</th>';
-      headers.append(text);
-      headers.append('<th rowspan="2">Total</th>');
-      table.append(headers);
-      //subheaders
-      var subhead = $('<tr></tr>');
+      var thead = $("<div class='thead'></div>");
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th bg-white" style="width:25%">Provinsi Tujuan</div>');
+      
+  
       for(let k = 0;k<tahun.length;k++){
         let temp = parseInt(tahun[k])+1900;
-          subhead.append('<th>'+temp+'</th>');
+          headers.append("<div class='th bg-white' style='width:12.5%' >"+temp.toString()+"</div>");
       }
-      table.append(subhead);
+      headers.append('<div class="th bg-white" style="width:12.5%">Total</div>');
+      thead.append(headers);
+      $("#tabulasiWisnus").append(thead);
+      let tbody = $("<div class='tbody'></div>");
       //loop rows
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $("<div class='tr'></div>");
+        row.append("<div class='td' style='width:25%'>" + wisnus.vervar[i].label + '</div>');
         let total = 0;
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
@@ -1656,28 +1689,37 @@ function tabulasiWisnus(url,sumFunction,tahun){
           total = total + parseInt(wisnus.datacontent[keyData]);
           if(wisnus.vervar[i].val!="9999"){
             if(wisnus.datacontent[keyData]>max){max=wisnus.datacontent[keyData]}
-          if(wisnus.datacontent[keyData]<min){min=wisnus.datacontent[keyData]}
+            if(wisnus.datacontent[keyData]<min){min=wisnus.datacontent[keyData]}
+            row.append('<div class="td text-white needBg" style="width:12.5%">' + wisnus.datacontent[keyData] + '</div>');
+            
           }
-          row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + wisnus.datacontent[keyData] + '</td>');
+          else{
+            row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);width:12.5%; ">' + wisnus.datacontent[keyData] + '</div>');
+          }
+          
         }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + total + '</td>');
+        row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);width:12.5%">' + total + '</div>');
 
-        table.append(row);
+        tbody.append(row);
       }
-      $('#tabulasiWisnus').append(table);
+      $("#tabulasiWisnus").append(tbody);
+      $(".tr").css({"width":"auto"});
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
+        let value = (parseInt($(this).text())-min)/(max-min);
         console.log(value);
-        let op = (value*7/10+30)/100;
+        let op = 85 - (value*55);
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        let bgv = "hsl(204, 100%,"+op.toFixed(2)+"%)"
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()}); 
     }
     else if(sumFunction==1){
       // Create table headers
-      var headers = $('<tr></tr>');
-      headers.append('<th rowspan="1">Provinsi</th>');
+      
+      var thead = $('<div class="thead"></div>');
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th bg-white">Provinsi Tujuan</div>');
       // let text = '<th colspan="'+tahun.length+'">Tahun</th>';
       // headers.append(text);
       
@@ -1688,17 +1730,20 @@ function tabulasiWisnus(url,sumFunction,tahun){
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<12;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th>'+months[m]+' '+temp+'</th>');
+                headers.append('<div class="th bg-white">'+months[m]+' '+temp+'</div>');
               }
           }
-      headers.append('<th rowspan="1">Total</th>');
-      table.append(headers);
+      headers.append('<div class="th bg-white">Total</div>');
+      thead.append(headers);
+      $('#tabulasiWisnus').append(thead);
+      // table.append(headers);
       //table.append(subhead);
+      let tbody = $('<div class="tbody"></div>');
 
       //loop rows
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $('<div class="tr"></div>');
+        row.append('<div class="td bg-gray-700">' + wisnus.vervar[i].label + '</div>');
         let total = 0;
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
@@ -1707,166 +1752,190 @@ function tabulasiWisnus(url,sumFunction,tahun){
           let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
           if(wisnus.datacontent[keyData]){
             total = total + parseInt(wisnus.datacontent[keyData]);
-          if(wisnus.vervar[i].val!="9999"){
-            if(wisnus.datacontent[keyData]>max){max=wisnus.datacontent[keyData]}
-          if(wisnus.datacontent[keyData]<min){min=wisnus.datacontent[keyData]}
-          }
-          row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + wisnus.datacontent[keyData] + '</td>');
-          
+            if(wisnus.vervar[i].val!="9999"){
+              if(wisnus.datacontent[keyData]>max){max=wisnus.datacontent[keyData]}
+              if(wisnus.datacontent[keyData]<min){min=wisnus.datacontent[keyData]}
+              row.append('<div class="td text-white needBg">' + wisnus.datacontent[keyData] + '</div>');
+            }
+            else{
+              row.append('<div class="td text-white"style="background-color:hsl(204,100%,30%)" >' + wisnus.datacontent[keyData] + '</div>');
+            }
+
           }
           else{
-            row.append("<td class='text-black'>-</td>")
+            row.append("<div class='td text-white' style='background-color:hsl(0,100%,75%)'>-</div>")
           }
           }
           }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + total + '</td>');
-        table.append(row);
+        row.append('<div class="td text-white" style="background-color:hsl(204,100%,30%)">' + total + '</div>');
+        tbody.append(row);
+        $('#tabulasiWisnus').append(tbody);
       }
-      $('#tabulasiWisnus').append(table);
+      $(".tr").css({"width":"9000px"});
+      // $('#tabulasiWisnus').append(table);
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
-        console.log(value);
-        let op = (value*7/10+30)/100;
+        let value = (parseInt($(this).text())-min)/(max-min);
+        // console.log(value);
+        let op = 85-(value*55);
+        let bgv = "hsl(204, 100%,"+op.toFixed(2)+"%)"
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()});
-
     }
     else if(sumFunction==2){
       // Create table headers
-      var headers = $('<tr></tr>');
-      headers.append('<th rowspan="1">Provinsi Tujuan</th>');
+      var thead = $("<div class='thead'></div>");
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th">Provinsi Tujuan</div>');
          
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<6;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th>DW-'+roman[m] +' '+temp+'</th>');
+                headers.append('<div class="th">DW '+roman[m] +'-'+temp+'</div>');
               }
           }
-      headers.append('<th rowspan="1">Total</th>');
-      table.append(headers);
+      headers.append('<div class="th" rowspan="1">Total</div>');
+      thead.append(headers);
+      $("#tabulasiWisnus").append(thead);
+      
       //table.append(subhead);
 
       //loop rows
+      var tbody = $("<div class='tbody'></div>");
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $('<div class="tr"></div>');
+        row.append('<div class="td">' + wisnus.vervar[i].label + '</div>');
         let total = 0;
         let sumDwi = 0
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
           for (let k =0;k<wisnus.turtahun.length-1;k++){
             let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-            if(k%2 ==0){
-              total = 0
-              if(wisnus.datacontent[keyData]){
+            if(wisnus.datacontent[keyData]){
+              if(k%2 ==0){
+                total = 0
                 total = total + parseInt(wisnus.datacontent[keyData]);
-                
-              }
-            }
-            else{
-              if(wisnus.datacontent[keyData]){
-                total = total + parseInt(wisnus.datacontent[keyData]);
-                if(wisnus.vervar[i].val!="9999"){
-                  if(total>max){max=total}
-                if(total<min){min=total}
-                }
-                row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-                
               }
               else{
-                row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
+                  total = total + parseInt(wisnus.datacontent[keyData]);
+                  if(wisnus.vervar[i].val!="9999"){
+                    if(total>max){max=total}
+                    if(total<min){min=total}
+                    row.append('<div class=" td text-white needBg">' + total + '</div>');
+                  }
+                  else {
+                    row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + total + '</div>');
+                  }
+                }
+                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
               }
-            }
-            if(wisnus.datacontent[keyData]){
-              sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
-            }
-            
-
+              else{
+                if(k%2==1){
+                    row.append('<div class="td text-white" style="background-color:hsl(0, 100%, 75%);">' + total + '</div>');
+                }
+                else{
+                  total=0;
+                }
+              }
+              
+                
             
           }
         }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + sumDwi + '</td>');
-        table.append(row);
+        row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + sumDwi + '</div>');
+        tbody.append(row);
       }
-      $('#tabulasiWisnus').append(table);
+      $('#tabulasiWisnus').append(tbody);
+      $(".tr").css({"width":"3500px"});
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
+        let value = (parseInt($(this).text())-min)/(max-min);
         console.log(value);
-        let op = (value*7/10+30)/100;
+        let op = 85-(value*55);
+        let bgv = "hsl(204,100%,"+op.toFixed(2)+"%)"
+
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()});
 
 
     }
     else if(sumFunction==3){
-      var headers = $('<tr></tr>');
-      headers.append('<th rowspan="1">Provinsi Tujuan</th>');
+      var thead = $("<div class='thead'></div>");
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th">Provinsi Tujuan</div>');
          
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<4;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th>TW-'+roman[m] +' '+temp+'</th>');
+                headers.append('<div class="th">TW '+roman[m] +'-'+temp+'</div>');
               }
           }
-      headers.append('<th rowspan="1">Total</th>');
-      table.append(headers);
+      headers.append('<div class="th" rowspan="1">Total</div>');
+      thead.append(headers);
+      $("#tabulasiWisnus").append(thead);
+      
       //table.append(subhead);
 
       //loop rows
+      var tbody = $("<div class='tbody'></div>");
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $('<div class="tr"></div>');
+        row.append('<div class="td">' + wisnus.vervar[i].label + '</div>');
         let total = 0;
-        let sumTri = 0
+        let sumDwi = 0
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
           for (let k =0;k<wisnus.turtahun.length-1;k++){
             let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
             if(wisnus.datacontent[keyData]){
               if(k%3 ==0){
-                total = 0;
+                total = 0
                 total = total + parseInt(wisnus.datacontent[keyData]);
               }
               else if(k%3==2){
-                
                   total = total + parseInt(wisnus.datacontent[keyData]);
                   if(wisnus.vervar[i].val!="9999"){
                     if(total>max){max=total}
                     if(total<min){min=total}
+                    row.append('<div class=" td text-white needBg">' + total + '</div>');
                   }
-                  row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-                
+                  else {
+                    row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + total + '</div>');
+                  }
+                }
+                else{
+                  total = total+parseInt(wisnus.datacontent[keyData]);
+                }
+                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
               }
               else{
+                if(k%3==2){
+                    row.append('<div class="td text-white" style="background-color:hsl(0, 100%, 75%);">' + total + '</div>');
+                }
+                else if(k%3==0){
+                  total=0;
+                }
+              }
+              
                 
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              
-              sumTri = sumTri +parseInt(wisnus.datacontent[keyData]);
-
-            }
-            else{
-              if(k%3 ==2){
-                row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-              }
-              
-            }
+            
           }
         }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + sumTri + '</td>');
-        table.append(row);
+        row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + sumDwi + '</div>');
+        tbody.append(row);
       }
-      $('#tabulasiWisnus').append(table);
+      $('#tabulasiWisnus').append(tbody);
+      $(".tr").css({"width":"3500px"});
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
+        let value = (parseInt($(this).text())-min)/(max-min);
         console.log(value);
-        let op = (value*7/10+30)/100;
+        let op = 85-(value*55);
+        let bgv = "hsl(204,100%,"+op.toFixed(2)+"%)"
+
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()});
 
@@ -1875,145 +1944,168 @@ function tabulasiWisnus(url,sumFunction,tahun){
     }
     
     else if(sumFunction==4){
-      var headers = $('<tr></tr>');
-      headers.append('<th rowspan="1">Provinsi Tujuan</th>');
+      var thead = $("<div class='thead'></div>");
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th">Provinsi Tujuan</div>');
          
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<3;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th>CW-'+roman[m] +' '+temp+'</th>');
+                headers.append('<div class="th">CW '+roman[m] +'-'+temp+'</div>');
               }
           }
-      headers.append('<th rowspan="1">Total</th>');
-      table.append(headers);
+      headers.append('<div class="th" rowspan="1">Total</div>');
+      thead.append(headers);
+      $("#tabulasiWisnus").append(thead);
+      
       //table.append(subhead);
 
       //loop rows
+      var tbody = $("<div class='tbody'></div>");
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $('<div class="tr"></div>');
+        row.append('<div class="td">' + wisnus.vervar[i].label + '</div>');
         let total = 0;
-        let sumTri = 0
+        let sumDwi = 0
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
           for (let k =0;k<wisnus.turtahun.length-1;k++){
             let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
             if(wisnus.datacontent[keyData]){
               if(k%4 ==0){
-                total = 0;
+                total = 0
                 total = total + parseInt(wisnus.datacontent[keyData]);
               }
               else if(k%4==3){
-                
                   total = total + parseInt(wisnus.datacontent[keyData]);
                   if(wisnus.vervar[i].val!="9999"){
                     if(total>max){max=total}
                     if(total<min){min=total}
+                    row.append('<div class=" td text-white needBg">' + total + '</div>');
                   }
-                  row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-                
+                  else {
+                    row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + total + '</div>');
+                  }
+                }
+                else{
+                  total = total+parseInt(wisnus.datacontent[keyData]);
+                }
+                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
               }
               else{
+                if(k%4==3){
+                    row.append('<div class="td text-white" style="background-color:hsl(0, 100%, 75%);">' + total + '</div>');
+                }
+                else if(k%4==0){
+                  total=0;
+                }
+              }
+              
                 
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              
-              sumTri = sumTri +parseInt(wisnus.datacontent[keyData]);
-
-            }
-            else{
-              if(k%4 ==3){
-                row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-              }
-              
-            }
+            
           }
         }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + sumTri + '</td>');
-        table.append(row);
+        row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + sumDwi + '</div>');
+        tbody.append(row);
       }
-      $('#tabulasiWisnus').append(table);
+      $('#tabulasiWisnus').append(tbody);
+      $(".tr").css({"width":"3500px"});
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
+        let value = (parseInt($(this).text())-min)/(max-min);
         console.log(value);
-        let op = (value*7/10+30)/100;
+        let op = 85-(value*55);
+        let bgv = "hsl(204,100%,"+op.toFixed(2)+"%)"
+
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()});
 
+
+
     }
     else if(sumFunction==5){
-      var headers = $('<tr></tr>');
-      headers.append('<th class="border-x-4 border-black" rowspan="1">Provinsi Tujuan</th>');
+      
+      var thead = $("<div class='thead'></div>");
+      var headers = $('<div class="tr"></div>');
+      headers.append('<div class="th">Provinsi Tujuan</div>');
          
             for(let k = 0;k<tahun.length;k++){
               for(let m = 0;m<2;m++){
               let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="border-x-4 border-black">Semester-'+roman[m] +' '+temp+'</th>');
+                headers.append('<div class="th">Sem '+roman[m] +'-'+temp+'</div>');
               }
           }
-      headers.append('<th class="border-x-4 border-black" rowspan="1">Total</th>');
-      table.append(headers);
+      headers.append('<div class="th" rowspan="1">Total</div>');
+      thead.append(headers);
+      $("#tabulasiWisnus").append(thead);
+      
       //table.append(subhead);
 
       //loop rows
+      var tbody = $("<div class='tbody'></div>");
       for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
+        var row = $('<div class="tr"></div>');
+        row.append('<div class="td">' + wisnus.vervar[i].label + '</div>');
         let total = 0;
-        let sumTri = 0
+        let sumDwi = 0
         //loop columns in rows
         for(let j=0; j<tahun.length;j++){
           for (let k =0;k<wisnus.turtahun.length-1;k++){
             let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
             if(wisnus.datacontent[keyData]){
               if(k%6 ==0){
-                total = 0;
+                total = 0
                 total = total + parseInt(wisnus.datacontent[keyData]);
               }
               else if(k%6==5){
-                
                   total = total + parseInt(wisnus.datacontent[keyData]);
                   if(wisnus.vervar[i].val!="9999"){
                     if(total>max){max=total}
                     if(total<min){min=total}
+                    row.append('<div class=" td text-white needBg">' + total + '</div>');
                   }
-                  row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-                
+                  else {
+                    row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + total + '</div>');
+                  }
+                }
+                else{
+                  total = total+parseInt(wisnus.datacontent[keyData]);
+                }
+                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
               }
               else{
+                if(k%6==5){
+                    row.append('<div class="td text-white" style="background-color:hsl(0, 100%, 75%);">' + total + '</div>');
+                }
+                else if(k%6==0){
+                  total=0;
+                }
+              }
+              
                 
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              
-              sumTri = sumTri +parseInt(wisnus.datacontent[keyData]);
-
-            }
-            else{
-              if(k%6 ==5){
-                row.append('<td class="text-white needBg" style="background-color:rgb(3 105 161);">' + total + '</td>');
-              }
-              
-            }
+            
           }
         }
-        row.append('<td class="text-white" style="background-color:rgb(3 105 161);">' + sumTri + '</td>');
-        table.append(row);
+        row.append('<div class="td text-white" style="background-color:hsl(204, 100%, 30%);">' + sumDwi + '</div>');
+        tbody.append(row);
       }
-      $('#tabulasiWisnus').append(table);
+      $('#tabulasiWisnus').append(tbody);
+      $(".tr").css({"width":"3500px"});
       $('.needBg').each(function(){  
-        let value = (parseInt($(this).text())-min)/(max-min)*100;
-        
-        let op = (value*7/10+30)/100;
+        let value = (parseInt($(this).text())-min)/(max-min);
+        console.log(value);
+        let op = 85-(value*55);
+        let bgv = "hsl(204,100%,"+op.toFixed(2)+"%)"
+
         //let cl = 1-value.toFixed(2);
-        $(this).css({"opacity":op});
+        $(this).css({"background-color":bgv});
       });
       $("#btnExportTab").click(function(){ExportToExcel()});
 
 
 
-
+    
     }
     
 
@@ -2077,7 +2169,7 @@ function mapStory(){
         containLabel: true
       },
       geo:[{map:"CInd",
-      zoom:1.25
+      zoom:1
     }],
 
       series: [{
@@ -2131,7 +2223,7 @@ function mapStory(){
         mapCanvas.dispatchAction({
           type: 'hideTip',
         });
-        option.geo[0].zoom =1.25;
+        option.geo[0].zoom =1;
         option.geo[0].center ="";
         
         option.series = [{
@@ -2228,6 +2320,10 @@ $("#btnInterval").click(function(){
     sectionTwo(url+APIkey);
   }
   
+})
+$("#sTabJumlah").change(function(){
+  $('#tabulasiWisnus').empty();
+  tabulasiWisnus(url+APIkey,parseInt($(this).val()),['119','120','121','122','123']);
 })
 
 var buttonWilayah = document.getElementById("dropdownCheckboxButtonWilayah");
@@ -2479,7 +2575,7 @@ window.onload = function () {
   sectionTwoAsal(urlAsal);
   //reloadData(url+APIkey);
   //reloadDataAsal(urlAsal);  
-  tabulasiWisnus(url+APIkey,5,['119','120','121','122','123']);
+  tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
   mapStory();
   
 }
