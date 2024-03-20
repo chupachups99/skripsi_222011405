@@ -10,6 +10,7 @@ const dbConn = require('../config/db.js');
 // READ - GET
 router.get('/', BrsController.getAllData);
 router.post('/', BrsController.updateData);
+router.post('/insert',BrsController.insertData);
 
 // UPDATE - PATCH
 // router.patch('/:idUser', UserController.updateUser);

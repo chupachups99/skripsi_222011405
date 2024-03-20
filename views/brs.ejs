@@ -47,20 +47,23 @@
                                         </td>
                                         <td><input id="<%='brs_'+data[i].id%>"class="shadow w-full p-2 rounded" type="url"
                                                 value="<%=data[i].Link%>"></input></td>
+                                        
                                         <%} else{%>
                                             <td>
                                                 <%=nMonths-i%>
                                             </td>
-                                            <td>
-                                                <%=2022+parseInt(i /12)%>
+                                            <td id="<%='tahun_'+i%>">
+                                                <%=2022+parseInt(i/12)%>
                                             </td>
-                                            <td>
+                                            <td id="<%='bulan_'+i%>">
                                                 <%=months[parseInt(i%12)]%>
                                             </td>
-                                            <td><input class="w-full shadow p-2 rounded" type="url"
+                                            <td><input id="<%='brs_'+i%>" class="w-full shadow p-2 rounded" type="url"
                                                     value="not inserted"></input></td>
+                                                    
                                             <%}%>
-                                                <td><button id="<%='saveBrs'+'_'+i%>" class="saveBrs" class="bg-green-500">Save</button></td>
+                                            <td><button id="<%='saveBrs'+'_'+i%>" class="saveBrs" class="bg-green-500">Save</button></td>
+                                                
                                 </tr>
                                 <% }%>
                             

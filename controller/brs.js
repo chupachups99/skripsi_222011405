@@ -30,10 +30,25 @@ const updateData = async(req,res)=>{
         // alert(error);
     }
 }
-
+const insertData = async(req,res)=>{
+    const {body} = req;
+    try{
+        const brs = await BrsModel.insertData(body);
+        res.redirect("/");
+        // ('Saved');
+    }
+    catch(error){
+        res.status(500).json({
+            message: 'Server Error',
+            serverMessage: error,
+        })
+        // alert(error);
+    }
+}
 
 module.exports = {
     getAllData,
-    updateData
+    updateData,
+    insertData
 
 }
