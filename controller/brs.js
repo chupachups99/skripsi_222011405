@@ -4,6 +4,10 @@ const BrsModel = require('../models/brs.js');
 const getAllData = async (req, res) => {
     try {
         const brs= await BrsModel.getAllData();
+        // let temp = brs[0].filter(a => a.id == 24);
+        // res.status(200).json({
+        //     data:temp
+        // })
         res.render("brs",{
             message: 'GET all data success',
             data :brs[0]
@@ -20,7 +24,6 @@ const updateData = async(req,res)=>{
     try{
         const brs = await BrsModel.updateData(body);
         res.redirect("/");
-        // ('Saved');
     }
     catch(error){
         res.status(500).json({
@@ -35,7 +38,7 @@ const insertData = async(req,res)=>{
     try{
         const brs = await BrsModel.insertData(body);
         res.redirect("/");
-        // ('Saved');
+        
     }
     catch(error){
         res.status(500).json({

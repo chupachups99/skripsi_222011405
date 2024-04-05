@@ -9,7 +9,8 @@ const updateData = (body) => {
     return dbPool.execute(SQLQuery);
 }
 const insertData=(body)=>{
-    const SQLQuery = `INSERT INTO brs('id', 'Tahun', 'Bulan', 'Link') VALUES(${body.id},${body.tahun},${body.bulan},${body.link})`;
+    const SQLQuery = `INSERT INTO brs(id, Tahun, Bulan, Link) VALUES(${body.id},${body.tahun},'${body.bulan}','${body.link}')`;
+    console.log(SQLQuery);
     return dbPool.execute(SQLQuery);
 }
 
@@ -17,5 +18,4 @@ module.exports = {
     getAllData,
     updateData,
     insertData
-
 }
