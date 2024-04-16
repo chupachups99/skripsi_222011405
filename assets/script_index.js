@@ -659,368 +659,368 @@ function capitalizeWords(str) {
 
 // };
 
-function setRaceBarAsal(url) {
-  $.get(url, function (content, status) {
-    var raceBarAsal = echarts.init(document.getElementById("raceBarAsal2"));
-    const years = [];
-    var dataRace = [];
-    const kode  = Object.keys(kdProvJSON[0]);
-    var Wisnus = JSON.parse(JSON.stringify(content));
-    for (let m = 0; m < kode.length-1; m++) {
-      for (let i = 0; i < (Wisnus.tahun.length); i++) {
-        //labelYear.push(Wisnus.tahun[i].label.toString());
-        //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
-        //contentYear.push(Wisnus.datacontent[keyData]);
-        //let temp = [];
-        //let temp2 = [];
-        for (let j = 0; j < 12; j++) {
-          let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
-          years.push(a);
-          let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
-          //console.log(Wisnus.datacontent[keyData2]);
-          let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
-          dataRace.push(temp);
+// function setRaceBarAsal(url) {
+//   $.get(url, function (content, status) {
+//     var raceBarAsal = echarts.init(document.getElementById("raceBarAsal2"));
+//     const years = [];
+//     var dataRace = [];
+//     const kode  = Object.keys(kdProvJSON[0]);
+//     var Wisnus = JSON.parse(JSON.stringify(content));
+//     for (let m = 0; m < kode.length-1; m++) {
+//       for (let i = 0; i < (Wisnus.tahun.length); i++) {
+//         //labelYear.push(Wisnus.tahun[i].label.toString());
+//         //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
+//         //contentYear.push(Wisnus.datacontent[keyData]);
+//         //let temp = [];
+//         //let temp2 = [];
+//         for (let j = 0; j < 12; j++) {
+//           let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
+//           years.push(a);
+//           let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
+//           //console.log(Wisnus.datacontent[keyData2]);
+//           let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
+//           dataRace.push(temp);
 
-        };
+//         };
         
-      }
-    }
-    //console.log(dataRace);
-    // const rows = content.toString().split('\n');
+//       }
+//     }
+//     //console.log(dataRace);
+//     // const rows = content.toString().split('\n');
     
-    // for (let i = 1; i < rows.length; i++) {
-    //   dataRace.push(rows[i].split(';'))
-    // }
+//     // for (let i = 1; i < rows.length; i++) {
+//     //   dataRace.push(rows[i].split(';'))
+//     // }
 
-    const updateFrequency = 2000;
-    // for (let i = 2019; i < 2023; i++) {
-    //   for (let j = 0; j < 12; j++) {
-    //     let temp = months[j] + " " + i.toString();
-    //     years.push(temp);
+//     const updateFrequency = 2000;
+//     // for (let i = 2019; i < 2023; i++) {
+//     //   for (let j = 0; j < 12; j++) {
+//     //     let temp = months[j] + " " + i.toString();
+//     //     years.push(temp);
 
-    //   }
-    // }
+//     //   }
+//     // }
 
-    var optionRace = {
-      title: {
-        text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
-        left: 'center',
-        textStyle: {
-          fontSize: 15
-        }
-      },
-      grid: {
-        // top: 10,
-        // bottom: 30,
-        // left: 150,
-        // right: 80
-      },
-      xAxis: {
-        max: 'dataMax',
-        axisLabel: {
-          formatter: function (n) {
-            return Math.round(n) + '';
-          }
-        }
-      },
-      dataset: {
-        source: dataRace.filter(function (d) {
-          return d[1] === years[0];
-        }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
-      },
-      yAxis: {
-        type: 'category',
-        inverse: true,
-        max: 30,
-        axisLabel: {
-          show: true,
-          fontSize: 14,
-          formatter: function (value) {
-            return value;
-          },
-        },
-        axisLabel: {
-          fontSize: 12,
-          fontFamily: 'serif',
-          fontWeight:'bold'
-        },
-        animationDuration: 300,
-        animationDurationUpdate: 300
-      },
-      series: [
-        {
-          realtimeSort: true,
-          seriesLayoutBy: 'column',
-          type: 'bar',
-          encode: {
-            x: 2,
-            y: 0
-          },
-          label: {
-            show: true,
-            precision: 1,
-            position: 'right',
-            valueAnimation: true,
-            fontFamily: 'serif'
-          }
-        }
-      ],
-      // Disable init animation.
-      animationDuration: 0,
-      animationDurationUpdate: updateFrequency,
-      animationEasing: 'linear',
-      animationEasingUpdate: 'linear',
-      graphic: {
-        elements: [
-          {
-            type: 'text',
-            right: 0,
-            bottom: 60,
-            style: {
-              text: years[0],
-              font: 'bolder 80px monospace',
-              fill: 'rgba(100, 100, 100, 0.25)'
-            },
-            z: 100
-          }
-        ]
-      }
-    };
-    // console.log(option);
-    raceBarAsal.setOption(optionRace);
-    for (let i = 0; i < years.length - 1; ++i) {
-      (function (i) {
-        setTimeout(function () {
-          updateYear(years[i + 1]);
-        }, (i) * updateFrequency);
-      })(i);
-    }
-    function updateYear(year) {
-      let source = dataRace.filter(function (d) {
-        return d[1] === year;
-      }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
-      optionRace.series[0].data = source;
-      optionRace.graphic.elements[0].style.text = year;
-      raceBarAsal.setOption(optionRace);
-    }
-  });
+//     var optionRace = {
+//       title: {
+//         text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
+//         left: 'center',
+//         textStyle: {
+//           fontSize: 15
+//         }
+//       },
+//       grid: {
+//         // top: 10,
+//         // bottom: 30,
+//         // left: 150,
+//         // right: 80
+//       },
+//       xAxis: {
+//         max: 'dataMax',
+//         axisLabel: {
+//           formatter: function (n) {
+//             return Math.round(n) + '';
+//           }
+//         }
+//       },
+//       dataset: {
+//         source: dataRace.filter(function (d) {
+//           return d[1] === years[0];
+//         }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
+//       },
+//       yAxis: {
+//         type: 'category',
+//         inverse: true,
+//         max: 30,
+//         axisLabel: {
+//           show: true,
+//           fontSize: 14,
+//           formatter: function (value) {
+//             return value;
+//           },
+//         },
+//         axisLabel: {
+//           fontSize: 12,
+//           fontFamily: 'serif',
+//           fontWeight:'bold'
+//         },
+//         animationDuration: 300,
+//         animationDurationUpdate: 300
+//       },
+//       series: [
+//         {
+//           realtimeSort: true,
+//           seriesLayoutBy: 'column',
+//           type: 'bar',
+//           encode: {
+//             x: 2,
+//             y: 0
+//           },
+//           label: {
+//             show: true,
+//             precision: 1,
+//             position: 'right',
+//             valueAnimation: true,
+//             fontFamily: 'serif'
+//           }
+//         }
+//       ],
+//       // Disable init animation.
+//       animationDuration: 0,
+//       animationDurationUpdate: updateFrequency,
+//       animationEasing: 'linear',
+//       animationEasingUpdate: 'linear',
+//       graphic: {
+//         elements: [
+//           {
+//             type: 'text',
+//             right: 0,
+//             bottom: 60,
+//             style: {
+//               text: years[0],
+//               font: 'bolder 80px monospace',
+//               fill: 'rgba(100, 100, 100, 0.25)'
+//             },
+//             z: 100
+//           }
+//         ]
+//       }
+//     };
+//     // console.log(option);
+//     raceBarAsal.setOption(optionRace);
+//     for (let i = 0; i < years.length - 1; ++i) {
+//       (function (i) {
+//         setTimeout(function () {
+//           updateYear(years[i + 1]);
+//         }, (i) * updateFrequency);
+//       })(i);
+//     }
+//     function updateYear(year) {
+//       let source = dataRace.filter(function (d) {
+//         return d[1] === year;
+//       }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
+//       optionRace.series[0].data = source;
+//       optionRace.graphic.elements[0].style.text = year;
+//       raceBarAsal.setOption(optionRace);
+//     }
+//   });
 
-}
+// }
 
 
 
-function setRaceBar(url) {
-  $.get(url, function (content, status) {
-    var raceBarTujuan = echarts.init(document.getElementById("raceBarTujuan2"));
-    const years = [];
-    var dataRace = [];
-    const kode  = Object.keys(kdProvJSON[0]);
-    var Wisnus = JSON.parse(JSON.stringify(content));
-    for (let m = 0; m < kode.length-1; m++) {
-      for (let i = 0; i < (Wisnus.tahun.length); i++) {
-        //labelYear.push(Wisnus.tahun[i].label.toString());
-        //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
-        //contentYear.push(Wisnus.datacontent[keyData]);
-        //let temp = [];
-        //let temp2 = [];
-        for (let j = 0; j < 12; j++) {
-          let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
-          years.push(a);
-          let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
-          //console.log(Wisnus.datacontent[keyData2]);
-          let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
-          dataRace.push(temp);
+// function setRaceBar(url) {
+//   $.get(url, function (content, status) {
+//     var raceBarTujuan = echarts.init(document.getElementById("raceBarTujuan2"));
+//     const years = [];
+//     var dataRace = [];
+//     const kode  = Object.keys(kdProvJSON[0]);
+//     var Wisnus = JSON.parse(JSON.stringify(content));
+//     for (let m = 0; m < kode.length-1; m++) {
+//       for (let i = 0; i < (Wisnus.tahun.length); i++) {
+//         //labelYear.push(Wisnus.tahun[i].label.toString());
+//         //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
+//         //contentYear.push(Wisnus.datacontent[keyData]);
+//         //let temp = [];
+//         //let temp2 = [];
+//         for (let j = 0; j < 12; j++) {
+//           let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
+//           years.push(a);
+//           let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
+//           //console.log(Wisnus.datacontent[keyData2]);
+//           let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
+//           dataRace.push(temp);
 
-        };
+//         };
         
-      }
-    }
-    //console.log(dataRace);
-    // const rows = content.toString().split('\n');
+//       }
+//     }
+//     //console.log(dataRace);
+//     // const rows = content.toString().split('\n');
     
-    // for (let i = 1; i < rows.length; i++) {
-    //   dataRace.push(rows[i].split(';'))
-    // }
+//     // for (let i = 1; i < rows.length; i++) {
+//     //   dataRace.push(rows[i].split(';'))
+//     // }
 
-    const updateFrequency = 2000;
-    // for (let i = 2019; i < 2023; i++) {
-    //   for (let j = 0; j < 12; j++) {
-    //     let temp = months[j] + " " + i.toString();
-    //     years.push(temp);
+//     const updateFrequency = 2000;
+//     // for (let i = 2019; i < 2023; i++) {
+//     //   for (let j = 0; j < 12; j++) {
+//     //     let temp = months[j] + " " + i.toString();
+//     //     years.push(temp);
 
-    //   }
-    // }
+//     //   }
+//     // }
 
-    var optionRace = {
-      title: {
-        text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
-        left: 'center',
-        textStyle: {
-          fontSize: 15
-        },
-        top:0,
-      },
-      grid: {
-        // top: 10,
-        // bottom: 30,
-        // left: 150,
-        // right: 80
-      },
-      xAxis: {
-        max: 'dataMax',
-        axisLabel: {
-          formatter: function (n) {
-            return Math.round(n) + '';
-          }
-        }
-      },
-      dataset: {
-        source: dataRace.filter(function (d) {
-          return d[1] === years[0];
-        }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
-      },
-      yAxis: {
-        type: 'category',
-        inverse: true,
-        max: 30,
-        axisLabel: {
-          show: true,
-          fontSize: 14,
-          formatter: function (value) {
-            return value;
-          },
-        },
-        axisLabel: {
-          fontSize: 12,
-          fontFamily: 'serif',
-          fontWeight:'bold'
-        },
-        animationDuration: 300,
-        animationDurationUpdate: 300
-      },
-      series: [
-        {
-          realtimeSort: true,
-          seriesLayoutBy: 'column',
-          type: 'bar',
-          encode: {
-            x: 2,
-            y: 0
-          },
-          label: {
-            show: true,
-            precision: 1,
-            position: 'right',
-            valueAnimation: true,
-            fontFamily: 'serif'
-          }
-        }
-      ],
-      // Disable init animation.
-      animationDuration: 0,
-      animationDurationUpdate: updateFrequency,
-      animationEasing: 'linear',
-      animationEasingUpdate: 'linear',
-      graphic: {
-        elements: [
-          {
-            type: 'text',
-            right: 0,
-            bottom: 60,
-            style: {
-              text: years[0],
-              font: 'bolder 80px monospace',
-              fill: 'rgba(100, 100, 100, 0.25)'
-            },
-            z: 100
-          }
-        ]
-      }
-    };
-    // console.log(option);
-    raceBarTujuan.setOption(optionRace);
-    for (let i = 0; i < years.length - 1; ++i) {
-      (function (i) {
-        setTimeout(function () {
-          updateYear(years[i + 1]);
-        }, (i) * updateFrequency);
-      })(i);
-    }
-    function updateYear(year) {
-      let source = dataRace.filter(function (d) {
-        return d[1] === year;
-      }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
-      optionRace.series[0].data = source;
-      optionRace.graphic.elements[0].style.text = year;
-      raceBarTujuan.setOption(optionRace);
-    }
-  });
+//     var optionRace = {
+//       title: {
+//         text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
+//         left: 'center',
+//         textStyle: {
+//           fontSize: 15
+//         },
+//         top:0,
+//       },
+//       grid: {
+//         // top: 10,
+//         // bottom: 30,
+//         // left: 150,
+//         // right: 80
+//       },
+//       xAxis: {
+//         max: 'dataMax',
+//         axisLabel: {
+//           formatter: function (n) {
+//             return Math.round(n) + '';
+//           }
+//         }
+//       },
+//       dataset: {
+//         source: dataRace.filter(function (d) {
+//           return d[1] === years[0];
+//         }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
+//       },
+//       yAxis: {
+//         type: 'category',
+//         inverse: true,
+//         max: 30,
+//         axisLabel: {
+//           show: true,
+//           fontSize: 14,
+//           formatter: function (value) {
+//             return value;
+//           },
+//         },
+//         axisLabel: {
+//           fontSize: 12,
+//           fontFamily: 'serif',
+//           fontWeight:'bold'
+//         },
+//         animationDuration: 300,
+//         animationDurationUpdate: 300
+//       },
+//       series: [
+//         {
+//           realtimeSort: true,
+//           seriesLayoutBy: 'column',
+//           type: 'bar',
+//           encode: {
+//             x: 2,
+//             y: 0
+//           },
+//           label: {
+//             show: true,
+//             precision: 1,
+//             position: 'right',
+//             valueAnimation: true,
+//             fontFamily: 'serif'
+//           }
+//         }
+//       ],
+//       // Disable init animation.
+//       animationDuration: 0,
+//       animationDurationUpdate: updateFrequency,
+//       animationEasing: 'linear',
+//       animationEasingUpdate: 'linear',
+//       graphic: {
+//         elements: [
+//           {
+//             type: 'text',
+//             right: 0,
+//             bottom: 60,
+//             style: {
+//               text: years[0],
+//               font: 'bolder 80px monospace',
+//               fill: 'rgba(100, 100, 100, 0.25)'
+//             },
+//             z: 100
+//           }
+//         ]
+//       }
+//     };
+//     // console.log(option);
+//     raceBarTujuan.setOption(optionRace);
+//     for (let i = 0; i < years.length - 1; ++i) {
+//       (function (i) {
+//         setTimeout(function () {
+//           updateYear(years[i + 1]);
+//         }, (i) * updateFrequency);
+//       })(i);
+//     }
+//     function updateYear(year) {
+//       let source = dataRace.filter(function (d) {
+//         return d[1] === year;
+//       }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
+//       optionRace.series[0].data = source;
+//       optionRace.graphic.elements[0].style.text = year;
+//       raceBarTujuan.setOption(optionRace);
+//     }
+//   });
 
-}
+// }
 
 
 
-function rearrangeArray(arr) {
-  let n = arr.length;
-  // Sorting the array elements
-  let sortArr = arr.sort((a, b) => {
-    if (a.value > b.value) {
-      return -1;
-    }
-  });
+// function rearrangeArray(arr) {
+//   let n = arr.length;
+//   // Sorting the array elements
+//   let sortArr = arr.sort((a, b) => {
+//     if (a.value > b.value) {
+//       return -1;
+//     }
+//   });
 
-  // To store modified array
-  let tempArr;
-  let tempArr1 = [];
-  let tempArr2 = [];
-  let n1 = tempArr1.length;
-  let n2 = tempArr2.length;
-  let temp1 = 0;
-  let temp2 = 0;
-  let temp;
-  let delta1 = 0;
-  let delta2 = 0;
+//   // To store modified array
+//   let tempArr;
+//   let tempArr1 = [];
+//   let tempArr2 = [];
+//   let n1 = tempArr1.length;
+//   let n2 = tempArr2.length;
+//   let temp1 = 0;
+//   let temp2 = 0;
+//   let temp;
+//   let delta1 = 0;
+//   let delta2 = 0;
 
-  for (let i = 0; i < n; i++) {
-    let turn = i % 2 + 1;
-    delta1 = temp1 - temp2;
-    delta2 = temp2 - temp1
-    if (turn == 1) {
-      if (delta1 < 0) {
-        temp = sortArr.shift();
-        temp1 = temp1 + temp.value;
-        tempArr1.push(temp);
-      }
-      else {
-        temp = sortArr.pop();
-        temp1 = temp1 + temp.value;
-        tempArr1.push(temp);
-      }
+//   for (let i = 0; i < n; i++) {
+//     let turn = i % 2 + 1;
+//     delta1 = temp1 - temp2;
+//     delta2 = temp2 - temp1
+//     if (turn == 1) {
+//       if (delta1 < 0) {
+//         temp = sortArr.shift();
+//         temp1 = temp1 + temp.value;
+//         tempArr1.push(temp);
+//       }
+//       else {
+//         temp = sortArr.pop();
+//         temp1 = temp1 + temp.value;
+//         tempArr1.push(temp);
+//       }
 
-    }
-    else {
-      if (delta2 < 0) {
-        temp = sortArr.shift();
-        temp2 = temp2 + temp.value;
-        tempArr2.push(temp);
-      }
-      else {
-        temp = sortArr.pop();
-        temp2 = temp2 + temp.value;
-        tempArr2.push(temp);
-      }
-    }
-  }
-  tempArr = tempArr1.concat(tempArr2);
-  // Adding numbers from sorted array  
-  // to new array accordingly
-  //let ArrIndex = 0;
-  //let splitVal = parseInt(n/2); 
+//     }
+//     else {
+//       if (delta2 < 0) {
+//         temp = sortArr.shift();
+//         temp2 = temp2 + temp.value;
+//         tempArr2.push(temp);
+//       }
+//       else {
+//         temp = sortArr.pop();
+//         temp2 = temp2 + temp.value;
+//         tempArr2.push(temp);
+//       }
+//     }
+//   }
+//   tempArr = tempArr1.concat(tempArr2);
+//   // Adding numbers from sorted array  
+//   // to new array accordingly
+//   //let ArrIndex = 0;
+//   //let splitVal = parseInt(n/2); 
 
-  // Traverse from begin and end simultaneously 
+//   // Traverse from begin and end simultaneously 
 
-  return tempArr;
-}
+//   return tempArr;
+// }
 
 function sectionTwo(url) {
   $.get(url, function (data, status) {
@@ -2468,6 +2468,7 @@ function tabulasiWisnus(url,sumFunction,tahun){
   })
 
 }
+
 var page = 1;
 function mapStory(){
   var mapCanvas = echarts.init(document.getElementById("mapStory"));
@@ -2616,6 +2617,90 @@ function mapStory(){
 
   })
 } 
+
+function tpkSectionOne(url,wilayah){
+  var tpkLine = echarts.init(document.getElementById("tpkBintang"));
+  tpkLine.showLoading();
+  var labelTpkLine = [];
+  var contentTpkLine=[];
+  var reqUrl = url+"vervar/"+wilayah+"/"+APIkey;
+  $.get(reqUrl,function(data,status){
+    let tpkData = JSON.parse(JSON.stringify(data));
+    for(let i=0;i<tpkData.tahun.length;i++){
+      for(let j=1;j<13;j++){
+        let keyData = wilayah+tpkData.var[0].val+tpkData.turvar[0].val+tpkData.tahun[i].val+j;
+        if(tpkData.datacontent[keyData]){
+          labelTpkLine.push(months[j-1]+"-"+tpkData.tahun[i].label);
+        contentTpkLine.push(tpkData.datacontent[keyData]);
+        }
+              }
+    }
+    let tpkLineOption = {
+      title: {
+        text: 'Tingkat Penghunian Kamar '+ '\nBerdasarkan Bulan dan Tahun ',
+        left: 'center',
+        top:'0%',
+        textStyle: {
+          fontSize: 18,
+          fontWeight:'bold',
+          fontFamily:'serif',
+          color:'black'
+        }
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      grid: {
+        left: '3%%',
+        right: '3%',
+        bottom: '9%',
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {},
+          restore:{}
+        }
+      },
+      color: '#0284C7',
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: labelTpkLine,
+      },
+      dataZoom: [{bottom:'1%'},{type:"inside"}],
+      yAxis: {
+        show:true,
+        type: 'value',
+        splitLine:{show:false},
+        axisLine:{
+          show:true
+        }
+      },
+      series: {
+        name: "Wisnus",
+        type: "line",
+        data:contentTpkLine,
+        symbolSize:1,
+        label:{
+          show:true,
+          position:'top',
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:8,
+          distance:10,
+          // formatter:function(params){
+          //   return (params.data/satuan[1]).toFixed(1) ;
+
+          // }
+        }
+      }
+    };
+    tpkLine.setOption(tpkLineOption);
+    tpkLine.hideLoading();
+  })
+
+}
 ///list variables///
 //constant//
 const url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/2201/';
@@ -2946,6 +3031,7 @@ window.onload = function () {
   //reloadDataAsal(urlAsal);  
   tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
   mapStory();
+  tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/","9999");
   
 }
 
