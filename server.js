@@ -123,14 +123,14 @@ app.get('/fail', (req, res) => {
 })
 
 
-app.get('/index', checkAuthenticated, (req, res) => {
-  res.render('index');
-  //res.send(req.user.name);
-});
-// app.get('/index', (req, res) => {
+// app.get('/index', checkAuthenticated, (req, res) => {
 //   res.render('index');
 //   //res.send(req.user.name);
 // });
+app.get('/index', (req, res) => {
+  res.render('index');
+  //res.send(req.user.name);
+});
 app.get('/link_brs',checkAuthenticated, (req, res) => {
   res.render('brs');
   //res.send(req.user.name);
@@ -169,6 +169,7 @@ app.get('/dataTujuan', (req, res) => {
 app.get("/", (req, res) => {
   res.render('login')
 });
+
 app.get("/login", (req, res) => {
   res.render('login')
 });
