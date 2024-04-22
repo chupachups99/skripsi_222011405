@@ -34,8 +34,6 @@ function isLoggedIn(req, res, next) {
 };
 
 
-
-
 passport.serializeUser(function (user, cb) {
   cb(null, user);
 });
