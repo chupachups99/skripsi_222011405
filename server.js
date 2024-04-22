@@ -11,7 +11,7 @@ var GoogleStrategy = require('passport-google-oauth2').Strategy;
 const passport = require('passport');
 const model = require('./models/users');
 const { isNull } = require("util");
-// const dbPool = require('./config/db');
+const dbPool = require('./config/db');
 const LocalStrategy = require('passport-local').Strategy;
 // var user=[];
 
