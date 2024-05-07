@@ -1,13 +1,4 @@
-$('#brsTable').DataTable( {
-    // ajax: {
-    //     url: 'http://localhost:4000/brs',
-    //     dataSrc: 'data'
-    // },
-    // columns: [
-    //     {"data":"Tahun"},
-    //     {"data":"Bulan"},
-    //     {"data":"Link"}]
-} );
+$('#brsTable').DataTable( {} );
 
 $(".saveBrs").click(function() {
     // alert($(this).attr("id"));
