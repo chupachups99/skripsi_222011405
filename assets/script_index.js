@@ -2470,7 +2470,7 @@ function tpkSectionOne(url){
       if($('#singleTPK').is(':checked')){
       for(let k=0;k<wilayah.length;k++){
         let temp =[];
-        for(let i=0;i<=tpkData.tahun.length;i++){
+        for(let i=0;i<tpkData.tahun.length;i++){
           for(let j=1;j<13;j++){
             
             let key = wilayah[k]+tpkData.var[0].val+tpkData.turvar[0].val+tpkData.tahun[i].val+j;
