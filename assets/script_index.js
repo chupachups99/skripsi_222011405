@@ -2802,14 +2802,14 @@ function tpkCreateFilter(){
   $.get("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/"+APIkey,function(data,status){
     var TPK = JSON.parse(JSON.stringify(data));
     for(let i=0;i<TPK.tahun.length;i++){
-      var optionDd = document.createElement("option");
-      optionDd.value = TPK.tahun[i].val;
-      optionDd.text = TPK.tahun[i].label;
-      minYearTPK.appendChild(optionDd);
-      var optionDd2 = document.createElement("option");
-      optionDd2.value = TPK.tahun[i].val;
-      optionDd2.text = TPK.tahun[i].label;
-      maxYearTPK.appendChild(optionDd2);
+      // var optionDd = document.createElement("option");
+      // optionDd.value = TPK.tahun[i].val;
+      // optionDd.text = TPK.tahun[i].label;
+      // minYearTPK.appendChild(optionDd);
+      // var optionDd2 = document.createElement("option");
+      // optionDd2.value = TPK.tahun[i].val;
+      // optionDd2.text = TPK.tahun[i].label;
+      // maxYearTPK.appendChild(optionDd2);
       var optionBox = document.createElement("input");
       optionBox.type="checkbox";
       optionBox.value = TPK.tahun[i].val;
@@ -2830,8 +2830,8 @@ function tpkCreateFilter(){
       tpkLine.clear();
       tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
     });
-    minYearTPK.value = TPK.tahun[0].val;
-    maxYearTPK.value = TPK.tahun[TPK.tahun.length-1].val;
+    // minYearTPK.value = TPK.tahun[0].val;
+    // maxYearTPK.value = TPK.tahun[TPK.tahun.length-1].val;
   })
 }
 
@@ -3070,8 +3070,8 @@ var selectProvTPK = document.getElementById("provTPK");
 var checkBoxWilayahTujuan = document.getElementById("listCheckBoxWilayahTujuan");
 var checkBoxWilayahAsal = document.getElementById("listCheckBoxWilayahAsal");
 var checkBoxWilayahTPK = document.getElementById("divWilayahTPK");
-var minYearTPK = document.getElementById("minYear");
-var maxYearTPK = document.getElementById("maxYear");
+// var minYearTPK = document.getElementById("minYear");
+// var maxYearTPK = document.getElementById("maxYear");
 var yearTPK = document.getElementById("yearBoxTPK");
 var tpkLine = echarts.init(document.getElementById("tpkBintang"));
 
@@ -3097,14 +3097,14 @@ $('input[type=radio][name=seriesTPK]').on('change', function() {
   switch ($(this).val()) {
     case '0':
       $('.cbTPK').prop('disabled',true);
-      $('#minYear,#maxYear').prop('disabled',false);
+      // $('#minYear,#maxYear').prop('disabled',false);
       $('#multiTPK').prop('checked',false);
       tpkLine.clear();
       tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
       break;
     case '1':
       $('.cbTPK').prop('disabled',false);
-      $('#minYear,#maxYear').prop('disabled',true);
+      // $('#minYear,#maxYear').prop('disabled',true);
       $('#singleTPK').prop('checked',false);
       tpkLine.clear();
       tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
