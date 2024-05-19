@@ -1,4 +1,43 @@
-<div>
+<div class="fixed rounded-b-2xl h-16 z-30 shadow-md w-full bg-slate-600 px-3 py-3 text-slate-400">
+    <div class="flex">
+      <div class="mr-8 flex grow place-items-center sm:grow-0">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg/1726px-Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg.png" class="mr-3 h-8" alt="Logo BPS" />
+        <span class="hidden self-center text-lg font-medium text-white sm:flex md:text-2xl whitespace-nowrap ">Sistem Informasi Visualisasi</span>
+      </div>
+      <div class="mr-3 hidden grow gap-3 place-self-center 
+      place-content-start sm:flex">
+        <div id="tes1" class="relative mr-10">
+          <button id="link1" class="hover:text-white" onclick="location.href='/index'";>Dashboard</button>
+          <ul id='menuLink1' class="hidden absolute drop-shadow-2xl rounded-[12px] p-2 bg-slate-500">
+            <li id="link1_1" class="hover:text-white border-b-2"><button class="text-left">Wisatawan Nusantara</button> </li>
+            <li id="link1_2" class="hover:text-white border-b-2"><button class="text-left">Tingkat Penghunian Kamar</button></li>
+            <li id="link1_3" class="hover:text-white border-b-2"><button class="text-left">Wisatawan Mancanegara</button></li>
+            <li id="link1_4" class="hover:text-white"><button class="text-left">Wisatawan Nasional</button></li>
+          </ul>
+        </div>
+        <div class="mr-10" >
+          <button id="link2" class="hover:text-white">Tabulasi</button>
+        </div>
+        <div>
+          <button id="link3" class="hover:text-white whitespace-nowrap" onclick="location.href='/brs'";>Fenomena BRS</button>
+        </div>
+        
+        
+      </div>
+  
+      <div class=" place-content-center">
+        <button class="text-white">Menu</button>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+
+  
+<!-- <div>
   <div class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 py-3 px-4">
       <div class="flex justify-between items-center max-w-screen-2xl mx-auto">
           <div class="flex justify-start items-center">
@@ -9,30 +48,33 @@
                 </a>
             </div>
               
-              <!-- Desktop menu -->
+
               
           </div>
           <div class="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">
             <ul class="flex flex-col mt-4 space-x-6 text-sm font-medium lg:flex-row xl:space-x-8 lg:mt-0">
                 <li>
-                    <a href="#" class="block rounded text-primary-700 dark:text-primary-500 dark:text-white" aria-current="page">Dashboard</a>
+                    <a href="/index" class="block rounded text-primary-700 dark:text-primary-500 dark:text-white" aria-current="page">Dashboard</a>
                 </li>
                 <li>
-                    <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex justify-between items-center py-2 pr-4 pl-3 w-full font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-primary-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Indikator Pariwisata <svg class="ml-1 w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
-                    <!-- Dropdown menu -->
+                    <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex justify-between items-center py-2 
+                    pr-4 pl-3 w-full font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent 
+                    md:border-0 md:hover:text-primary-700 md:p-0 md:w-auto dark:text-gray-400 dark:hover:text-white dark:focus:text-white
+                     dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">Indikator Pariwisata 
+              
                     <div id="dropdownNavbar" class="hidden z-20 w-44 font-normal bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                         <ul class="py-1 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
                           <li>
                             <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Wisatawan Nusantara</a>
                           </li>
                           <li>
-                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Wisatawan Nasional</a>
+                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Tingkat Penghunian Kamar</a>
                           </li>
                           <li>
                             <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Wisatawan Mancanegara</a>
                           </li>
                           <li>
-                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Tingkat Penghunian Kamar</a>
+                            <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Wisatawan Nasional</a>
                           </li>
                         </ul>
                     </div>
@@ -48,11 +90,7 @@
         </div>
           <div class="flex justify-between items-center lg:order-2">
               
-              <!-- Notifications -->
-              <!-- <button id="theme-toggle" data-tooltip-target="tooltip-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
-                  <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                  <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-              </button> -->
+       
               <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
                 <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                 <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
@@ -61,13 +99,13 @@
                   Toggle dark mode
                   <div class="tooltip-arrow" data-popper-arrow></div>
               </div>
-              <!-- Apps -->
+             
               <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
                   <span class="sr-only">View notifications</span>
-                  <!-- Icon -->
+       
                   <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
               </button>
-              <!-- Dropdown menu -->
+        
               <div class="hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600" id="apps-dropdown">
                   <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                       Apps
@@ -115,7 +153,7 @@
                   <span class="sr-only">Open user menu</span>
                   <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
               </button>
-              <!-- Dropdown menu -->
+            
               <div class="hidden z-50 my-4 w-56 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="userMenuDropdown">
                   <div class="py-3 px-4">
                       <span class="block text-sm font-semibold text-gray-900 dark:text-white">Neil Sims</span>
@@ -152,7 +190,7 @@
       </div>
     </div>
   <div class="bg-white dark:bg-gray-900">
-      <!-- Mobile menu -->
+
       <ul id="toggleMobileMenu" class="hidden flex-col mt-0 pt-16 w-full text-sm font-medium lg:hidden">
           <li class="block border-b dark:border-gray-700">
               <a href="#" class="block py-3 px-4 text-gray-900 lg:py-0 dark:text-white lg:hover:underline lg:px-0" aria-current="page">Home</a>
@@ -182,4 +220,4 @@
           </li>
       </ul>
     </div>
-</div>
+</div> -->

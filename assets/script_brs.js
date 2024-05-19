@@ -1,4 +1,42 @@
-$('#brsTable').DataTable( {} );
+$('#brsTable').DataTable( {
+    
+    layout:{
+        topStart:'info',
+        topEnd:"search",
+        top2NEnd:{
+          buttons:[ {
+            extend: 'excel',
+            text: 'Export to Excel',
+            title:'Jumlah Perjalanan Wisatawan Nusantara Tahunan Berdasarkan Provinsi Tujuan',
+    
+          },
+          {
+            text: 'Save All',
+            action: function ( ) {
+                let n = $('#brsTable >tbody >tr').length;
+                for(let i=0;i<29;i++){
+                    console.log(i);
+                    let id = '#brs_'+i;
+                    let element = $(id);
+                    if(element.hasClass("typeA")){
+                        console.log('y');
+                        // let linkid = "#brs_"+idrow;
+                         let linkval = element.val();
+                        // console.log(linkval,idrow);
+                        $.post( "http://localhost:4000/brs", {link: linkval, id: i });
+                    }
+
+                }
+                alert('Changes Saved');
+                // window.location.reload();
+                
+            }
+        }
+        ]
+        }
+        
+      }
+} );
 
 $(".saveBrs").click(function() {
     // alert($(this).attr("id"));

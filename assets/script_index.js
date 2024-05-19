@@ -2,6 +2,9 @@
 import INAGeoJSON from './Indonesia38.json' assert { type: 'json' };
 import CityINAJSON from './all_kabkota_ind.json' assert { type: 'json' };
 import kdProvJSON from './kodeProv.json' assert { type: 'json' };
+import CountryID from './centroids.json' assert {type:'json'};
+import CountryJSON from './worldGeoJSON.json' assert {type:'json'};
+
 
 
 function exportAllChart1(jsonObject) {
@@ -294,7 +297,8 @@ function firstSection(url, id, kode) {
             return (params.data/satuan[1]).toFixed(1) ;
 
           }
-        }
+        },
+        labelLayout:{hideOverlap:true}
       }
     };
 
@@ -1033,8 +1037,8 @@ function sectionTwo(url) {
     let beginVal = $("#sAwalTujuan").val();
     let endVal = $("#sAkhirTujuan").val();
     let kdWil = Object.keys(kdProvJSON[0]);
-    console.log(beginVal);
-    console.log(endVal);
+    // console.log(beginVal);
+    // console.log(endVal);
     let a = -1;
     // for (let n = 0; n < Wisnus.tahun.length; n++) {
     //   var optionHTML = document.createElement("option");
@@ -1103,7 +1107,7 @@ function sectionTwo(url) {
       return accumulator + currentValue
     },0);
     let group = Object.keys(groupObj).map(key => ({name:key, value: groupObj[key]}));
-    console.log(group);
+    // console.log(group);
     
 
 
@@ -1207,7 +1211,7 @@ function sectionTwo(url) {
         type: 'map',
         zoom: '1.2',
         map: "Ind",
-        roam: 'scale',
+        roam: true,
         data: group,
         emphasis:{
           label:{show:false}
@@ -2455,7 +2459,7 @@ function tpkSectionOne(url){
       wilayah.push($(this).val())
     }
   });
-  console.log(optSeries);
+  // console.log(optSeries);
   // console.log(wilayah);
 
   // var tahun = [];
@@ -2502,6 +2506,7 @@ function tpkSectionOne(url){
             fontSize:10,
             distance:5,            
           },
+          labelLayout:{hideOverlap:true},
           endLabel:{
             show:true,
             formatter:function(params){
@@ -2521,7 +2526,7 @@ function tpkSectionOne(url){
           tahun.push($(this).val())
         }
       })
-      console.log(tahun);
+      // console.log(tahun);
       for(let k=0;k<wilayah.length;k++){
         for(let i=0;i<tahun.length;i++){
           let temp =[];
@@ -2544,13 +2549,14 @@ function tpkSectionOne(url){
             symbolSize:1,
             colorBy:'series',
             label:{
-              show:false,
+              show:true,
               position:'top',
               fontFamily:'sans-serif',
               fontWeight:'bold',
               fontSize:10,
               distance:5,            
             },
+            labelLayout:{hideOverlap:true},
             endLabel:{
               show:true,
               formatter:function(params){
@@ -2566,7 +2572,7 @@ function tpkSectionOne(url){
         
       }
       labelTpkLine=months;
-      console.log(contentTpkLine);
+      // console.log(contentTpkLine);
 
   
     }
@@ -2775,6 +2781,7 @@ function tpkCombineSeries(wilayah){
 
           // }
         },
+        labelLayout:{hideOverlap:true},
         endLabel:{
           show:true,
           formatter:function(params){
@@ -2847,7 +2854,7 @@ function wismanBar(url){
     if(a<(wilayah.length-1)){str+=";";}
   }
   let reqUrl = url+"vervar/"+str+";249/"+APIkey;
-  console.log(reqUrl);
+  // console.log(reqUrl);
   var contentWisman=[];
   var contentLineWisman=[];
   var axisCat = [];
@@ -2859,7 +2866,7 @@ function wismanBar(url){
       temp=[];
       for(let j=0;j<wisman.tahun.length;j++){
         let key = wilayah[i]+wisman.var[0].val+wisman.turvar[0].val+wisman.tahun[j].val+"13";
-        console.log(key);
+        // console.log(key);
         if(wisman.datacontent[key]){
           temp.push(wisman.datacontent[key])
           if(i==0){
@@ -2966,8 +2973,10 @@ function wismanBar(url){
           formatter:function(params){
             return (params.data/1000000).toFixed(1) ;
 
-          }
-        }
+          },
+          
+        },
+        labelLayout: { hideOverlap: true}
       }
     };
 
@@ -3040,7 +3049,7 @@ function wismanBar(url){
           
         }
       ],
-      //color:'rgb(55 48 163)',
+      color:pallete,
       series: contentWisman
     };
     contEl.setOption(barOption);
@@ -3051,19 +3060,219 @@ function wismanBar(url){
   }) 
 
 }
+
+
+function geoScatterWisman(){
+  $.get('../indicator/dataWisman',function(data,status){
+    let contData = JSON.parse(JSON.stringify(data));
+    let kunjungan = contData.kunjungan;
+    let biaya = contData.biaya;
+    let id = contData.id;
+    let isoName = contData.iso;
+    let option=[];
+    let label=[];
+    for(let i=0;i<kunjungan.tahun.length;i++){
+      let tahunVal = kunjungan.tahun[i].val;
+      let biayaLen = biaya.tahun.length -1;
+      // console.log(biaya.tahun[biayaLen].val);
+      // console.log(tahunVal);
+      if(parseInt(biaya.tahun[biayaLen].val)>=parseInt(tahunVal)){
+        let yearSeries=[]; //object in array
+        let tempKunjungan=[]; //object in array
+        let tempBiaya=[]; //array in array
+        for(let j=0;j<kunjungan.vervar.length;j++){
+          let newName=kunjungan.vervar[j].label;
+          let keyData = kunjungan.vervar[j].val.toString()+kunjungan.var[0].val.toString()+kunjungan.turvar[0].val.toString()+tahunVal.toString()+"13";
+          // console.log(kunjungan.datacontent[keyData]);
+          if(kunjungan.datacontent[keyData]){
+            
+            if(isoName[kunjungan.vervar[j].val.toString()]){
+             newName=isoName[kunjungan.vervar[j].val.toString()]; 
+            }
+            tempKunjungan.push({
+              name:newName,
+              value:kunjungan.datacontent[keyData]
+            })
+            // console.log(tempKunjungan);
+          }
+          else{
+            let total=0;
+            for(let m=1;m<13;m++){
+              let keyData = kunjungan.vervar[j].val.toString()+kunjungan.var[0].val.toString()+kunjungan.turvar[0].val.toString()+tahunVal.toString()+m;
+              if(kunjungan.datacontent[keyData]){
+                total+=kunjungan.datacontent[keyData]
+              }
+            }
+            if(isoName[kunjungan.vervar[j].val.toString()]){
+             newName=isoName[kunjungan.vervar[j].val.toString()]; 
+            }
+
+            tempKunjungan.push({
+              name:newName,
+              value:total
+            })
+          }
+
+        }
+        for(let k=0;k<biaya.vervar.length;k++){
+          let keyData2 = biaya.vervar[k].val.toString()+biaya.var[0].val.toString()+biaya.turvar[0].val.toString()+tahunVal.toString()+"0"; 
+          // console.log(biaya.datacontent[keyData2]);
+          // console.log(id[biaya.vervar[k].val]);
+          if(biaya.datacontent[keyData2]){
+            if(id[biaya.vervar[k].val]){
+              let prop = CountryID.filter(function (d) {
+                        return d.alpha3 === id[biaya.vervar[k].val];
+                      });
+              tempBiaya.push(
+                {name:prop[0].name,
+                  value:[prop[0].longitude,prop[0].latitude,biaya.datacontent[keyData2]]});
+              // console.log(tempBiaya);
+    
+            }
+            
+          }          
+        }
+
+        label.push(parseInt(tahunVal)+1900);
+        yearSeries.push({data:tempKunjungan});
+        yearSeries.push({data:tempBiaya});
+        option.push({
+          title:{
+            text:'Wisatawan Mancanegara Berdasarkan Kebangasaan dan \nRata-Rata Biaya yang Dikeluarkan per Kunjungan (US$)',
+            textStyle:{
+              fontSize:15,
+              fontFamily:'sans-serif',
+              fontWeight:'normal'
+            }
+          },
+          series:yearSeries
+        })
+
+      }
+      
+    }
+    // console.log(option);
+    echarts.registerMap('world',CountryJSON );
+    
+
+    let geoWisman = echarts.init(document.getElementById('geoWisman'));
+    let optionGeoScatter = {
+      baseOption:{
+        timeline:{
+          axisType:"category",
+          autoPlay:"false",
+          data:label,
+          controlStyle: {
+            shadowOffsetX: 0
+          }
+
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+            restore:{}
+          }
+        },
+        title:{
+          text:'Wisatawan Mancanegara Berdasarkan Kebangasaan dan \nRata-Rata Biaya yang Dikeluarkan per Kunjungan (US$)',
+          textStyle:{
+            fontSize:15,
+            fontFamily:'sans-serif',
+            fontWeight:'normal'
+          }
+        },
+        tooltip:{
+          show:true
+        },
+        legend:{},
+        visualMap:{
+          right: 'center',
+          bottom: '15%',
+          seriesIndex:0,
+          min: 0,
+          max: 100000,
+        inRange: {
+          color: [
+            '#ffbaba',
+            '#ff5252',
+            '#ff0000',
+            '#a70000'
+            
+            
+            
+            
+          ]
+        },
+        text: ['Tinggi', 'Rendah'],
+        textStyle:{
+          fontSize: 12,
+          fontWeight:'normal',
+          fontFamily:'sans-serif',
+          color:'black'
+        
+        },
+        calculable: true,
+        orient: 'horizontal',
+        },
+        geo:{
+          map:'world',
+          roam:true
+        },
+        series:[
+          {
+            name:"Kunjungan Wisman Berdasarkan Kebangsaan",
+            type:'map',
+            map:'world',
+            roam:true,
+            geoIndex:0
+          },
+          {
+            name:'Rata-rata Biaya per Kunjungan',
+            type:'scatter',
+            symbolSize:function(val){
+              var n = 10+val[2]/300;
+              return n;
+              
+            },
+            encode:{value:2},
+            coordinateSystem:'geo',
+            geoIndex:0,
+            symbol:'image://https://cdn-icons-png.freepik.com/256/893/893097.png?semt=ais_hybrid',
+            itemStyle:{
+              opacity:0.9
+            },
+            
+          }
+        ]
+
+      },
+      options:option
+    }
+    geoWisman.setOption(optionGeoScatter);
+
+  });
+}
 ///list variables///
 //constant//
 const url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/2201/';
 const APIkey = 'key/cf78d9c72e168bfe677972ba792787af/';
 const urlAsal = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/1189/key/cf78d9c72e168bfe677972ba792787af/';
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const pallete = [
-  '#0A1D56', '#492E87', '#37B5B6', '#F2F597', '#FF9843', '#FFDD95',
-  '#86A7FC', '#3468C0', '#5F8670', '#FF9800', '#B80000', '#820300', '#607274', '#FAEED1',
-  '#DED0B6', '#B2A59B', '#610C9F', '#940B92', '#DA0C81',
-  '#E95793', '#900C3F', '#C70039', '#F94C10',
-  '#F8DE22', '#1DB9C3', '#7027A0', '#C32BAD', '#F56FAD', '#00EAD3', '#FFF5B7', '#FF449F', '#005F99', '#1B1A55', '#535C91', '#9290C3'
-];
+// const pallete = [
+//   '#0A1D56', '#492E87', '#37B5B6', '#F2F597', '#FF9843', '#FFDD95',
+//   '#86A7FC', '#3468C0', '#5F8670', '#FF9800', '#B80000', '#820300', '#607274', '#FAEED1',
+//   '#DED0B6', '#B2A59B', '#610C9F', '#940B92', '#DA0C81',
+//   '#E95793', '#900C3F', '#C70039', '#F94C10',
+//   '#F8DE22', '#1DB9C3', '#7027A0', '#C32BAD', '#F56FAD', '#00EAD3', '#FFF5B7', '#FF449F', '#005F99', '#1B1A55', '#535C91', '#9290C3'
+// ];
+const pallete=['#E69F00',
+'#56B4E9',
+'#009E73',
+'#F0E442',
+'#0072B2',
+'#D55E00',
+'#CC79A7',
+'#000000'];
 //element variables//
 var selectProvWisnus = document.getElementById("provWisnus");
 var selectProvTPK = document.getElementById("provTPK");
@@ -3430,12 +3639,34 @@ function reloadTPK(url) {
   }
 
     //console.log(dataWil);
+  
+
+  $('#link1_1,#link1_2,#link1_3,#link1_4').click(function(){
+    let a = $(this).attr('id').split("_")[1];
+    let str = "section"+a;
+    // console.log(a);
+    // console.log(str);
+    document.getElementById(str).scrollIntoView();
+  });
+
+
  
 
 
 
 
 window.onload = function () {
+  var currentPage = window.location.href.split("//")[1].split("/")[1];
+  if(currentPage=="index"){
+    document.getElementById('link1').classList.add('text-white');
+  }
+  else if(currentPage=="brs"){
+    document.getElementById('link3').classList.add('text-white');
+  }
+  else if(currentPage=="tabulasi"){
+    document.getElementById('link2').classList.add('text-white');
+  }
+
   let options = Object.entries(kdProvJSON[0]);
   for (let i = 0; i < 38; i++) {
     //section one
@@ -3515,12 +3746,16 @@ window.onload = function () {
   //reloadData(url+APIkey);
   //reloadDataAsal(urlAsal);  
   tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
-  // mapStory();
+  mapStory();
   tpkCreateFilter();
   $('#singleTPK').prop('checked',true);
   tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
   tpkCombineSeries("9999");
   wismanBar("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/1470/");
+  geoScatterWisman();
+  $('#tes1').hover(function(){
+    $('#menuLink1').toggleClass('hidden');
+  })
 
   
 }

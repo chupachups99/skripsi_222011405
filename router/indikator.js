@@ -9,6 +9,7 @@ const dbConn = require('../config/db.js');
 
 // READ - GET
 router.get('/', IndexController.getAllData);
+router.get('/dataWisman', IndexController.getDataWisman);
 
 // UPDATE - PATCH
 // router.patch('/:idUser', UserController.updateUser);

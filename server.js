@@ -13,7 +13,14 @@ const model = require('./models/users');
 const { isNull } = require("util");
 const dbPool = require('./config/db');
 const LocalStrategy = require('passport-local').Strategy;
-// var user=[];
+
+// var countries = require("i18n-iso-countries");
+// // const https = require('https');
+// console.log("Singapura => " + countries.getAlpha3Code("Swedia", "id"));
+
+
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,8 +50,8 @@ passport.deserializeUser(function (user, cb) {
 });
 
 passport.use(new GoogleStrategy({
-  clientID: '872585684257-dnlrrito1rtvdiofu41c745lsfuvv863.apps.googleusercontent.com',
-  clientSecret: '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',
+  clientID: '934007791217-05u7053csbh78mo25h0gp6idpnuo8eqg.apps.googleusercontent.com',
+  clientSecret: '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',
   callbackURL: "http://localhost:4000/google/callback",
   scope: ['email', 'profile'],
   passReqToCallback: true
@@ -134,35 +141,7 @@ app.get('/link_brs',checkAuthenticated, (req, res) => {
   //res.send(req.user.name);
 });
 
-app.get('/dataAsal', (req, res) => {
-  let json = csvToJson.getJsonFromCsv('./assets/Prov_Asal.csv');
-  var result = [];
-  json.reduce(function (ret, nilai) {
-    if (!ret[nilai.name]) {
-      ret[nilai.name] = { name: nilai.name, value: 0 };
-      result.push(ret[nilai.name])
-    }
-    ret[nilai.name].value += parseInt(nilai.value);
-    return ret;
-  }, {});
-  res.send(result)
-});
 
-
-
-app.get('/dataTujuan', (req, res) => {
-  let json = csvToJson.getJsonFromCsv('./assets/Prov_Tujuan.csv');
-  var result = [];
-  json.reduce(function (ret, nilai) {
-    if (!ret[nilai.name]) {
-      ret[nilai.name] = { name: nilai.name, value: 0 };
-      result.push(ret[nilai.name])
-    }
-    ret[nilai.name].value += parseInt(nilai.value);
-    return ret;
-  }, {});
-  res.send(result)
-});
 
 app.get("/", (req, res) => {
   res.render('login')

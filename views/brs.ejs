@@ -8,6 +8,7 @@
     <link href="../assets/styles.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
 </head>
 
 <body>
@@ -50,9 +51,10 @@
                                         <td>
                                             <%=temp[0].Bulan%>
                                         </td>
-                                        <td><input id="<%='brs_'+temp[0].id%>"class="shadow w-full p-2 rounded" type="url"
+                                        <!-- <td><a id="<%='brs_'+temp[0].id%>" class="underline" href="<%=temp[0].Link%>"><%=temp[0].Link%></a></td> -->
+                                        <td><input id="<%='brs_'+temp[0].id%>"class="shadow w-full p-2 rounded typeA" type="url"
                                                 value="<%=temp[0].Link%>"></input></td>
-                                        <td><button id="<%='saveBrs'+'_'+j%>" class="saveBrs" class="bg-green-500">Save</button></td>
+                                        <td><button id="<%='saveBrs'+'_'+j%>" class="saveBrs" class="bg-green-500">Edit</button></td>
                                         
                                         <%} else{%>
                                             <td>
@@ -64,7 +66,7 @@
                                             <td id="<%='bulan_'+j%>">
                                                 <%=months[parseInt(i%12)]%>
                                             </td>
-                                            <td><input id="<%='brs_'+j%>" class="w-full shadow p-2 rounded" type="url"
+                                            <td><input id="<%='brs_'+j%>" class="w-full shadow p-2 rounded typeB" type="url"
                                                     value="not inserted"></input></td>
                                                     <td><button id="<%='saveBrs'+'_'+j%>" class="saveBrs2" class="bg-green-500">Save</button></td>
                                                     
@@ -86,6 +88,7 @@
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
         <script type="module" src="http://localhost:4000/assets/script_brs.js"></script>
 
 </body>
