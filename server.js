@@ -50,8 +50,7 @@ passport.deserializeUser(function (user, cb) {
 });
 
 passport.use(new GoogleStrategy({
-  // clientID: '934007791217-05u7053csbh78mo25h0gp6idpnuo8eqg.apps.googleusercontent.com',
-  // clientSecret: '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',
+
   callbackURL: "http://localhost:4000/google/callback",
   scope: ['email', 'profile'],
   passReqToCallback: true
