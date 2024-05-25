@@ -159,6 +159,10 @@ const getDataWisman = async (req, res) => {
     }
 }
 
+const getCrossTab = async(req,res)=>{
+    let 
+}
+
 
 module.exports = {
     getAllData,

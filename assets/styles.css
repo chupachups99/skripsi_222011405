@@ -1354,6 +1354,10 @@ video {
   text-decoration-line: underline;
 }
 
+.no-underline {
+  text-decoration-line: none;
+}
+
 .opacity-0 {
   opacity: 0;
 }
@@ -1929,6 +1933,10 @@ video {
 .focus\:ring-sky-300:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(125 211 252 / var(--tw-ring-opacity));
+}
+
+.disabled\:opacity-75:disabled {
+  opacity: 0.75;
 }
 
 .group:hover .group-hover\:text-gray-500 {

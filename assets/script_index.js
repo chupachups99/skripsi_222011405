@@ -2299,7 +2299,7 @@ var page = 1;
 function mapStory(){
   var mapCanvas = echarts.init(document.getElementById("mapStory"));
   mapCanvas.showLoading()
-  $.get("http://localhost:4000/indicator",function(data,status){
+  $.get("./indicator",function(data,status){
     echarts.registerMap('CInd', CityINAJSON);
     let storyData = data.database;
     let idx = data.index;
@@ -3375,7 +3375,7 @@ $("#btnIntervalAsal").click(function(){
 $("#sTabJumlah").change(function(){
   $('#tabCont').empty();
   $('#tabulasiWisnus_wrapper').DataTable().destroy();
-  alert('tes');
+  // alert('tes');
   tabulasiWisnus(url+APIkey,parseInt($(this).val()),['119','120','121','122','123']);
 })
 
@@ -3746,7 +3746,7 @@ window.onload = function () {
   //reloadData(url+APIkey);
   //reloadDataAsal(urlAsal);  
   tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
-  mapStory();
+  // mapStory();
   tpkCreateFilter();
   $('#singleTPK').prop('checked',true);
   tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
