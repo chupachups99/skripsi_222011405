@@ -18,22 +18,33 @@ const indexPage = async(req,res)=>{
 const getCrossTab = async(req,res)=>{
     const {body} = req;
     // console.log(body);
-    let arr;
+    let arr=[];
+    let span;
+    let temp=[];
     if(body.group){
         arr = await tabModel.getGroup({columns:body.group});
+        // span =await tabModel.getGroupData({columns:body.group});
+        // for(let j=0;j<span[0].length;j++){
+        //     temp.push(Object.values(span[0][j].spliced(0,span[0].length/2-1)));
+        // }
+        
+        // // console.log(arr);
         body["listgroup"]=arr[0];
     }
+    console.log(arr[0]);
     
     try{
         let data = await tabModel.getAllData(body);
         let columns=[];
-        // console.log(data[0]);
+        console.log(data[0]);
         for(let i=0;i<Object.keys(data[0][1]).length;i++){
             columns.push({data:Object.keys(data[0][1])[i]});
         }
         res.send({
             data:data[0],
             columns:columns,
+            matrix:arr[0],
+
         })
         
 

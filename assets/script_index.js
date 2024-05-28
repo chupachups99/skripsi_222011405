@@ -7,6 +7,7 @@ import CountryJSON from './worldGeoJSON.json' assert {type:'json'};
 
 
 
+
 function exportAllChart1(jsonObject) {
   var myFile = jsonObject.var[0].label+" (All).xlsx";
   var valueColumn = jsonObject.var[0].unit;

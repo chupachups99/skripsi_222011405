@@ -38,7 +38,6 @@
 
 <body>
     <%- include('header'); %>
-
         <div class="font-sans grid h-svh w-auto overflow-y-scroll gap-y-4 bg-slate-400">
             <div class="grid ml-3 mr-3" style="margin-top:4.6rem; border-radius: 20px;">
                 <div class="font-semibold text-center bg-gray-700 text-white p-1 h-16"
@@ -134,11 +133,20 @@
                     })
                 }
             });
+
+            function multArr(arr){
+                let z=1;
+                for(let i=0;i<arr.length;i++){
+                    z*=arr[i];
+                }
+                return z;
+            }
             $('#previewBtn').click(function(){
                 $('#tabCont').empty();
                 $('#tabCont').append('<table id="example" class="display nowrap bg-white"></table>')
                 let tahunList=[];
                 let groupList=[];
+                // let kodeGroup={'jenis_akomodasi':['Hotel Bintang','Hotel Non Bintang'],'kelas_akomodasi':'bintang/kelas'};
                 let levelWil =$('input[name="level"]:checked').val();
                 $('.tahunCheckbox').each(function(){
                     if($(this).prop('checked')){
@@ -156,6 +164,86 @@
                  level:levelWil,
                  group:groupList.join(','),
                 },function(data){
+                    console.log(data.matrix);
+                    console.log(data.columns);
+                        var listHeader=[];
+                        var header = $('<tr></tr>');
+                        var kode = levelWil.split(',');
+                        var grouping = groupList.length+1;
+                        let i=0;
+                        
+                        while(i<kode.length){
+                            
+                            let str = "kode_"+ kode[i].split('_')[1];
+                            console.log(str);
+                            header.append('<th rowspan="'+grouping+'">'+str+'</th>');
+                            i++;
+                        }
+                        header.append('<th rowspan="'+grouping+'">'+data.columns[i].data+'</th>');
+                        console.log(data.columns[i].data);
+                        listHeader[0]=header;
+                        var temp=groupList.slice();
+                        var listTitle = data.matrix; 
+                        for(let j=0;j<listTitle.length;j++){
+                            let tmp=[];
+                            for(let k=0;k<groupList.length;k++){
+
+                                if(k==0 & listTitle[j][groupList[k]]!=temp[k]){
+                                    var str = "span_"+groupList[k];
+                                    var strname = "nama_"+groupList[k];
+                                    var len = 10*listTitle[j][str];
+                                    listHeader[0].append('<th colspan="'+len+'">'+listTitle[j][strname]+'</th>')
+                                }
+                                else if(listTitle[j][groupList[k]]!=temp[k]){
+                                    if(j==0){listHeader[k]=$('<tr></tr>')}
+                                    var str = "span_"+groupList[k];
+                                    var strname = "nama_"+groupList[k];
+                                    var len = 10*listTitle[j][str];
+                                    listHeader[k].append('<th colspan="'+len+'">'+listTitle[j][strname]+'</th>');
+                                }
+                                
+                                tmp.push(listTitle[j][groupList[k]]);
+                                
+                            }
+                            temp=tmp.slice();
+                            if(j==0){listHeader[groupList.length]=$('<tr></tr>');
+                            listHeader[groupList.length].append('<th>MKTS</th>');
+                            listHeader[groupList.length].append('<th>MKTJ</th>');
+                            listHeader[groupList.length].append('<th>TPK</th>');
+                            listHeader[groupList.length].append('<th>MTNUS</th>');
+                            listHeader[groupList.length].append('<th>TNUS</th>');
+                            listHeader[groupList.length].append('<th>RLMTNUS</th>');
+                            listHeader[groupList.length].append('<th>MTA</th>');
+                            listHeader[groupList.length].append('<th>TA</th>');
+                            listHeader[groupList.length].append('<th>RLMTA</th>');
+                            listHeader[groupList.length].append('<th>RLMTGAB</th>');
+
+                            }
+                            else
+                            {listHeader[groupList.length].append('<th>MKTS</th>');
+                            listHeader[groupList.length].append('<th>MKTJ</th>');
+                            listHeader[groupList.length].append('<th>TPK</th>');
+                            listHeader[groupList.length].append('<th>MTNUS</th>');
+                            listHeader[groupList.length].append('<th>TNUS</th>');
+                            listHeader[groupList.length].append('<th>RLMTNUS</th>');
+                            listHeader[groupList.length].append('<th>MTA</th>');
+                            listHeader[groupList.length].append('<th>TA</th>');
+                            listHeader[groupList.length].append('<th>RLMTA</th>');
+                            listHeader[groupList.length].append('<th>RLMTGAB</th>');
+
+                            }
+            
+                            
+                        }
+                        
+                        
+                        var thead = $('<thead></thead>');
+                        for(let m=0;m<listHeader.length;m++){
+                            thead.append(listHeader[m]);
+                            console.log(listHeader[m]);
+                        }
+                        $('#example').append(thead);
+                      
                         $('#example').DataTable({
                         dom: "B",
                         fixedColumns: {
@@ -188,7 +276,7 @@
                 //         data: data["data"],
                 //         paging: false,
                 //         columns: [
-                //             { data: 'tahun' },
+                //             
                 //             { data: 'kode_prov_baru' },
                 //             {data: 'jenis_akomodasi'},
                 //             {data:'kelas_akomodasi'},
