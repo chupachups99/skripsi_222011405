@@ -18,14 +18,17 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
     "i18n-iso-countries": "^7.11.1",
+    "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
+    "mysql-insert-csv": "^1.1.1",
     "mysql2": "^3.7.0",
     "nodemon": "^3.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-local": "^1.0.0",
     "postcss-cli": "^11.0.0",
-    "pug": "^3.0.2"
+    "pug": "^3.0.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",

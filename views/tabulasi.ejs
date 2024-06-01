@@ -14,6 +14,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
+        
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/5.0.0/css/fixedColumns.dataTables.css" />
@@ -46,47 +47,77 @@
                 </div>
 
                 <div class="flex" style="border-radius: 25px;">
-                    <div class="w-1/3 shadow bg-slate-200 p-2 mr-2 h-64 overflow-y-scroll" style="border-radius: 25px;">
-                        <div>Level Penyajian :</div>
-                    <div class="pl-3">
-                        <input id="levelProv" type="radio" name="level" value="kode_prov_baru"/> Provinsi <br>
-                        <input id="levelKab" type="radio" name="level" value="kode_prov_baru,kode_kab_baru"/> Kabupaten/Kota 
-                    </div>
-                    <div>Rentang tahun :</div>
-                    <div class="pl-3">
-                        <% for(let i=0;i<data.length;i++){ %>
-                            <input class="tahunCheckbox" type="checkbox" value="<%=data[i].tahun%>" checked="true"/> <%=data[i].tahun%> <br>
-                            <%}%>
-                    </div>
-                    <div class="mb-2 flex"><span class="grow">Group By :</span> <select id="levelBtn"
-                        class="text-left text-black bg-white border-2 border-neutral-400 font-medium text-sm px-5 py-1 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300"
-                        style="border-radius:20px;"> 
-                        <option id="labelOpt" value="none" disabled selected>+ Add Level</option>
-                        <option id="option1" value="jenis_akomodasi">Jenis Akomodasi</option>
-                        <option id="option2" value="kelas_akomodasi">Kelas Akomodasi</option>
-                    </select></div>
-                     
-                    <div id="levelTab">
-                        <div>
-                            <ul id="levelList">
-
-                            </ul>
+                    <div class="relative w-1/3 shadow bg-slate-200 p-4 mr-2 h-96 overflow-y-scroll" style="border-radius: 25px;">
+                        <div class="font-bold">Level Penyajian :</div>
+                        <div class="pl-3">
+                            <input id="levelProv" type="radio" name="level" value="kode_prov_baru" /> Provinsi <br>
+                            <input id="levelKab" type="radio" name="level" value="kode_prov_baru,kode_kab_baru" />
+                            Kabupaten/Kota
                         </div>
+                        <br>
+                        <div class="font-bold">Pilih tahun :</div>
+                        <div class="pl-3">
+                            <% for(let i=0;i<data.length;i++){ %>
+                                <input class="tahunCheckbox" type="checkbox" value="<%=data[i].tahun%>"
+                                    checked="true" />
+                                <%=data[i].tahun%> <br>
+                                    <%}%>
+                        </div>
+                        <br>
+                        <div class="mb-2 flex font-bold"><span>Group By :&nbsp;&nbsp;&nbsp;</span> <select id="levelBtn"
+                                class="text-left text-black bg-white border-2 border-neutral-400 font-medium text-sm px-5 py-1 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300"
+                                style="border-radius:20px;">
+                                <option id="labelOpt" value="none" disabled selected>+ Add Level</option>
+                                <option id="option1" value="jenis_akomodasi">Jenis Akomodasi</option>
+                                <option id="option2" value="kelas_akomodasi">Kelas Akomodasi</option>
+                            </select></div>
+
+                        <div id="levelTab" class="flex">
+                            <div>
+                                <ul id="levelList">
+
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div id="previewBtn" class="text-right absolute bottom-2 right-2">
+                            <button id="previewBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
+                                Show Preview
+                              </button>
+                            </div>
                         
-                    </div>
-                    <div id="previewBtn"class="text-right"><button class="text-left text-black bg-white border-2 border-neutral-400 font-medium text-sm px-5 py-1 inline-flex items-center outline-none focus:border-none focus:ring focus:ring-sky-300"
-                        style="border-radius:20px;">Show Preview</button></div>
-                    <div>
+
 
                     </div>
-                    
-                        
-                    </div>
-                    <div id="tabCont" class="w-2/3 shadow bg-slate-200 p-2 ml-2 h-64 overflow-y-scroll" style="border-radius: 25px;">
-                        <i>Preview</i>
+                    <br>
+                    <div id="tabCont" class="w-2/3 place-content-center shadow bg-slate-200 p-2 h-96" style="border-radius: 25px;">
+                        <div class="text-center italic font-bold text-slate-400 text-xl">Table Preview</div>
+                        <div class="text-center italic text-slate-400 text-md">Silahkan pilih konfigurasi tabulasi silang</div>
                     </div>
                 </div>
 
+            </div>
+            <div class="grid ml-3 mr-3 mt-4" style="border-radius: 20px;">
+                <div class="font-semibold text-center bg-gray-700 text-white p-1 h-16"
+                style="border-radius: 20px; font-size: 2.5rem; margin-bottom:15px;">
+                <h1>Upload to Database</h1>
+               
+            </div>
+            <div class="flex shadow bg-slate-200 p-4 mr-2" style="border-radius: 25px;">
+            <div class="w-2/3"> <div class="font-bold mb-2">Upload File (format: .xls, .xlsx,.csv) :</div>
+            <div> <input id="fileInput" type="file" accept=".csv,.xls,.xlsx" class="ml-2 mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            <br>
+                <div><button id="insertBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
+                Insert to Database 
+              </button></div>
+            </div>
+        </div>
+            
+            <div class="w-1/3">
+                <div class="font-bold">Status :</div>
+                <div id="statusContainer" class="bg-white h-64 p-4 overflow-y-scroll" style='border-radius: 25px; font-family: Monospace;'></div>
+             </div>
+            </div>
             </div>
 
 
@@ -105,216 +136,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
         <script src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/dataTables.fixedColumns.js"></script>
         <script src="https://cdn.datatables.net/fixedcolumns/5.0.0/js/fixedColumns.dataTables.js"></script>
-        <script>
-            
-            
-            $(document).ready(function () {
-                $('#levelProv').prop('checked',true);
-                $('#levelBtn').change(function(){
-                let value = $(this).val();
-                if(value=="jenis_akomodasi"){
-                    $('#option1').remove();
-                    $('#levelList').append('<li><button id="btnOption1" class="groupings text-black bg-white border-2 border-neutral-400 text-sm rounded-lg p-2 border-neutral-400" value="jenis_akomodasi">Jenis Akomodasi x</button></li>');
-                    $('#levelBtn').val("none");
-                    $('#btnOption1').click(function(){
-                        $(this).remove();
-                        $('#levelBtn').val("none");
-                        $('#levelBtn').append('<option id="option1" value="jenis_akomodasi">Jenis Akomodasi</option>')
-                    })
-                }
-                if(value=='kelas_akomodasi'){
-                    $('#option2').remove();
-                    $('#levelList').append('<li><button id="btnOption2" class="groupings rounded-lg p-2 text-black bg-white border-2 border-neutral-400 text-sm" value="kelas_akomodasi">Kelas Akomodasi x</button></li>');
-                    $('#levelBtn').val("none");
-                    $('#btnOption2').click(function(){
-                        $(this).remove();
-                        $('#levelBtn').val("none");
-                        $('#levelBtn').append('<option id="option2" value="kelas_akomodasi">Kelas Akomodasi</option>')
-                    })
-                }
-            });
-
-            function multArr(arr){
-                let z=1;
-                for(let i=0;i<arr.length;i++){
-                    z*=arr[i];
-                }
-                return z;
-            }
-            $('#previewBtn').click(function(){
-                $('#tabCont').empty();
-                $('#tabCont').append('<table id="example" class="display nowrap bg-white"></table>')
-                let tahunList=[];
-                let groupList=[];
-                // let kodeGroup={'jenis_akomodasi':['Hotel Bintang','Hotel Non Bintang'],'kelas_akomodasi':'bintang/kelas'};
-                let levelWil =$('input[name="level"]:checked').val();
-                $('.tahunCheckbox').each(function(){
-                    if($(this).prop('checked')){
-                        tahunList.push($(this).val());
-                    }
-                })
-                $('.groupings').each(function(){
-                    groupList.push($(this).val())
-                })
-                // console.log(levelWil);
-                // console.log(groupList);
-                // console.log(tahunList);
-                $.post('http://localhost:4000/tabulasi/crosstab', 
-                {tahun:tahunList.join(','),
-                 level:levelWil,
-                 group:groupList.join(','),
-                },function(data){
-                    console.log(data.matrix);
-                    console.log(data.columns);
-                        var listHeader=[];
-                        var header = $('<tr></tr>');
-                        var kode = levelWil.split(',');
-                        var grouping = groupList.length+1;
-                        let i=0;
-                        
-                        while(i<kode.length){
-                            
-                            let str = "kode_"+ kode[i].split('_')[1];
-                            console.log(str);
-                            header.append('<th rowspan="'+grouping+'">'+str+'</th>');
-                            i++;
-                        }
-                        header.append('<th rowspan="'+grouping+'">'+data.columns[i].data+'</th>');
-                        console.log(data.columns[i].data);
-                        listHeader[0]=header;
-                        var temp=groupList.slice();
-                        var listTitle = data.matrix; 
-                        for(let j=0;j<listTitle.length;j++){
-                            let tmp=[];
-                            for(let k=0;k<groupList.length;k++){
-
-                                if(k==0 & listTitle[j][groupList[k]]!=temp[k]){
-                                    var str = "span_"+groupList[k];
-                                    var strname = "nama_"+groupList[k];
-                                    var len = 10*listTitle[j][str];
-                                    listHeader[0].append('<th colspan="'+len+'">'+listTitle[j][strname]+'</th>')
-                                }
-                                else if(listTitle[j][groupList[k]]!=temp[k]){
-                                    if(j==0){listHeader[k]=$('<tr></tr>')}
-                                    var str = "span_"+groupList[k];
-                                    var strname = "nama_"+groupList[k];
-                                    var len = 10*listTitle[j][str];
-                                    listHeader[k].append('<th colspan="'+len+'">'+listTitle[j][strname]+'</th>');
-                                }
-                                
-                                tmp.push(listTitle[j][groupList[k]]);
-                                
-                            }
-                            temp=tmp.slice();
-                            if(j==0){listHeader[groupList.length]=$('<tr></tr>');
-                            listHeader[groupList.length].append('<th>MKTS</th>');
-                            listHeader[groupList.length].append('<th>MKTJ</th>');
-                            listHeader[groupList.length].append('<th>TPK</th>');
-                            listHeader[groupList.length].append('<th>MTNUS</th>');
-                            listHeader[groupList.length].append('<th>TNUS</th>');
-                            listHeader[groupList.length].append('<th>RLMTNUS</th>');
-                            listHeader[groupList.length].append('<th>MTA</th>');
-                            listHeader[groupList.length].append('<th>TA</th>');
-                            listHeader[groupList.length].append('<th>RLMTA</th>');
-                            listHeader[groupList.length].append('<th>RLMTGAB</th>');
-
-                            }
-                            else
-                            {listHeader[groupList.length].append('<th>MKTS</th>');
-                            listHeader[groupList.length].append('<th>MKTJ</th>');
-                            listHeader[groupList.length].append('<th>TPK</th>');
-                            listHeader[groupList.length].append('<th>MTNUS</th>');
-                            listHeader[groupList.length].append('<th>TNUS</th>');
-                            listHeader[groupList.length].append('<th>RLMTNUS</th>');
-                            listHeader[groupList.length].append('<th>MTA</th>');
-                            listHeader[groupList.length].append('<th>TA</th>');
-                            listHeader[groupList.length].append('<th>RLMTA</th>');
-                            listHeader[groupList.length].append('<th>RLMTGAB</th>');
-
-                            }
-            
-                            
-                        }
-                        
-                        
-                        var thead = $('<thead></thead>');
-                        for(let m=0;m<listHeader.length;m++){
-                            thead.append(listHeader[m]);
-                            console.log(listHeader[m]);
-                        }
-                        $('#example').append(thead);
-                      
-                        $('#example').DataTable({
-                        dom: "B",
-                        fixedColumns: {
-                        start: 2
-
-                        },
-                        data: data["data"],
-                        scrollX:'true',
-                        columns: data["columns"],
-                        buttons: [
-                            {
-                                extend: 'excel',
-                                text: 'Export',
-                            }
-                        ],
-                        // initComplete: function () {
-                        //     $('table.dataTable').hide();
-                        // }
-                    });
-
-                })  
-            })
-            
-
-
-                
-                // $.post('http://localhost:4000/tabulasi/crosstab', { group: ['jenis_akomodasi', 'kelas_akomodasi'] }, function (data) {
-                //     var table = $('#example').DataTable({
-                //         dom: "B",
-                //         data: data["data"],
-                //         paging: false,
-                //         columns: [
-                //             
-                //             { data: 'kode_prov_baru' },
-                //             {data: 'jenis_akomodasi'},
-                //             {data:'kelas_akomodasi'},
-                //             { data: 'MKTS_' },
-                //             { data: 'MKTJ_' },
-                //             { data: 'TPK_' },
-                //             { data: 'MTA_' },
-                //             { data: 'TA_'},
-                //             { data:'RLMTA_' },
-                //             { data: 'MTNUS_' },
-                //             { data: 'TNUS_'},
-                //             { data:'RLMTNUS_' },
-                //             { data:'RLMTGAB_' }
-                            
-                            
-                //         ],
-                //         buttons: [
-                //             {
-                //                 extend: 'excel',
-                //                 text: 'Export',
-                //                 // action: function () {
-                //                 //     // let n = $('#brsTable >tbody >tr').length;
-
-                //                 //     // $.post('http://localhost:4000/tabulasi/crosstab',{group:['jenis_akomodasi','kelas_akomodasi']})
-                //                 //     // window.location.reload();
-
-                //                 // }
-                //             }
-                //         ],
-                //         initComplete: function () {
-                //             $('table.dataTable').hide();
-                //         }
-                //     });
-
-                // })
-            });
-
-        </script>
+        <script src="../assets/jquery.table2excel.js"></script>
+        <script type="module" src="../assets/js/tabulasi.js"></script>
 </body>
 
 </html>

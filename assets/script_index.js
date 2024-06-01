@@ -1,9 +1,9 @@
 // import { text } from 'express';
-import INAGeoJSON from './Indonesia38.json' assert { type: 'json' };
-import CityINAJSON from './all_kabkota_ind.json' assert { type: 'json' };
-import kdProvJSON from './kodeProv.json' assert { type: 'json' };
-import CountryID from './centroids.json' assert {type:'json'};
-import CountryJSON from './worldGeoJSON.json' assert {type:'json'};
+// import INAGeoJSON from './Indonesia38.json' assert { type: 'json' };
+// import CityINAJSON from './all_kabkota_ind.json' assert { type: 'json' };
+// import kdProvJSON from './kodeProv.json' assert { type: 'json' };
+// import CountryID from './centroids.json' assert {type:'json'};
+// import CountryJSON from './worldGeoJSON.json' assert {type:'json'};
 
 
 

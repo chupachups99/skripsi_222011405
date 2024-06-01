@@ -25,21 +25,24 @@ $('#brsTable').DataTable( {
                               let bulanVal_ = $(bulan).text();
                               let bulanVal = bulanVal_.match(reg)[0];
                               $.post( "http://localhost:4000/brs/insert", {link: linkval,tahun:tahunval,bulan:bulanVal, id: id });
+                              
                           }
                           else{        
                               $.post( "http://localhost:4000/brs", {link: linkval, id: id });
+                              
                           }
+                          alert('Changes Saved');
                       }
                       else{
-                          alert('URL tidak valid pada baris '+ (n-i+1));
+                          alert('Tolong masukkan nilai URL yang valid' );
                       }
                       
                       
   
                   });
              
-                  alert('Changes Saved');
-                  // window.location.reload();
+                  
+                  window.location.reload();
                   
               }
           }

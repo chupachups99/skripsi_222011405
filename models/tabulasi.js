@@ -54,14 +54,14 @@ const getAllData = (body) => {
 
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_w ELSE 0 END) AS mkts_`+name);
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END) AS mktj_`+name);
-             str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_w ELSE 0 END) AS tpk_`+name);
+             str_sum.push(`ROUND(SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN room_w ELSE 0 END),2) AS tpk_`+name);
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w+wni_yesterday_w-wni_out_w ELSE 0 END) AS mtnus_`+name);
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w ELSE 0 END) AS tnus_`+name);
-             str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w+wni_yesterday_w-wni_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w ELSE 0 END) AS rlmtnus_`+name);
+             str_sum.push(`ROUND(SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w+wni_yesterday_w-wni_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w ELSE 0 END),2) AS rlmtnus_`+name);
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w+wna_yesterday_w-wna_out_w ELSE 0 END) AS mta_`+name);
              str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w ELSE 0 END) AS ta_`+name);
-             str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w+wna_yesterday_w-wna_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w ELSE 0 END) AS rlmta_`+name);
-             str_sum.push(`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w+wni_yesterday_w-wni_out_w+wna_in_w+wna_yesterday_w-wna_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w+wni_in_w ELSE 0 END) AS rlmtgab_`+name);
+             str_sum.push(`ROUND(SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w+wna_yesterday_w-wna_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w ELSE 0 END),2) AS rlmta_`+name);
+             str_sum.push(`ROUND(SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wni_in_w+wni_yesterday_w-wni_out_w+wna_in_w+wna_yesterday_w-wna_out_w ELSE 0 END)/`+`SUM(CASE WHEN `+str_group.join(' AND ')+` THEN wna_in_w+wni_in_w ELSE 0 END),2) AS rlmtgab_`+name);
 
 
         }
@@ -75,10 +75,62 @@ const getAllData = (body) => {
     console.log(SQL);
     return dbPool.execute(SQL);
 }
+const mysql = require('mysql2/promise')
+const insertData= async(body)=>{
+    
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database:'skripsi_dashboard'
+      })
+    
+        // Start transaction
+        let info=[];
+        await connection.beginTransaction();
+        let SQL = 'INSERT INTO dashboard_data (`tahun`, `bulan`, `kode_prov_baru`, `kode_kab_baru`, `jenis_akomodasi`, `kelas_akomodasi`, `room`, `bed`, `room_yesterday`, `room_in`, `room_out`, `wna_yesterday`, `wni_yesterday`, `wna_in`, `wni_in`, `wna_out`, `wni_out`) VALUES ';
+        let json =body.data
+        for (let i = 0; i < json.length; i++) {
+            
+          // console.log(i)
+          let key = Object.keys(json[i])[0].toString();
+          let keyDelim = key.replaceAll(',',"`,`");
+          let columns = "(`"+keyDelim+"`)";
+          let SQL = 'INSERT INTO dashboard_data '+columns+' VALUES ';
+          let a = Object.values(json[i])[0].toString();
+          let b = a.replaceAll(',', "','")
+          SQL += `('` + b + `')`;
+          console.log(SQL);
+          try{
+            await connection.query(SQL);
+          }
+          catch(err){
+            info.push('Transaction Failed at row '+(i+1)+" "+err.toString());
+            // console.log('Transaction Failed at row '+(i+1), err.toString());
+          }
+          
+        }
+    
+        // // Execute your queries
+        // // Commit the transaction
+        if(info.length==0){
+          await connection.commit();
+          info.push('Transaction Completed Successfully.');
+          return info;
+        }else{
+          await connection.rollback();
+          info.push('Transaction Failed. Rolled Back.');
+          return info;
+    
+        }
+      
+}
+
 
 module.exports = {
     getAllData,
     getTahun,
     getGroup,
-    getGroupData
+    getGroupData,
+    insertData
 }
