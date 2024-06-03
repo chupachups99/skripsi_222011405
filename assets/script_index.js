@@ -3651,7 +3651,170 @@ function reloadTPK(url) {
   });
 
 
- 
+ function generateDatatable(url,id){
+  $.get(url,function(data,status){
+    const parsedData = JSON.parse(JSON.stringify(data));
+    let jId = '#'+id;
+    $(jId).empty();
+    var table = $('<table class="createdTable display nowrap bg-white" style="width:100%"></table>');
+    var thead = $('<thead></thead>');
+    
+    let rowspan=2;
+    let header = [];
+    if(parsedData.turvar.length>1){
+      rowspan+=1
+      let tr = $('<tr></tr>');
+      for(let i = 0;i<parsedData.turvar.length;i++){
+        let a  = parsedData.turtahun.length;
+        tr.append('<th colspan="'+a+'" style="text-align:center">'+parsedData.turvar[i].label+'</th>');
+      }
+      header.push(tr);
+    }
+    if(parsedData.turtahun.length>1){
+      rowspan+=1
+      let tr = $('<tr></tr>');
+      for(let i = 0;i<parsedData.turtahun.length;i++){
+        tr.append('<th>'+parsedData.turtahun[i].label+'</th>');
+      }
+      header.push(tr);
+    }
+    let colspan = parsedData.turtahun.length*parsedData.turvar.length;
+    
+    
+    thead.append(`<tr>
+                    <th style="text-align:center" rowspan="`+rowspan+`">`+parsedData.labelvervar+`</th>
+                    <th  style="text-align:center" colspan="`+colspan+`">`+parsedData.var[0].label+` (`+parsedData.var[0].unit+`) `+`</th>
+                  </tr>`);
+    thead.append('<tr><th style="text-align:center" colspan="'+colspan+'">'+parsedData.tahun[0].label+'</th></tr>');
+    for(let i=0;i<header.length;i++){
+      thead.append(header[i]);
+    }
+    table.append(thead);
+    
+
+    
+    var tbody = $('<tbody></tbody>');
+    for(let i=0;i<parsedData.vervar.length;i++){
+      var row = $('<tr></tr>');
+      row.append('<td>'+parsedData.vervar[i].label+'</td>');
+      for(let j=0;j<parsedData.turvar.length;j++){
+        for(let k=0;k<parsedData.turtahun.length;k++){
+          let key = parsedData.vervar[i].val.toString()+parsedData.var[0].val.toString()+parsedData.turvar[j].val.toString()+parsedData.tahun[0].val.toString()+parsedData.turtahun[k].val.toString();
+          let cellData = parsedData.datacontent[key]
+          if(cellData){
+            row.append('<td>'+cellData+'</td>');
+          }
+          else{
+            row.append('<td>-</td>');
+          }
+        }
+        
+      }
+      tbody.append(row);
+    }
+    table.append(tbody);
+    $(jId).append(table);
+
+    let str = jId+' .createdTable'
+    var newTab = new DataTable(str,{
+      order:[],
+      fixedColumns: {
+        start: 1
+  
+    },
+      layout:{
+        topStart:'search',
+        topEnd:{
+          buttons:[ {
+            extend: 'excel',
+            text: 'Export to Excel',
+            title:parsedData.var[0].label+' - '+parsedData.tahun[0].label,
+    
+          }]
+        }
+      }
+      ,
+      scrollY:'12rem',
+      scrollX:'93dvw',
+      paging:false,
+      info:false
+    });
+    // newTab.columns.adjust().draw();
+
+
+    
+
+  })
+
+ }
+
+
+ $('#varWisnus').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(url,function(data,status){
+    $('#tahunWisnus').empty();
+    
+    let wisnus = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<wisnus.tahun.length;i++){
+      let listTahun = $('<option value="'+wisnus.tahun[i].val+'">'+wisnus.tahun[i].label+'</option>');
+      $('#tahunWisnus').append(listTahun);
+    }
+    $('#tahunWisnus').val(wisnus.tahun[wisnus.tahun.length-1].val);
+    
+  let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/th/'+$('#tahunWisnus').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  generateDatatable(newUrl,'tabCont');
+  })
+ })
+
+ $('#tahunWisnus').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/th/'+$(this).val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  generateDatatable(url,'tabCont');
+ })
+
+ $('#varTPK').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varTPK').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(url,function(data,status){
+    $('#tahunTPK').empty();
+    
+    let TPK = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<TPK.tahun.length;i++){
+      let listTahun = $('<option value="'+TPK.tahun[i].val+'">'+TPK.tahun[i].label+'</option>');
+      $('#tahunTPK').append(listTahun);
+    }
+    $('#tahunTPK').val(TPK.tahun[TPK.tahun.length-1].val);
+    let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varTPK').val()+'/th/'+$('#tahunTPK').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+    generateDatatable(newUrl,'tabContTPK');
+  })
+  
+ })
+
+ $('#tahunTPK').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varTPK').val()+'/th/'+$(this).val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  generateDatatable(url,'tabContTPK');
+ })
+
+ $('#varWisman').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisman').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(url,function(data,status){
+    $('#tahunWisman').empty();
+    
+    let Wisman = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<Wisman.tahun.length;i++){
+      let listTahun = $('<option value="'+Wisman.tahun[i].val+'">'+Wisman.tahun[i].label+'</option>');
+      $('#tahunWisman').append(listTahun);
+    }
+    $('#tahunWisman').val(Wisman.tahun[Wisman.tahun.length-1].val);
+    let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisman').val()+'/th/'+$('#tahunWisman').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+    generateDatatable(newUrl,'tabContWisman');
+  })
+  
+ })
+
+ $('#tahunWisman').change(function(){
+  let url = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisman').val()+'/th/'+$(this).val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  generateDatatable(url,'tabContWisman');
+ })
+
 
 
 
@@ -3716,6 +3879,43 @@ window.onload = function () {
     // checkBoxWilayahTujuan.appendChild(document.createElement("br"));
     // checkBoxWilayahAsal.appendChild(document.createElement("br"));
   }
+  let strUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(strUrl,function(data,status){
+    $('#tahunWisnus').empty();
+    let wisnus = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<wisnus.tahun.length;i++){
+      let listTahun = $('<option value="'+wisnus.tahun[i].val+'">'+wisnus.tahun[i].label+'</option>');
+      $('#tahunWisnus').append(listTahun);
+    }
+    $('#tahunWisnus').val(wisnus.tahun[wisnus.tahun.length-1].val);
+    let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/th/'+$('#tahunWisnus').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+    generateDatatable(newUrl,'tabCont');
+  })
+
+  let strUrlTPK = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varTPK').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(strUrlTPK,function(data,status){
+    $('#tahunTPK').empty();
+    let TPK = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<TPK.tahun.length;i++){
+      let listTahun = $('<option value="'+TPK.tahun[i].val+'">'+TPK.tahun[i].label+'</option>');
+      $('#tahunTPK').append(listTahun);
+    }
+    $('#tahunTPK').val(TPK.tahun[TPK.tahun.length-1].val);
+    let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varTPK').val()+'/th/'+$('#tahunTPK').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+    generateDatatable(newUrl,'tabContTPK');
+  })
+  let strUrlWisman = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisman').val()+'/vervar/1/key/cf78d9c72e168bfe677972ba792787af/';
+  $.get(strUrlWisman,function(data,status){
+    $('#tahunWisman').empty();
+    let Wisman = JSON.parse(JSON.stringify(data))
+    for(let i=0;i<Wisman.tahun.length;i++){
+      let listTahun = $('<option value="'+Wisman.tahun[i].val+'">'+Wisman.tahun[i].label+'</option>');
+      $('#tahunWisman').append(listTahun);
+    }
+    $('#tahunWisman').val(Wisman.tahun[Wisman.tahun.length-1].val);
+    let newUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisman').val()+'/th/'+$('#tahunWisman').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
+    generateDatatable(newUrl,'tabContWisman');
+  })
   $(".checkBoxWilayahTPK").change(function(){
     tpkLine.clear();
     tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
@@ -3741,16 +3941,20 @@ window.onload = function () {
   //     reloadDataAsal(urlAsal);
   //     }
   //     });
+  
   firstSection(url, ["barYearWisnus", "lineYearWisnus"], '9999');
   sectionTwo(url+APIkey);
   sectionTwoAsal(urlAsal);
   //reloadData(url+APIkey);
   //reloadDataAsal(urlAsal);  
-  tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
+  // tabulasiWisnus(url+APIkey,1,['119','120','121','122','123']);
   // mapStory();
   tpkCreateFilter();
   $('#singleTPK').prop('checked',true);
   tpkSectionOne("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/");
+  // generateDatatable('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/2201/th/123/key/cf78d9c72e168bfe677972ba792787af/','tabCont');
+  // generateDatatable('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/th/123/key/cf78d9c72e168bfe677972ba792787af/','tabContTPK');
+  
   tpkCombineSeries("9999");
   wismanBar("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/1470/");
   geoScatterWisman();

@@ -10,7 +10,7 @@ const getAlluserid = () => {
 const createNewUser = (body) => {
     const SQLQuery = ` INSERT INTO userid (nama, email, pwd)
                        VALUES( '${body.nama}', '${body.email}', '${body.password}')`;
-    return dbPool.execute(SQLQuery);
+    return dbPool.execute(SQLQuery); 
 }
 
 const updateUser = (body, idUser) => {

@@ -46,8 +46,8 @@
                     <h1>Tabulasi Silang</h1>
                 </div>
 
-                <div class="flex" style="border-radius: 25px;">
-                    <div class="relative w-1/3 shadow bg-slate-200 p-4 mr-2 h-96 overflow-y-scroll" style="border-radius: 25px;">
+                <div class="md:flex" style="border-radius: 25px;">
+                    <div class="relative md:w-1/3 shadow bg-slate-200 p-4 mr-2 h-96 overflow-y-scroll" style="border-radius: 25px;">
                         <div class="font-bold">Level Penyajian :</div>
                         <div class="pl-3">
                             <input id="levelProv" type="radio" name="level" value="kode_prov_baru" /> Provinsi <br>
@@ -80,17 +80,43 @@
                             </div>
 
                         </div>
-                        <div id="previewBtn" class="text-right absolute bottom-2 right-2">
+                        <br>
+
+                        <div>
+                            <p class="mb-2 font-bold">Periode Waktu :</p>
+                            <div> 
+                                
+                                <input type="radio"  name="periode" value="12">
+                                <label>Tahunan</label><br>
+
+                                <input type="radio"  name="periode" value="1">
+                                <label>Bulanan</label><br>
+                                
+                                <input type="radio"  name="periode" value="2">
+                                <label>Dwiwulan</label><br>
+                                
+                                <input type="radio"  name="periode" value="3">
+                                <label>Triwulan</label><br>
+                
+                                <input type="radio"  name="periode" value="4">
+                                <label>Caturwulan</label><br>
+
+                                <input type="radio"  name="periode" value="6">
+                                <label>Semester</label><br>
+                            </div>
+                            
+                        </div>
+                        <span id="previewBtn" class="text-right sticky bottom-2 left-full mr-2">
                             <button id="previewBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
                                 Show Preview
                               </button>
-                            </div>
+                            </span>
                         
 
 
                     </div>
                     <br>
-                    <div id="tabCont" class="w-2/3 place-content-center shadow bg-slate-200 p-2 h-96" style="border-radius: 25px;">
+                    <div id="tabCont" class="md:w-2/3 place-content-center shadow bg-slate-200 p-2 h-96" style="border-radius: 25px;">
                         <div class="text-center italic font-bold text-slate-400 text-xl">Table Preview</div>
                         <div class="text-center italic text-slate-400 text-md">Silahkan pilih konfigurasi tabulasi silang</div>
                     </div>
@@ -100,20 +126,22 @@
             <div class="grid ml-3 mr-3 mt-4" style="border-radius: 20px;">
                 <div class="font-semibold text-center bg-gray-700 text-white p-1 h-16"
                 style="border-radius: 20px; font-size: 2.5rem; margin-bottom:15px;">
-                <h1>Upload to Database</h1>
+                <h1>Unggah ke Database</h1>
                
             </div>
-            <div class="flex shadow bg-slate-200 p-4 mr-2" style="border-radius: 25px;">
-            <div class="w-2/3"> <div class="font-bold mb-2">Upload File (format: .xls, .xlsx,.csv) :</div>
+            <div class="md:flex shadow bg-slate-200 p-4 mr-2" style="border-radius: 25px;">
+            <div class="md:w-2/3"> <div class="font-bold mb-2">Upload File (format: .xls, .xlsx,.csv) :</div>
             <div> <input id="fileInput" type="file" accept=".csv,.xls,.xlsx" class="ml-2 mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             <br>
                 <div><button id="insertBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
                 Insert to Database 
-              </button></div>
+              </button>
+            </div>
+            <br>
             </div>
         </div>
             
-            <div class="w-1/3">
+            <div class="md:w-1/3">
                 <div class="font-bold">Status :</div>
                 <div id="statusContainer" class="bg-white h-64 p-4 overflow-y-scroll" style='border-radius: 25px; font-family: Monospace;'></div>
              </div>
