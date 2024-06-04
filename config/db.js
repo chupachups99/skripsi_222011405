@@ -1,6 +1,7 @@
 const mysql = require('mysql2/promise');
 const dbPool=mysql.createPool({
-  host:'localhost',
+  host:'0.tcp.ap.ngrok.io',
+  port:'17540',
   user:'root',
   password:'',
   database:'skripsi_dashboard'
