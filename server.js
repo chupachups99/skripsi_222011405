@@ -15,10 +15,6 @@ const { isNull } = require("util");
 const dbPool = require('./config/db');
 const LocalStrategy = require('passport-local').Strategy;
 
-// var countries = require("i18n-iso-countries");
-// // const https = require('https');
-// console.log("Singapura => " + countries.getAlpha3Code("Swedia", "id"));
-
 
 
 
@@ -27,8 +23,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
 app.use('/indicator', indexRoutes);
-
 app.use('/tabulasi', tabulasiRoutes);
+app.use('/brs', brsRoutes);
 app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,7 +72,7 @@ checkAuthenticated = (req, res, next) => {
   else{res.redirect("/login")}
 }
 // brsRoutes.use(isLoggedIn);
-app.use('/brs', brsRoutes);
+
 
 
 
