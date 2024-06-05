@@ -84,7 +84,7 @@ const getAllData = (body) => {
             let periodeStr = ` CASE WHEN bulan BETWEEN ` + lowVal + ` AND ` + upVal;
 
             str_sum.push(`SUM(` + periodeStr + ` THEN room_w ELSE 0 END) AS t1_mkts_` + k);
-            str_sum.push(`SUM(` + periodeStr + ` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END) AS t2_mktj_`+k);
+            str_sum.push(`SUM(` + periodeStr + ` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END) AS t2_mktj_` + k);
             str_sum.push(`ROUND(SUM(` + periodeStr + ` THEN  room_in_w + room_yesterday_w -room_out_w ELSE 0 END)/` + `SUM(` + periodeStr + ` THEN  room_w ELSE 0 END)*100,2) AS t3_tpk_` + k);
             str_sum.push(`SUM(` + periodeStr + ` THEN wni_in_w+wni_yesterday_w-wni_out_w ELSE 0 END) AS t4_mtnus_` + k);
             str_sum.push(`SUM(` + periodeStr + ` THEN  wni_in_w ELSE 0 END) AS t5_tnus_` + k);
@@ -110,7 +110,8 @@ const mysql = require('mysql2/promise')
 const insertData = async (body) => {
 
     const connection = await mysql.createConnection({
-        host: 'localhost',
+        host: '0.tcp.ap.ngrok.io',
+        port: '11675',
         user: 'root',
         password: '',
         database: 'skripsi_dashboard'
@@ -119,18 +120,19 @@ const insertData = async (body) => {
     // Start transaction
     let info = [];
     await connection.beginTransaction();
-    let SQL = 'INSERT INTO dashboard_data (`tahun`, `bulan`, `kode_prov_baru`, `kode_kab_baru`, `jenis_akomodasi`, `kelas_akomodasi`, `room`, `bed`, `room_yesterday`, `room_in`, `room_out`, `wna_yesterday`, `wni_yesterday`, `wna_in`, `wni_in`, `wna_out`, `wni_out`) VALUES ';
-    let json = body.data
+    // let SQL = 'INSERT INTO dashboard_data (`tahun`, `bulan`, `kode_prov_baru`, `kode_kab_baru`, `jenis_akomodasi`, `kelas_akomodasi`, `room`, `bed`, `room_yesterday`, `room_in`, `room_out`, `wna_yesterday`, `wni_yesterday`, `wna_in`, `wni_in`, `wna_out`, `wni_out`) VALUES ';
+    let json = body["content[]"];
+    let header = body["header"];
     for (let i = 0; i < json.length; i++) {
 
         // console.log(i)
-        let key = Object.keys(json[i])[0].toString();
-        let keyDelim = key.replaceAll(',', "`,`");
-        let columns = "(`" + keyDelim + "`)";
-        let SQL = 'INSERT INTO dashboard_data ' + columns + ' VALUES ';
-        let a = Object.values(json[i])[0].toString();
-        let b = a.replaceAll(',', "','")
-        SQL += `('` + b + `')`;
+        // let key = Object.keys(json[i])[0].toString();
+        // let keyDelim = key.replaceAll(',', "`,`");
+        // let columns = "(`" + keyDelim + "`)";
+        let SQL = 'INSERT INTO dashboard_data ' + header + ' VALUES '+json[i];
+        // let a = Object.values(json[i])[0].toString();
+        // let b = a.replaceAll(',', "','")
+        // SQL += `('` + b + `')`;
         console.log(SQL);
         try {
             await connection.query(SQL);

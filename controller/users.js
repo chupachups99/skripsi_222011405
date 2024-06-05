@@ -28,11 +28,11 @@ const createNewUser = async (req, res) => {
 
     try {
         await UsersModel.createNewUser(body);
-        res.status(201).json({
-            message: 'CREATE new user success',
-            data: body
-        });
-        redirect('/login');
+        // res.status(201).json({
+        //     message: 'CREATE new user success',
+        //     data: body
+        // });
+        res.redirect('/login');
     } catch (error) {
         res.status(500).json({
             message: 'Server Error',

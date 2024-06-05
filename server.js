@@ -36,7 +36,7 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static('assets'));
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
 
 
 function isLoggedIn(req, res, next) {
@@ -131,7 +131,7 @@ app.get('/fail', (req, res) => {
   res.send('Gagal');
 })
 
-const centroid = require('./assets/centroids.json');
+// const centroid = require('./assets/centroids.json');
 
 
 // app.get('/index', checkAuthenticated, (req, res) => {
@@ -146,9 +146,9 @@ app.get('/link_brs',checkAuthenticated, (req, res) => {
   res.render('brs');
   //res.send(req.user.name);
 });
-app.get('/najwa',(req,res)=>{
-  res.render('tes',{data:centroid})
-})
+// app.get('/najwa',(req,res)=>{
+//   res.render('tes',{data:centroid})
+// })
 
 
 

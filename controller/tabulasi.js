@@ -85,24 +85,27 @@ function convertExcelToCsv(inputFile, outputFile) {
 
 const uploadCSV = async (req, res) => {
     try {
-        const file = req.file;
-        if (!file) {
-            return res.status(400).send('No file uploaded.');
-        }
-        let nameFile = file.destination+'/'+file.filename;
-        if (file.mimetype == "application/vnd.ms-excel" || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-            console.log('xls');
-            // Example usage
-            const inputFile = file.destination+'/'+file.filename;
-            nameFile = file.destination+'/'+file.filename.split('.')[0]+'.csv';
-            convertExcelToCsv(inputFile, nameFile);
-        }
+        // console.log(req);
+        const { body } = req
+        // console.log(body);
+        // const file = req.file;
+        // if (!file) {
+        //     return res.status(400).send('No file uploaded.');
+        // }
+        // let nameFile = file.destination+'/'+file.filename;
+        // if (file.mimetype == "application/vnd.ms-excel" || file.mimetype == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        //     console.log('xls');
+        //     // Example usage
+        //     const inputFile = file.destination+'/'+file.filename;
+        //     nameFile = file.destination+'/'+file.filename.split('.')[0]+'.csv';
+        //     convertExcelToCsv(inputFile, nameFile);
+        // }
         
 
-        let json = csvToJson.getJsonFromCsv(nameFile);
-        let data = await tabModel.insertData({data:json});    
+        // let json = csvToJson.getJsonFromCsv(nameFile)
+        
+        let data = await tabModel.insertData(body);    
         console.log(data);
-        // Respond to the client
         res.status(200).send({message:data});
 
     }
