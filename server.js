@@ -6,6 +6,7 @@ const csvToJson = require('convert-csv-to-json');
 const usersRoutes = require('./router/users');
 const indexRoutes = require('./router/indikator');
 const brsRoutes = require('./router/brs');
+// brsRoutes.use(isLoggedIn)
 const tabulasiRoutes = require('./router/tabulasi');
 const session = require('express-session');
 var GoogleStrategy = require('passport-google-oauth2').Strategy;
@@ -14,18 +15,19 @@ const model = require('./models/users');
 const { isNull } = require("util");
 const dbPool = require('./config/db');
 const LocalStrategy = require('passport-local').Strategy;
-
-
-
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/users', usersRoutes);
-app.use('/indicator', indexRoutes);
-app.use('/tabulasi', tabulasiRoutes);
-app.use('/brs', brsRoutes);
-app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }));
+
+// app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }));
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 20000,
+    secure: false,
+  },
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
@@ -82,9 +84,10 @@ passport.use(new LocalStrategy({
 },async function(username, password, cb) {
   let temp = {email:username,password:password};
   const response = await model.ifUser(temp);
-  console.log(response);
+  // console.log(response);
   if(response[0].length>0){
     cb(null,response[0]);
+  
   }
   else{
     cb(null,null);
@@ -130,9 +133,14 @@ app.get('/fail', (req, res) => {
 })
 
 // const centroid = require('./assets/centroids.json');
+app.use('/users', usersRoutes);
+app.use('/indicator', indexRoutes);
+app.use('/tabulasi', tabulasiRoutes);
+app.use('/brs', brsRoutes);
+// brsRoutes.use(checkAuthenticated);
 
 app.get('/index', checkAuthenticated, (req, res) => {
-  console.log(req.session);
+  console.log(req.session.passport.user);
   var userRole;
   if(!req.user.role){
     userRole = 0;
@@ -143,6 +151,11 @@ app.get('/index', checkAuthenticated, (req, res) => {
   res.render('index',{role:req.user.role});
   //res.send(req.user.name);
 });
+
+app.get('/users_satu',checkAuthenticated,(req,res)=>{
+  console.log(req.session.passport.user);
+  res.json({message:"halo"})
+})
 // app.get('/index', (req, res) => {
 //   res.render('index');
 //   //res.send(req.user.name);

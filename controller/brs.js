@@ -3,6 +3,7 @@ const BrsModel = require('../models/brs.js');
 
 const getAllData = async (req, res) => {
     try {
+        // console.log(req.);
         const brs= await BrsModel.getAllData();
         // let temp = brs[0].filter(a => a.id == 24);
         // res.status(200).json({
