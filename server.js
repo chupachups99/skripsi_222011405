@@ -27,20 +27,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/users', usersRoutes);
 app.use('/indicator', indexRoutes);
-app.use('/brs', brsRoutes);
+
 app.use('/tabulasi', tabulasiRoutes);
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static('assets'));
-// app.use('/uploads', express.static('uploads'));
+
 
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) { next(); }
+  else{res.redirect('/login')}
 };
 
 
@@ -56,7 +57,7 @@ passport.use(new GoogleStrategy({
   
   clientID: '934007791217-05u7053csbh78mo25h0gp6idpnuo8eqg.apps.googleusercontent.com',
   clientSecret: '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',
-  callbackURL: "http://localhost:4000/google/callback",
+  callbackURL: "https://dashboard-ktip.onrender.com/google/callback",
   scope: ['email', 'profile'],
   passReqToCallback: true
 },
@@ -72,9 +73,10 @@ passport.use(new GoogleStrategy({
 // }
 checkAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) { return next() }
-  res.redirect("/login")
+  else{res.redirect("/login")}
 }
-
+// brsRoutes.use(isLoggedIn);
+app.use('/brs', brsRoutes);
 
 
 
@@ -133,16 +135,24 @@ app.get('/fail', (req, res) => {
 
 // const centroid = require('./assets/centroids.json');
 
-
-// app.get('/index', checkAuthenticated, (req, res) => {
+app.get('/index', checkAuthenticated, (req, res) => {
+  console.log(req.session);
+  var userRole;
+  if(!req.user.role){
+    userRole = 0;
+  }
+  else{
+    userRole = req.user.role
+  }
+  res.render('index',{role:req.user.role});
+  //res.send(req.user.name);
+});
+// app.get('/index', (req, res) => {
 //   res.render('index');
 //   //res.send(req.user.name);
 // });
-app.get('/index', (req, res) => {
-  res.render('index');
-  //res.send(req.user.name);
-});
 app.get('/link_brs',checkAuthenticated, (req, res) => {
+  console.log(req.session);
   res.render('brs');
   //res.send(req.user.name);
 });

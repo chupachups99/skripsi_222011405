@@ -19,31 +19,32 @@ const indexPage = async (req, res) => {
 const getCrossTab = async (req, res) => {
     const { body } = req;
     // console.log(body);
-    let arr ;
-    let span;
-    let temp;
-    if (body.group.length>0) {
-        arr = await tabModel.getGroup({ columns: body.group });
-        // span =await tabModel.getGroupData({columns:body.group});
-        // for(let j=0;j<span[0].length;j++){
-        //     temp.push(Object.values(span[0][j].spliced(0,span[0].length/2-1)));
-        // }
-        // // console.log(arr);
-        body["listgroup"] = arr[0];
-        temp=arr[0];
-    }
-    else{
-        temp=[];
-    }
+
     // console.log(arr[0]);
 
     try {
+        let arr;
+        let span;
+        let temp;
+        if (body.group.length > 0) {
+            arr = await tabModel.getGroup({ columns: body.group });
+            // span =await tabModel.getGroupData({columns:body.group});
+            // for(let j=0;j<span[0].length;j++){
+            //     temp.push(Object.values(span[0][j].spliced(0,span[0].length/2-1)));
+            // }
+            // // console.log(arr);
+            body["listgroup"] = arr[0];
+            temp = arr[0];
+        }
+        else {
+            temp = [];
+        }
         let data = await tabModel.getAllData(body);
         let columns = [];
         const list = Object.keys(data[0][1]).sort();
         // console.log(data[0]);
-        
-        for (let i = 0; i <list.length; i++) {
+
+        for (let i = 0; i < list.length; i++) {
             columns.push({ data: list[i] });
         }
         console.log(list);
@@ -57,6 +58,8 @@ const getCrossTab = async (req, res) => {
 
     }
     catch (error) {
+        res.send({error:'Perhatikan konfigurasi tabulasi'});
+        // res.status(500).send('Tolong Perhatikan Konfigurasi Tabulasi');
 
     }
 }
@@ -100,13 +103,13 @@ const uploadCSV = async (req, res) => {
         //     nameFile = file.destination+'/'+file.filename.split('.')[0]+'.csv';
         //     convertExcelToCsv(inputFile, nameFile);
         // }
-        
+
 
         // let json = csvToJson.getJsonFromCsv(nameFile)
-        
-        let data = await tabModel.insertData(body);    
+
+        let data = await tabModel.insertData(body);
         console.log(data);
-        res.status(200).send({message:data});
+        res.status(200).send({ message: data });
 
     }
     catch (err) {

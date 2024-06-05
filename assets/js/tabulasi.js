@@ -235,10 +235,13 @@ $(document).ready(function () {
                 level: levelWil,
                 group: groupList.join(','),
                 periode: periode
-            }, function (data) {
+            }, function (data,status) {
+                // alert(data.halo);
+                if(!data.error){
+                    
                 // console.log(data.matrix);
                 // console.log(data.columns);
-
+               
                 $('#tabCont').append('<table id="example" class="display nowrap bg-white"></table>');
                 var listHeader = [];
                 var header = $('<tr></tr>');
@@ -279,13 +282,13 @@ $(document).ready(function () {
                 }
                 header.append('<th rowspan="' + grouping + '">' + data.columns[i].data + '</th>');
                 // console.log(data.columns[i].data);
-                console.log(data.data);
+                // console.log(data.data);
                 listHeader[0] = header;
                 var temp = groupList.slice();
                 var listTitle = data.matrix;
 
                 var thead = $('<thead></thead>');
-                if (listTitle.length > 0) {
+                if(listTitle.length > 0) {
                     for (let j = 0; j < listTitle.length; j++) {
                         let tmp = [];
                         for (let k = 0; k < groupList.length; k++) {
@@ -293,14 +296,14 @@ $(document).ready(function () {
                             if (k == 0 & listTitle[j][groupList[k]] != temp[k]) {
                                 var str = "span_" + groupList[k];
                                 var strname = "nama_" + groupList[k];
-                                var len = 10 * listTitle[j][str];
+                                var len = 10 * listTitle[j][str]*spanPeriode;
                                 listHeader[0].append('<th colspan="' + len + '">' + listTitle[j][strname] + '</th>')
                             }
                             else if (listTitle[j][groupList[k]] != temp[k]) {
                                 if (j == 0) { listHeader[k] = $('<tr></tr>') }
                                 var str = "span_" + groupList[k];
                                 var strname = "nama_" + groupList[k];
-                                var len = 10 * listTitle[j][str];
+                                var len = 10 * listTitle[j][str]*spanPeriode;
                                 listHeader[k].append('<th colspan="' + len + '">' + listTitle[j][strname] + '</th>');
                             }
 
@@ -344,6 +347,7 @@ $(document).ready(function () {
                         thead.append(listHeader[m]);
                         // console.log(listHeader[m]);
                     }
+              
 
                 }
                 else {
@@ -363,7 +367,7 @@ $(document).ready(function () {
                     let judulArr = romawi;
                     var periodeTr = $('<tr></tr>');
                     if (periode == 1) { judulArr = namaBulan }
-                    for (let y = 0; y < 10; y++) {
+                    for (let y = 0; y < 10*listTitle.length; y++) {
                         for (let x = 0; x < spanPeriode; x++) {
                             periodeTr.append('<th>' + judulPeriode + judulArr[x] + '</th>')
                         }
@@ -410,6 +414,16 @@ $(document).ready(function () {
                         //     $('table.dataTable').hide();
                         // }
                     });
+
+                }
+            
+
+                }else{
+                    $('#loadAnimationCrossTab').remove();
+                    $('#tabCont').append(`<div class="text-center italic font-bold text-slate-400 text-xl">Table Preview</div>
+                    <div class="text-center italic text-slate-400 text-md">Silahkan pilih konfigurasi tabulasi silang</div>
+`)
+                    alert('Tolong periksa konfigurasi');
 
                 }
             })
