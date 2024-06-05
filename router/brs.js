@@ -1,14 +1,14 @@
 const express = require('express');
 function isAuthenticated(req, res, next) {
-    // Check if user is authenticated
-    if (req.user) {
-        // User is authenticated, proceed to the next middleware/route handler
-        console.log(req.user);
+    // // Check if user is authenticated
+    // if (req.user) {
+    //     // User is authenticated, proceed to the next middleware/route handler
+    //     // console.log(req.user);
         return next();
-    } else {
-        // User is not authenticated, handle accordingly
-        return res.status(401).send('Unauthorized');
-    }
+    // } else {
+    //     // User is not authenticated, handle accordingly
+    //     return res.status(401).send('Unauthorized');
+    // }
 }
 
 // Define your router

@@ -54,9 +54,9 @@ const getAllData = (body) => {
                 name = name + body.listgroup[i][Object.keys(body.listgroup[i])[j]].toString();
             }
 
-            for (let k = 1; k < periodeVal + 1; k++) {
+            for (let k = 0; k < periodeVal ; k++) {
                 let lowVal = parseInt(body.periode) * k + 1;
-                let upVal = parseInt(lowVal) + parseInt(body.periode) - 1;
+                let upVal =  parseInt(body.periode) *(k+1);
                 let periodeStr = ` AND bulan BETWEEN ` + lowVal + ` AND ` + upVal;
                 str_sum.push(`SUM(CASE WHEN ` + str_group.join(' AND ') + periodeStr + ` THEN room_w ELSE 0 END) AS t1_mkts_` + name + k);
                 str_sum.push(`SUM(CASE WHEN ` + str_group.join(' AND ') + periodeStr + ` THEN room_in_w + room_yesterday_w -room_out_w ELSE 0 END) AS t2_mktj_` + name + k);

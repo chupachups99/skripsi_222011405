@@ -347,6 +347,17 @@ $(document).ready(function () {
                         thead.append(listHeader[m]);
                         // console.log(listHeader[m]);
                     }
+                    if (periode < 12) {
+                        let judulArr = romawi;
+                        var periodeTr = $('<tr></tr>');
+                        if (periode == 1) { judulArr = namaBulan }
+                        for (let y = 0; y < 10*listTitle.length; y++) {
+                            for (let x = 0; x < spanPeriode; x++) {
+                                periodeTr.append('<th>' + judulPeriode + judulArr[x] + '</th>')
+                            }
+                        }
+                        thead.append(periodeTr);
+                    }
               
 
                 }
@@ -362,18 +373,19 @@ $(document).ready(function () {
                     listHeader[0].append('<th colspan=' + spanPeriode + '>RLMTA</th>');
                     listHeader[0].append('<th colspan=' + spanPeriode + '>RLMTGAB</th>');
                     thead.append(listHeader[0]);
-                }
-                if (periode < 12) {
-                    let judulArr = romawi;
-                    var periodeTr = $('<tr></tr>');
-                    if (periode == 1) { judulArr = namaBulan }
-                    for (let y = 0; y < 10*listTitle.length; y++) {
-                        for (let x = 0; x < spanPeriode; x++) {
-                            periodeTr.append('<th>' + judulPeriode + judulArr[x] + '</th>')
+                    if (periode < 12) {
+                        let judulArr = romawi;
+                        var periodeTr = $('<tr></tr>');
+                        if (periode == 1) { judulArr = namaBulan }
+                        for (let y = 0; y < 10; y++) {
+                            for (let x = 0; x < spanPeriode; x++) {
+                                periodeTr.append('<th>' + judulPeriode + judulArr[x] + '</th>')
+                            }
                         }
+                        thead.append(periodeTr);
                     }
-                    thead.append(periodeTr);
                 }
+               
 
 
                 $('#example').append(thead);
