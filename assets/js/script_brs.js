@@ -8,6 +8,9 @@ var currentPage = window.location.href.split("//")[1].split("/")[1];
   else if(currentPage=="tabulasi"){
     document.getElementById('link2').classList.add('text-white');
   }
+  $('#btnMenu').click(function(){
+    $('#menuShortcut').toggleClass('hidden');
+  })
 
 $('#brsTable').DataTable({
     paging: false,

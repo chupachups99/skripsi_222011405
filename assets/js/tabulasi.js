@@ -9,6 +9,9 @@ $(document).ready(function () {
   else if(currentPage=="tabulasi"){
     document.getElementById('link2').classList.add('text-white');
   }
+  $('#btnMenu').click(function(){
+    $('#menuShortcut').toggleClass('hidden');
+  })
     function processCSV(csvText) {
         const lines = csvText.split('\n');
         const result = [];
