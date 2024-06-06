@@ -4543,6 +4543,9 @@ window.onload = function () {
   $('#tes1').hover(function(){
     $('#menuLink1').toggleClass('hidden');
   })
+  $('#btnMenu').click(function(){
+    $('#menuShortcut').toggleClass('hidden');
+  })
 
   
 }

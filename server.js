@@ -21,10 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }));
 app.use(session({
   secret: 'secret',
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
-    maxAge: 20000,
+    maxAge: 86400000,
     secure: false,
   },
 }));
@@ -111,7 +111,7 @@ app.get('/signout', (req, res) => {
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.send('Goodbye!');
+  res.redirect('/login');
 });
 
 
@@ -152,19 +152,7 @@ app.get('/index', checkAuthenticated, (req, res) => {
   //res.send(req.user.name);
 });
 
-app.get('/users_satu',checkAuthenticated,(req,res)=>{
-  console.log(req.session.passport.user);
-  res.json({message:"halo"})
-})
-// app.get('/index', (req, res) => {
-//   res.render('index');
-//   //res.send(req.user.name);
-// });
-app.get('/link_brs',checkAuthenticated, (req, res) => {
-  console.log(req.session);
-  res.render('brs');
-  //res.send(req.user.name);
-});
+
 // app.get('/najwa',(req,res)=>{
 //   res.render('tes',{data:centroid})
 // })

@@ -106,11 +106,21 @@
                             </div>
                             
                         </div>
+                        <% if(role==1){ %>
                         <span id="previewBtn" class="text-right sticky bottom-2 left-full mr-2">
                             <button id="previewBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
                                 Show Preview
                               </button>
                             </span>
+                            <% }else{%>
+                            
+                                <span class="text-right sticky bottom-2 left-full mr-2">
+                                    <button onclick="alert('Only admin can use this feature')" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
+                                        Show Preview
+                                      </button>
+                                    </span>
+
+                                <%}%>
                         
 
 
@@ -133,10 +143,18 @@
             <div class="md:w-2/3"> <div class="font-bold mb-2">Upload File (format: .xls, .xlsx,.csv) :</div>
             <div> <input id="fileInput" type="file" accept=".csv,.xls,.xlsx" class="ml-2 mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             <br>
-                <div><button id="insertBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
-                Insert to Database 
-              </button>
-            </div>
+            <% if(role==1){ %>
+                 <div><button id="insertBtn" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
+                    Insert to Database 
+                  </button>
+                </div>
+                <% }else{%>
+                     <div><button  onclick="alert('Only admin can use this feature')" class="font-bold shadow-xl bg-blue-500 text-white py-2 px-4 focus:outline-none focus:bg-blue-700 active:bg-blue-800" style="border-radius: 25px;">
+                        Insert to Database 
+                      </button>
+                    </div>
+                    <%}%>
+                
             <br>
             </div>
         </div>

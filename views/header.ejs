@@ -1,43 +1,64 @@
 <div class="fixed rounded-b-2xl h-16 z-30 shadow-md w-full bg-slate-600 px-3 py-3 text-slate-400">
     <div class="flex">
-      <div class="mr-8 flex grow place-items-center lg:grow-0">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg/1726px-Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg.png" class="mr-3 h-8" alt="Logo BPS" />
-        <span class="hidden self-center text-lg font-medium text-white sm:flex md:text-2xl whitespace-nowrap ">Sistem Informasi Visualisasi</span>
-      </div>
-      <div class="mr-3 hidden grow gap-3 place-self-center 
+        <div class="mr-8 flex grow place-items-center lg:grow-0">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg/1726px-Lambang_Badan_Pusat_Statistik_%28BPS%29_Indonesia.svg.png"
+                class="mr-3 h-8" alt="Logo BPS" />
+            <span
+                class="hidden self-center text-lg font-medium text-white sm:flex md:text-2xl whitespace-nowrap ">Sistem
+                Informasi Visualisasi</span>
+        </div>
+        <div class="mr-3 hidden grow gap-3 place-self-center 
       place-content-start lg:flex">
-        <div id="tes1" class="relative mr-10">
-          <button id="link1" class="hover:text-white" onclick="location.href='/index'";>Dashboard</button>
-          <ul id='menuLink1' class="hidden absolute drop-shadow-2xl rounded-[12px] p-2 bg-slate-500">
-            <li id="link1_1" class="hover:text-white whitespace-nowrap  text-sm"><button class="text-left">Wisatawan Nusantara</button> </li>
-            <li id="link1_2" class="hover:text-white whitespace-nowrap  text-sm"><button class="text-left">Tingkat Penghunian Kamar</button></li>
-            <li id="link1_3" class="hover:text-white whitespace-nowrap  text-sm"><button class="text-left">Wisatawan Mancanegara</button></li>
-            <li id="link1_4" class="hover:text-white whitespace-nowrap text-sm"><button class="text-left">Wisatawan Nasional</button></li>
-          </ul>
-        </div>
-        <div class="mr-10" >
-          <button id="link2" class="hover:text-white" onclick="location.href='/tabulasi'";>Tabulasi</button>
-        </div>
-        <div>
-          <button id="link3" class="hover:text-white whitespace-nowrap" onclick="location.href='/brs'";>Fenomena BRS</button>
-        </div>
-        
-        
-      </div>
-  
-      <div class="place-content-center">
-        <button class="text-white">Menu</button>
-      </div>
-    </div>
-  </div>
-  
-  
-  
-  
-  
-  
+            <div id="tes1" class="relative mr-10">
+                <button id="link1" class="hover:text-white" onclick="location.href='/index'" ;>Dashboard</button>
+                <ul id='menuLink1' class="hidden absolute drop-shadow-2xl rounded-[12px] p-2 bg-slate-500">
+                    <li id="link1_1" class="hover:text-white whitespace-nowrap  text-sm"><button
+                            class="text-left">Wisatawan Nusantara</button> </li>
+                    <li id="link1_2" class="hover:text-white whitespace-nowrap  text-sm"><button
+                            class="text-left">Tingkat Penghunian Kamar</button></li>
+                    <li id="link1_3" class="hover:text-white whitespace-nowrap  text-sm"><button
+                            class="text-left">Wisatawan Mancanegara</button></li>
+                    <li id="link1_4" class="hover:text-white whitespace-nowrap text-sm"><button
+                            class="text-left">Wisatawan Nasional</button></li>
+                </ul>
+            </div>
+            <div class="mr-10">
+                <button id="link2" class="hover:text-white" onclick="location.href='/tabulasi'" ;>Tabulasi</button>
+            </div>
+            <div>
+                <button id="link3" class="hover:text-white whitespace-nowrap" onclick="location.href='/brs'" ;>Fenomena
+                    BRS</button>
+            </div>
 
-  
+
+        </div>
+
+        <div class="place-content-center">
+            <div class="relative"><button id="btnMenu" class="text-white w-28">Menu</button>
+                <ul id='menuShortcut' class="hidden absolute drop-shadow-2xl rounded-[12px] p-2 bg-slate-500">
+                    <li id="linkDashboard" class="text-white whitespace-nowrap  text-sm"><button onclick="location.href='/index'"
+                            class="text-left">Dashboard</button> </li>
+                    <li id="linkTabulasi" class="text-white whitespace-nowrap  text-sm"><button onclick="location.href='/tabulasi'"
+                            class="text-left">Tabulasi</button></li>
+                    <li id="linkBrs" class="text-white whitespace-nowrap  text-sm"><button onclick="location.href='/brs'"
+                            class="text-left">Fenomena BRS</button></li>
+                    <li id="linkLogout" class="text-white whitespace-nowrap text-sm"><button onclick="location.href='/logout'"
+                            class="text-left">Log Out</button></li>
+                </ul>
+            
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
 <!-- <div>
   <div class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700 py-3 px-4">
       <div class="flex justify-between items-center max-w-screen-2xl mx-auto">

@@ -216,8 +216,10 @@ $(document).ready(function () {
         let tahunList = [];
         let groupList = [];
         let periode = $("input[name='periode']:checked").val();
+        console.log(periode);
         // let kodeGroup={'jenis_akomodasi':['Hotel Bintang','Hotel Non Bintang'],'kelas_akomodasi':'bintang/kelas'};
         let levelWil = $('input[name="level"]:checked').val();
+        console.log(levelWil);
         $('.tahunCheckbox').each(function () {
             if ($(this).prop('checked')) {
                 tahunList.push($(this).val());
@@ -241,6 +243,7 @@ $(document).ready(function () {
                     
                 // console.log(data.matrix);
                 // console.log(data.columns);
+                console.log(data.columns);
                
                 $('#tabCont').append('<table id="example" class="display nowrap bg-white"></table>');
                 var listHeader = [];
@@ -280,7 +283,7 @@ $(document).ready(function () {
                     header.append('<th rowspan="' + grouping + '">' + str + '</th>');
                     i++;
                 }
-                header.append('<th rowspan="' + grouping + '">' + data.columns[i].data + '</th>');
+                header.append('<th rowspan="' + grouping + '">' + data.columns[i]["data"] + '</th>');
                 // console.log(data.columns[i].data);
                 // console.log(data.data);
                 listHeader[0] = header;
