@@ -140,7 +140,7 @@ app.use('/brs', brsRoutes);
 // brsRoutes.use(checkAuthenticated);
 
 app.get('/index', checkAuthenticated, (req, res) => {
-  console.log(req.session.passport.user);
+  console.log(req.session);
   var userRole;
   if(!req.user.role){
     userRole = 0;

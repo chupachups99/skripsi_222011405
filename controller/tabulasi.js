@@ -4,11 +4,22 @@ const CsvInsert = require("mysql-insert-csv");
 
 const indexPage = async (req, res) => {
     try {
-        console.log(req.session.passport.user[0].role);
+        var role;
         const tahun = await tabModel.getTahun();
+        try{
+            if(req.session.passport.user[0]){
+                role=req.session.passport.user[0].role
+
+            }
+        }
+        catch(err){
+            role=2;
+
+        }
+        
 
         // console.log(tahun[0]);
-        res.render("tabulasi", { data: tahun[0], role : req.session.passport.user[0].role })
+        res.render("tabulasi", { data: tahun[0], role : role })
     }
     catch (error) {
         res.status(500).json({
