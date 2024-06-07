@@ -111,7 +111,7 @@ const insertData = async (body) => {
 
     const connection = await mysql.createConnection({
         host: '0.tcp.ap.ngrok.io',
-        port: '19959',
+        port: '16164',
         user: 'root',
         password: '',
         database: 'skripsi_dashboard'
