@@ -74,23 +74,16 @@
 
           </div>
 
-          <div class="md:flex">
+          
+            <div class="md:flex">
+              <div id="barYearWisnus" class="md:w-2/5 h-96 pt-4 mr-1 shadow bg-white" style="border-radius: 20px;"></div>
+            <div id="lineYearWisnus" class="md:w-3/5 h-96 pt-4 ml-1 shadow bg-white" style="border-radius: 20px;"></div>
+            </div>
 
             <!-- <div class="text-right font-medium mr-8">Export: <a id="exportChart2" href="#">All</a> | <a
                 href="#">Selected</a></div> -->
-            <div id="barYearWisnus" class="md:w-2/5 h-96 pt-4 mr-1 shadow" style="border-radius: 20px;"></div>
-            <!-- <div class="w-1/4 flex items-center justify-center ">
-              <div 
-                class="h-64 text-center text-2xl bg-sky-700 text-white rounded-xl font-semibold mr-3 shadow items-center justify-center p-4">
-                <div id ="textWilayah" class="block h-1/2" style='font-size:1.5rem'>Total Perjalanan Wisatawan Nusantara</div>
-                <div id="textIndicator" class="h-1/2 flex justify-center" style='font-size:3rem'> </div>
-                
-              </div>
-            </div> -->
-
-
-            <div id="lineYearWisnus" class="h-96 pt-4 md:w-3/5 ml-1 shadow" style="border-radius: 20px;"></div>
-          </div>
+            
+          
         </div>
 
         <br>
@@ -121,8 +114,8 @@
 
 
           <div class="md:grid md:grid-cols-2">
-            <div id="cPlethTujuan" class="h-[39rem] mr-1 shadow" style="border-radius: 20px;"></div>
-            <div id="donutTujuan" class="h-[39rem] ml-1 shadow" style="border-radius: 20px;"></div>
+            <div id="cPlethTujuan" class="h-[32rem] mr-1 shadow bg-white pt-4" style="border-radius: 20px;"></div>
+            <div id="donutTujuan" class="h-[32rem] ml-1 shadow bg-white pt-4" style="border-radius: 20px;"></div>
           </div>
         </div>
 
@@ -154,8 +147,8 @@
           </div>
 
           <div class="lg:grid lg:grid-cols-2">
-            <div id="cPlethAsal" class="h-[39rem] mr-1 shadow" style="border-radius: 20px;"></div>
-            <div id="donutAsal" class="h-[39rem] ml-1 shadow" style="border-radius: 20px;"></div>
+            <div id="cPlethAsal" class="h-[32rem] mr-1 shadow bg-white pt-4" style="border-radius: 20px;"></div>
+            <div id="donutAsal" class="h-[32rem] ml-1 shadow bg-white pt-4" style="border-radius: 20px;"></div>
           </div>
         </div>
         <br>
@@ -214,7 +207,7 @@
               </select>
             </div>
           </div>
-          <div id="tpkCombine" class="h-96 ml-3 mr-3 mt-2 shadow" style="border-radius: 20px;">
+          <div id="tpkCombine" class="h-96 ml-3 mr-3 mt-2 shadow bg-white pt-4" style="border-radius: 20px;">
           </div>
 
 
@@ -226,7 +219,7 @@
 
             <div class="md:w-1/4 p-2">
               <div>
-                <div>Pilih Tahun :</div>
+                <div class="font-bold">Pilih Tahun :</div>
                 <div>
                   <input type="radio" value="0" id="singleTPK" name="seriesTPK">
                   <label>single series</label>
@@ -238,7 +231,7 @@
                   <div id="yearBoxTPK" class="overflow-y-scroll h-16 p-3"></div>
                 </div>
                 <br>
-                <div>Pilih Daerah (Maks. 5 wilayah) :</div>
+                <div class="font-bold">Pilih Daerah (Maks. 5 wilayah) :</div>
                 <div id="divWilayahTPK" class="overflow-y-scroll h-32">
                   <input type="checkbox" value="9999" class="checkBoxWilayahTPK" checked="true">
                   <label> Indonesia</label>
@@ -248,7 +241,7 @@
 
             </div>
 
-            <div id="tpkBintang" class="h-96 md:w-3/4 shadow" style="border-radius: 20px;"></div>
+            <div id="tpkBintang" class="h-96 md:w-3/4 shadow bg-white pt-4" style="border-radius: 20px;"></div>
           </div>
         </div>
         <br>
@@ -300,8 +293,8 @@
             </div>
           </div>
           <div class="md:flex">
-            <div id="barWisman" class="md:w-2/5 h-[30rem] shadow" style="border-radius: 20px;">bar chart</div>
-            <div id="lineWisman" class="md:w-3/5 h-[30rem] shadow" style="border-radius: 20px;">linechart</div>
+            <div id="barWisman" class="md:w-2/5 h-[30rem] shadow bg-white mr-1 pt-4" style="border-radius: 20px;">bar chart</div>
+            <div id="lineWisman" class="md:w-3/5 h-[30rem] shadow bg-white ml-1 pt-4" style="border-radius: 20px;">linechart</div>
             <!-- <div class="w-1/4 h-96"></div> -->
           </div>
         </div>
@@ -316,7 +309,7 @@
             </div>
           </div>
           <div class="">
-            <div id="geoWisman" class="h-96"></div>
+            <div id="geoWisman" class="h-96 bg-white p-4" style="border-radius: 25px;"></div>
 
             <!-- <div class="w-1/4 h-96"></div> -->
           </div>
@@ -329,8 +322,8 @@
             </div>
           </div>
           <div class="md:flex">
-            <div id="barPintuMasuk" class="md:w-1/3 h-96"></div>
-            <div id="linePintuMasuk" class="md:w-2/3 h-96"></div>
+            <div id="barPintuMasuk" class="md:w-2/5 h-96 bg-white pt-4 mr-1" style="border-radius: 20px;"></div>
+            <div id="linePintuMasuk" class="md:w-3/5 h-96 bg-white pt-4 ml-1" style="border-radius: 20px;"></div>
 
             <!-- <div class="w-1/4 h-96"></div> -->
           </div>
@@ -379,8 +372,8 @@
             </div>
           </div>
           <div class="md:flex">
-            <div id="barNasPintuMasuk" class="md:w-1/3 h-96"></div>
-            <div id="lineNasPintuMasuk" class="md:w-2/3 h-96"></div>
+            <div id="barNasPintuMasuk" class="md:w-1/3 h-96 bg-white pt-4"></div>
+            <div id="lineNasPintuMasuk" class="md:w-2/3 h-96 bg-white pt-4"></div>
 
             <!-- <div class="w-1/4 h-96"></div> -->
           </div>

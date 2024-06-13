@@ -1,41 +1,10 @@
-// import { text } from 'express';
-// import INAGeoJSON from './Indonesia38.json' assert { type: 'json' };
-// import CityINAJSON from './all_kabkota_ind.json' assert { type: 'json' };
-// import kdProvJSON from './kodeProv.json' assert { type: 'json' };
-// import CountryID from './centroids.json' assert {type:'json'};
-// import CountryJSON from './worldGeoJSON.json' assert {type:'json'};
-
-
-
-
-function exportAllChart1(jsonObject) {
-  var myFile = jsonObject.var[0].label+" (All).xlsx";
-  var valueColumn = jsonObject.var[0].unit;
-  let modifiedJson = [];
-  for (let n = 0; n<jsonObject.vervar.length;n++){
-    for (let i = 0; i < (jsonObject.tahun.length); i++) {
-      let keyData = jsonObject.vervar[n].val + jsonObject.var[0].val.toString() + jsonObject.turvar[0].val.toString() + jsonObject.tahun[i].val.toString() + jsonObject.turtahun[12].val.toString();
-      let temp = {};
-      temp.provinsi = jsonObject.vervar[n].label;
-      temp.tahun = jsonObject.tahun[i].label;
-      temp[valueColumn] = jsonObject.datacontent[keyData];
-      //console.log(temp)
-      modifiedJson.push(temp);
-    }
-  }
-  // console.log(modifiedJson);
-  var myWorkSheet = XLSX.utils.json_to_sheet(modifiedJson);
-  var myWorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(myWorkBook, myWorkSheet, "myWorkSheet");
-  XLSX.writeFile(myWorkBook, myFile);
-}
  
-function firstSection(url, id, kode) {
+function firstSection(url, kode) {
   var barYearWisnus = echarts.init(document.getElementById("barYearWisnus")); //function firstSection
   var lineYearWisnus = echarts.init(document.getElementById("lineYearWisnus")); //function firstSection
   barYearWisnus.showLoading();
   lineYearWisnus.showLoading();
-  let labelYear = [];
+  let labelYear = []; //menyimpan xAxis barChart yaitu tahun
   let wilayah;
   if (kode == '9999') {
       wilayah = kdProvJSON[0][kode];
@@ -76,6 +45,8 @@ function firstSection(url, id, kode) {
   else {
     wilayah = 'Provinsi ' + kdProvJSON[0][kode]
   }
+
+
   let modifiedURL = url+"vervar/"+kode+"/"+APIkey;
   $.get(modifiedURL, function (data, status) {
 
@@ -84,74 +55,96 @@ function firstSection(url, id, kode) {
     let contentYear = [];
     let contentMonths = [];
     let seriesLine = [];
-    kode = kode.split(";");
+    kode = kode.split(";"); //untuk iterasi satu atau lebih wilayah (pulau)
     
-    for (let i = 0; i < (Wisnus.tahun.length); i++) {
-      labelYear.push(Wisnus.tahun[i].label.toString());
-      let temp = [];
-      let temp2 = [];
-      let sum =0;
-      let keyData;
+    for (let i = 0; i < (Wisnus.tahun.length); i++) { //iterasi per tahun
+      labelYear.push(Wisnus.tahun[i].label.toString()); //push tahun (barchart)
+      let temp = []; //temporary array for series tahun
+      let temp2 = []; //temporary array for series bulan
+      let keyData; //key untuk akses value datacontent API
+      let keyData2; //key untuk akses value datacontent API
+      let sum =0; //variabel untuk increment nilai wisnus tahunan per wilayah
+      
+      let isYearData=true; //boolean apakah data tahunan tersedia
        
-        for (let j = 0; j < 12; j++) {
-          let sum2 =0; 
-          labelMonths.push(months[j]+'-'+Wisnus.tahun[i].label.toString())
-          for(let p = 0;p<kode.length;p++){
-            if(j==0){
+        for (let j = 0; j < 12; j++) { // iterasi per bulan 
+          let sum2 =0; //variabel untuk increment nilai wisnus bulanan per wilayah
+          labelMonths.push(months[j]+'-'+Wisnus.tahun[i].label.toString()) //push bulan (linechart)
+          for(let p = 0;p<kode.length;p++){ //iterasi wilayah 
+            if(j==0){ 
+              //key untuk nilai wisnus tahunan
               keyData = kode[p] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
-              if(Wisnus.datacontent[keyData]){
-                sum= sum + parseInt(Wisnus.datacontent[keyData]);
+              if(Wisnus.datacontent[keyData]){ //check apakah data tersedia pada key tertentu
+                sum = sum + parseInt(Wisnus.datacontent[keyData]); //add nilai wisnus bulanan per wilayah to var sum2
+              }
+              else{
+                isYearData=false;
               }
             }
-            
-          //labelMonths.push(Wisnus.turtahun[j].label.toString());
-          let keyData2 = kode[p] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
-          if(Wisnus.datacontent[keyData2]){
-            sum2= sum2+parseInt(Wisnus.datacontent[keyData2]);
-          }
+            //key untuk nilai wisnus bulanan
+            keyData2 = kode[p] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
+            if(Wisnus.datacontent[keyData2]){
+              sum2= sum2+parseInt(Wisnus.datacontent[keyData2]); //add nilai wisnus bulanan per wilayah to var sum2
+            }
         }
-        if(sum2>0){contentMonths.push(sum2)}
+        if(sum2>0){
+          contentMonths.push(sum2) //push nilai akumulasi bulanan 
+        }
+        else{
+          contentMonths.push('-');
+        }
       }
-    
-      contentYear.push(sum);
+      if(isYearData){
+        contentYear.push(sum);
+      }
+      else{
+        let modBulan = len(contentMonths)%12;
+        let upVal = len(contentMonths);
+        let lowVal = upVal-modBulan;
+        let sliceMonths =contentMonths.slice(lowVal,upVal); 
+        contentYear.push(sliceMonths.reduce((accumulator,currentValue)=>{ 
+          if(typeof(accumulator)=="number" && typeof(currentValue)=="number")
+            {
+              return accumulator+currentValue
+            }
+          else{return accumulator}
+        },0)
+          )
+      }
+      
       
     }
-    let satuan2 = ["",1];
-    var textSum = contentYear.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue
-    },0);
+    let units=[];
+    let unitLabel =[];
     
-    if((textSum/1000000000<1000) & (textSum/1000000000>0.99) ){
-      satuan2 = [" Milyar",1000000000];
+    if(contentYear[0]>=1000000){
+      units.push(1000000);
+      unitLabel.push('(Juta)')
     }
-    else if(textSum/100000000<1000 & (textSum/100000000>0.99)){
-      satuan2 = ["Ratus Juta",100000000];
+    else if(contentYear[0]>=1000){
+      units.push(1000);
+      unitLabel.push('(Ribu)');
     }
-    else if(textSum/1000000<1000 & (textSum/1000000>0.99)){
-      satuan2 = ["Juta",1000000];
+    else{
+      units.push(1);
+      unitLabel.push('');
     }
-    $('#textWilayah').text("Total Perjalanan Wisatawan Nusantara "+wilayah+" :");
-    $('#textIndicator').text((textSum/satuan2[1]).toFixed(2)+" "+satuan2[0]);
-    // $('#textIndicator').append("3.34 Miliar");
-    let min = Math.min(...contentMonths);
-    // console.log(min);
-    let satuan = ["",1];
-    
-    if((min/1000000<1000) & (min/1000000>0.99) ){
-      satuan = ["(Juta)",1000000];
+    if(contentMonths[0]>=1000000){
+      units.push(1000000);
+      unitLabel.push('(Juta)')
     }
-    else if(min/100000<1000 & (min/100000>0.99)){
-      satuan = ["(Ratus Ribu)",100000];
+    else if(contentMonths[0]>=1000){
+      units.push(1000);
+      unitLabel.push('(Ribu)')
     }
-    else if(min/1000<1000 & (min/1000>0.99)){
-      satuan = ["(Ribu)",1000];
+    else{
+      units.push(1);
+      unitLabel.push('');
     }
-    
-    // console.log(satuan);
 
     var optionBar = {
       title: {
-        text: 'Jumlah Perjalanan Wisatawan Nusantara ' + wilayah + '\nBerdasarkan Tahun (juta)',
+        text: 'Jumlah Perjalanan Wisatawan Nusantara ' + wilayah + '\nBerdasarkan Tahun '+unitLabel[0],
         left: '3%',
         top:'0%',
         textStyle: {
@@ -169,8 +162,8 @@ function firstSection(url, id, kode) {
   
       },
       grid: {
-        left: '3%',
-        right: '4%',
+        left: '7%',
+        right: '6%',
         bottom: '7%',
         containLabel:true
       },
@@ -192,18 +185,26 @@ function firstSection(url, id, kode) {
       yAxis: [
         {
           type: 'value',
+          name:'Wisatawan Nusantara '+unitLabel[0],
+          nameLocation:'middle',
+          nameGap:30,
           show:true,
           splitLine:{
-            show:false
+            show:true
           },
           axisLine:{
-            show:true
+            show:false
           },
           axisLabel:{
             show:true,
             formatter:function(params){
-              return (params/1000000).toFixed(0);
+                return params/units[0].toFixed(0);
             }
+          },
+          nameTextStyle:{
+            fontFamily:'sans-serif',
+            fontWeight:'bold',
+            fontSize:14,
           }
           
         }
@@ -211,12 +212,13 @@ function firstSection(url, id, kode) {
       //color:'rgb(55 48 163)',
       series: [
         {
+          name: 'Wisatawan Nusantara',
           type: 'bar',
           barWidth: '70%',
           label: {
             show: true,
             formatter:function(params){
-              return (params.value/1000000).toFixed(2);
+              return (params.value/units[0]).toFixed(2);
             },
             position: 'top',
             fontFamily: 'sans-serif',
@@ -238,7 +240,7 @@ function firstSection(url, id, kode) {
 
     var optionLine = {
       title: {
-        text: 'Jumlah Perjalanan Wisatawan Nusantara ' + wilayah + '\nBerdasarkan Bulan dan Tahun '+satuan[0],
+        text: 'Jumlah Perjalanan Wisatawan Nusantara ' + wilayah + '\nBerdasarkan Bulan dan Tahun '+unitLabel[1],
         left: '3%',
         top:'0%',
         textStyle: {
@@ -252,8 +254,8 @@ function firstSection(url, id, kode) {
         trigger: 'axis'
       },
       grid: {
-        left: '3%%',
-        right: '3%',
+        left: '5%%',
+        right: '5%',
         bottom: '9%',
         containLabel: true
       },
@@ -275,16 +277,24 @@ function firstSection(url, id, kode) {
         type: 'value',
         axisLabel:{
           formatter:function (value) {
-            return (value/satuan[1]).toFixed(0);
+            return (value/units[1]).toFixed(0);
         }
         },
-        splitLine:{show:false},
+        name:'Wisatawan Nusantara '+unitLabel[1],
+        nameLocation:'middle',
+        nameGap:30,
+        splitLine:{show:true},
         axisLine:{
-          show:true
-        }
+          show:false
+        },
+        nameTextStyle:{
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:14,
+        },
       },
       series: {
-        name: "Wisnus",
+        name: "Wisatawan Nusantara",
         type: "line",
         data:contentMonths,
         symbolSize:1,
@@ -295,11 +305,19 @@ function firstSection(url, id, kode) {
           fontWeight:'bold',
           distance:10,
           formatter:function(params){
-            return (params.data/satuan[1]).toFixed(1) ;
+            let monYoy = contentMonths.length%12;
+            if((params.dataIndex+1)%12==monYoy){
+              return (params.data/units[1]).toFixed(2);
+            }
+            else{
+              return '';
+            }
+
+        
 
           }
         },
-        labelLayout:{hideOverlap:true}
+        // labelLayout:{hideOverlap:true}
       }
     };
 
@@ -340,692 +358,7 @@ function capitalizeWords(str) {
     .join(' ');
 }
 
-// function make_charts(url, id, year) {
-//   $.get(url, function (data, status) {
-//     var myChart2 = echarts.init(document.getElementById(id));
-//     let resp = JSON.parse(JSON.stringify(data));
-//     let label = [];
-//     let content = [];
 
-//     for (let i = 1; i < resp.vervar.length; i++) {
-//       label.push(capitalizeWords(resp.vervar[i].label));
-//       let key_data = resp.vervar[i].val.toString() + resp.var[0].val.toString() + resp.turvar[0].val.toString() + year.toString() + resp.turtahun[0].val.toString();
-//       content.push(resp.datacontent[key_data]);
-//       //combine.push({name:capitalizeWords(resp.vervar[i].label),value:resp.datacontent[key_data]})
-//     }
-//     var option;
-//     option = {
-//       tooltip: {
-//         trigger: 'axis',
-//         axisPointer: {
-//           type: 'shadow'
-//         }
-//       },
-//       grid: {
-//         left: '3%',
-//         right: '4%',
-//         bottom: '3%',
-//         containLabel: true
-//       },
-//       xAxis: [
-//         {
-//           type: 'category',
-//           data: label,
-//           axisTick: {
-//             alignWithLabel: true
-//           },
-//           axisLabel: {
-//             rotate: 30
-//           }
-//         }
-//       ],
-//       yAxis: [
-//         {
-//           type: 'value'
-//         }
-//       ], toolbox: {
-//         show: true,
-//         orient: 'horizontal',
-//         left: 'left',
-//         top: 'top',
-//         feature: {
-//           dataView: { readOnly: false },
-//           restore: {},
-//           saveAsImage: {}
-//         }
-//       },
-
-
-
-//       series: [
-//         {
-//           type: 'bar',
-//           barWidth: '60%',
-//           data: content
-//         }
-//       ]
-//     };
-
-//     option && myChart2.setOption(option);
-
-
-//   });
-
-// }
-
-
-// function getTemp(zoom, center) {
-//   var storyPage = echarts.init(document.getElementById('chart'));
-//   $.get('http://localhost:4000/dataTujuan', function (data, status) {
-//     echarts.registerMap('Ind', INAGeoJSON);
-//     var option = {
-//       tooltip: {
-//         trigger: 'item',
-//         formatter: function (params) {
-//           var value = params.seriesName + "\n" + params.name + ' : ' + (params.value / 1000000).toFixed(2) + ' juta';
-//           return value
-//         }
-//       },
-//       toolbox: {
-//         show: true,
-//         orient: 'horizontal',
-//         left: 'left',
-//         top: 'top',
-//         feature: {
-//           dataView: { readOnly: false },
-          
-//           restore: {},
-//           saveAsImage: { title: 'Save' }
-//         }
-
-//       }, visualMap: {
-//         left: 'right',
-//         orient: 'vertical',
-//         min: 0,
-//         max: 900000000,
-//         inRange: {
-//           color: [
-//             '#EEF5FF',
-//             '#B4D4FF',
-//             '#86B6F6',
-//             '#176B87'
-//           ]
-//         },
-//         text: ['High', 'Low'],
-//         calculable: false,
-//         orient: 'horizontal',
-//       },
-//       center: center,
-//       grid: {
-//         top: 10,
-//         left: '2%',
-//         right: '2%',
-//         bottom: '3%',
-//         containLabel: true
-//       },
-//       animation: true,
-//       series: [{
-//         name: 'Provinsi Tujuan',
-//         type: 'map',
-//         map: "Ind",
-//         zoom: zoom,
-//         roam: false,
-//         data: data,
-//       }]
-//     };
-//     storyPage.setOption(option);
-//   });
-// }
-
-// function getTemp_(id) {
-//   let tempData_;
-//   fetch('http://localhost:4000/dataAsal')
-//     .then(function (response) {
-//       return response.json();
-//     })
-//     .then(function (data) {
-//       tempData_ = data;
-//       //console.log(tempData);
-//       map_(id, tempData_, [
-//         '#DBE7C9',
-//         '#789461',
-//         '#50623A',
-//         '#294B29',
-//       ]);
-//     });
-// }
-
-// function getPie(id) {
-//   let tempData_;
-//   fetch('http://localhost:4000/dataTujuan')
-//     .then(function (response) {
-//       return response.json();
-//     })
-//     .then(function (data) {
-//       tempData_ = data;
-//       //console.log(tempData);
-//       //   tempData_.sort(function(a, b){
-//       //     return a.value - b.value;
-//       // });
-//       make_pie(id, tempData_);
-//     });
-// }
-// function getDonut(id) {
-//   let tempData_;
-//   fetch('http://localhost:4000/dataTujuan')
-//     .then(function (response) {
-//       return response.json();
-//     })
-//     .then(function (data) {
-//       tempData_ = data;
-//       //   //console.log(tempData);
-//       //   tempData_.sort(function(a, b){
-//       //     return a.value - b.value;
-//       // });
-//       make_donut(id, tempData_);
-//     });
-// }
-// function map_(id, tempData, pallete) {
-//   echarts.registerMap('Ind', INAGeoJSON);
-//   var myChart = echarts.init(document.getElementById(id));
-//   var option = {
-//     tooltip: {
-//       trigger: 'item',
-//       formatter: function (params) {
-//         var value = params.seriesName + "\n" + params.name + ' : ' + (params.value / 1000000).toFixed(2) + ' juta';
-//         return value
-//       }
-//     },
-//     toolbox: {
-//       show: true,
-//       orient: 'horizontal',
-//       left: 'left',
-//       top: 'top',
-//       feature: {
-//         dataView: { readOnly: false },
-//         restore: {},
-//         saveAsImage: { title: 'Save' }
-//       }
-
-//     }, visualMap: {
-//       left: 'left',
-//       min: 0,
-//       max: 900000000,
-//       inRange: {
-//         color: pallete
-//       },
-//       text: ['High', 'Low'],
-//       calculable: false,
-//       orient: 'horizontal',
-//     },
-
-//     grid: {
-//       top: 10,
-//       left: '2%',
-//       right: '2%',
-//       bottom: '3%',
-//       containLabel: true
-//     },
-//     animation: true,
-//     series: [{
-//       name: 'Provinsi Tujuan',
-//       type: 'map',
-//       map: "Ind",
-//       roam: false,
-//       data: tempData,
-//     }]
-//   };
-//   myChart.setOption(option);
-
-// }
-
-// function make_pie(id, tempData) {
-//   var chartDom = document.getElementById(id);
-//   var myChart = echarts.init(chartDom);
-//   var option;
-
-//   option = {
-//     toolbox: {
-//       show: true,
-//       feature: {
-//         mark: { show: true },
-//         dataView: { show: true, readOnly: false },
-//         restore: { show: true },
-//         saveAsImage: { show: true }
-//       }
-//     },
-//     series: [
-//       {
-//         name: 'Nightingale Chart',
-//         type: 'pie',
-//         radius: [50, 250],
-//         center: ['50%', '50%'],
-//         roseType: 'area',
-//         itemStyle: {
-//           borderRadius: 8
-//         },
-//         data: tempData
-//       }
-//     ]
-//   };
-
-//   option && myChart.setOption(option);
-
-// }
-
-// function make_donut(id, tempData) {
-//   var chartDom = document.getElementById(id);
-//   var myChart = echarts.init(chartDom);
-//   var option;
-
-//   option = {
-//     tooltip: {
-//       trigger: 'item'
-//     },
-//     // visualMap: {
-//     //   show: false,
-//     //   min: 0,
-//     //   max: 1000000000,
-//     //   inRange: {
-//     //     colorLightness: [0, 1]
-//     //   }
-//     // },
-//     series: [
-//       {
-//         name: 'Access From',
-//         type: 'pie',
-//         radius: ['40%', '70%'],
-//         avoidLabelOverlap: true,
-//         // itemStyle: {
-//         //   color: '#c23532',
-//         //   shadowBlur: 200,
-//         //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-//         // },
-//         label: {
-//           show: true
-//         },
-//         emphasis: {
-//           label: {
-//             show: true,
-//             fontSize: 40,
-//             fontWeight: 'bold'
-//           }
-//         },
-//         labelLine: {
-//           show: true
-//         },
-
-//         data: tempData
-//       }
-//     ]
-//   };
-
-//   option && myChart.setOption(option);
-
-// };
-
-// function setRaceBarAsal(url) {
-//   $.get(url, function (content, status) {
-//     var raceBarAsal = echarts.init(document.getElementById("raceBarAsal2"));
-//     const years = [];
-//     var dataRace = [];
-//     const kode  = Object.keys(kdProvJSON[0]);
-//     var Wisnus = JSON.parse(JSON.stringify(content));
-//     for (let m = 0; m < kode.length-1; m++) {
-//       for (let i = 0; i < (Wisnus.tahun.length); i++) {
-//         //labelYear.push(Wisnus.tahun[i].label.toString());
-//         //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
-//         //contentYear.push(Wisnus.datacontent[keyData]);
-//         //let temp = [];
-//         //let temp2 = [];
-//         for (let j = 0; j < 12; j++) {
-//           let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
-//           years.push(a);
-//           let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
-//           //console.log(Wisnus.datacontent[keyData2]);
-//           let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
-//           dataRace.push(temp);
-
-//         };
-        
-//       }
-//     }
-//     //console.log(dataRace);
-//     // const rows = content.toString().split('\n');
-    
-//     // for (let i = 1; i < rows.length; i++) {
-//     //   dataRace.push(rows[i].split(';'))
-//     // }
-
-//     const updateFrequency = 2000;
-//     // for (let i = 2019; i < 2023; i++) {
-//     //   for (let j = 0; j < 12; j++) {
-//     //     let temp = months[j] + " " + i.toString();
-//     //     years.push(temp);
-
-//     //   }
-//     // }
-
-//     var optionRace = {
-//       title: {
-//         text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
-//         left: 'center',
-//         textStyle: {
-//           fontSize: 15
-//         }
-//       },
-//       grid: {
-//         // top: 10,
-//         // bottom: 30,
-//         // left: 150,
-//         // right: 80
-//       },
-//       xAxis: {
-//         max: 'dataMax',
-//         axisLabel: {
-//           formatter: function (n) {
-//             return Math.round(n) + '';
-//           }
-//         }
-//       },
-//       dataset: {
-//         source: dataRace.filter(function (d) {
-//           return d[1] === years[0];
-//         }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
-//       },
-//       yAxis: {
-//         type: 'category',
-//         inverse: true,
-//         max: 30,
-//         axisLabel: {
-//           show: true,
-//           fontSize: 14,
-//           formatter: function (value) {
-//             return value;
-//           },
-//         },
-//         axisLabel: {
-//           fontSize: 12,
-//           fontFamily: 'serif',
-//           fontWeight:'bold'
-//         },
-//         animationDuration: 300,
-//         animationDurationUpdate: 300
-//       },
-//       series: [
-//         {
-//           realtimeSort: true,
-//           seriesLayoutBy: 'column',
-//           type: 'bar',
-//           encode: {
-//             x: 2,
-//             y: 0
-//           },
-//           label: {
-//             show: true,
-//             precision: 1,
-//             position: 'right',
-//             valueAnimation: true,
-//             fontFamily: 'serif'
-//           }
-//         }
-//       ],
-//       // Disable init animation.
-//       animationDuration: 0,
-//       animationDurationUpdate: updateFrequency,
-//       animationEasing: 'linear',
-//       animationEasingUpdate: 'linear',
-//       graphic: {
-//         elements: [
-//           {
-//             type: 'text',
-//             right: 0,
-//             bottom: 60,
-//             style: {
-//               text: years[0],
-//               font: 'bolder 80px monospace',
-//               fill: 'rgba(100, 100, 100, 0.25)'
-//             },
-//             z: 100
-//           }
-//         ]
-//       }
-//     };
-//     // console.log(option);
-//     raceBarAsal.setOption(optionRace);
-//     for (let i = 0; i < years.length - 1; ++i) {
-//       (function (i) {
-//         setTimeout(function () {
-//           updateYear(years[i + 1]);
-//         }, (i) * updateFrequency);
-//       })(i);
-//     }
-//     function updateYear(year) {
-//       let source = dataRace.filter(function (d) {
-//         return d[1] === year;
-//       }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
-//       optionRace.series[0].data = source;
-//       optionRace.graphic.elements[0].style.text = year;
-//       raceBarAsal.setOption(optionRace);
-//     }
-//   });
-
-// }
-
-
-
-// function setRaceBar(url) {
-//   $.get(url, function (content, status) {
-//     var raceBarTujuan = echarts.init(document.getElementById("raceBarTujuan2"));
-//     const years = [];
-//     var dataRace = [];
-//     const kode  = Object.keys(kdProvJSON[0]);
-//     var Wisnus = JSON.parse(JSON.stringify(content));
-//     for (let m = 0; m < kode.length-1; m++) {
-//       for (let i = 0; i < (Wisnus.tahun.length); i++) {
-//         //labelYear.push(Wisnus.tahun[i].label.toString());
-//         //let keyData = kdProvJSON[] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[12].val.toString();
-//         //contentYear.push(Wisnus.datacontent[keyData]);
-//         //let temp = [];
-//         //let temp2 = [];
-//         for (let j = 0; j < 12; j++) {
-//           let a = Wisnus.turtahun[j].label.toString() + Wisnus.tahun[i].label.toString();
-//           years.push(a);
-//           let keyData2 =kode[m] + Wisnus.var[0].val.toString() + Wisnus.turvar[0].val.toString() + Wisnus.tahun[i].val.toString() + Wisnus.turtahun[j].val.toString();
-//           //console.log(Wisnus.datacontent[keyData2]);
-//           let temp= [kdProvJSON[0][kode[m]],a,Wisnus.datacontent[keyData2]];
-//           dataRace.push(temp);
-
-//         };
-        
-//       }
-//     }
-//     //console.log(dataRace);
-//     // const rows = content.toString().split('\n');
-    
-//     // for (let i = 1; i < rows.length; i++) {
-//     //   dataRace.push(rows[i].split(';'))
-//     // }
-
-//     const updateFrequency = 2000;
-//     // for (let i = 2019; i < 2023; i++) {
-//     //   for (let j = 0; j < 12; j++) {
-//     //     let temp = months[j] + " " + i.toString();
-//     //     years.push(temp);
-
-//     //   }
-//     // }
-
-//     var optionRace = {
-//       title: {
-//         text: 'Peringkat Provinsi Perjalanan Wisatawan Nusantara Bulanan',
-//         left: 'center',
-//         textStyle: {
-//           fontSize: 15
-//         },
-//         top:0,
-//       },
-//       grid: {
-//         // top: 10,
-//         // bottom: 30,
-//         // left: 150,
-//         // right: 80
-//       },
-//       xAxis: {
-//         max: 'dataMax',
-//         axisLabel: {
-//           formatter: function (n) {
-//             return Math.round(n) + '';
-//           }
-//         }
-//       },
-//       dataset: {
-//         source: dataRace.filter(function (d) {
-//           return d[1] === years[0];
-//         }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) })
-//       },
-//       yAxis: {
-//         type: 'category',
-//         inverse: true,
-//         max: 30,
-//         axisLabel: {
-//           show: true,
-//           fontSize: 14,
-//           formatter: function (value) {
-//             return value;
-//           },
-//         },
-//         axisLabel: {
-//           fontSize: 12,
-//           fontFamily: 'serif',
-//           fontWeight:'bold'
-//         },
-//         animationDuration: 300,
-//         animationDurationUpdate: 300
-//       },
-//       series: [
-//         {
-//           realtimeSort: true,
-//           seriesLayoutBy: 'column',
-//           type: 'bar',
-//           encode: {
-//             x: 2,
-//             y: 0
-//           },
-//           label: {
-//             show: true,
-//             precision: 1,
-//             position: 'right',
-//             valueAnimation: true,
-//             fontFamily: 'serif'
-//           }
-//         }
-//       ],
-//       // Disable init animation.
-//       animationDuration: 0,
-//       animationDurationUpdate: updateFrequency,
-//       animationEasing: 'linear',
-//       animationEasingUpdate: 'linear',
-//       graphic: {
-//         elements: [
-//           {
-//             type: 'text',
-//             right: 0,
-//             bottom: 60,
-//             style: {
-//               text: years[0],
-//               font: 'bolder 80px monospace',
-//               fill: 'rgba(100, 100, 100, 0.25)'
-//             },
-//             z: 100
-//           }
-//         ]
-//       }
-//     };
-//     // console.log(option);
-//     raceBarTujuan.setOption(optionRace);
-//     for (let i = 0; i < years.length - 1; ++i) {
-//       (function (i) {
-//         setTimeout(function () {
-//           updateYear(years[i + 1]);
-//         }, (i) * updateFrequency);
-//       })(i);
-//     }
-//     function updateYear(year) {
-//       let source = dataRace.filter(function (d) {
-//         return d[1] === year;
-//       }).sort(function (a, b) { return parseInt(b[2]) - parseInt(a[2]) });
-//       optionRace.series[0].data = source;
-//       optionRace.graphic.elements[0].style.text = year;
-//       raceBarTujuan.setOption(optionRace);
-//     }
-//   });
-
-// }
-
-
-
-// function rearrangeArray(arr) {
-//   let n = arr.length;
-//   // Sorting the array elements
-//   let sortArr = arr.sort((a, b) => {
-//     if (a.value > b.value) {
-//       return -1;
-//     }
-//   });
-
-//   // To store modified array
-//   let tempArr;
-//   let tempArr1 = [];
-//   let tempArr2 = [];
-//   let n1 = tempArr1.length;
-//   let n2 = tempArr2.length;
-//   let temp1 = 0;
-//   let temp2 = 0;
-//   let temp;
-//   let delta1 = 0;
-//   let delta2 = 0;
-
-//   for (let i = 0; i < n; i++) {
-//     let turn = i % 2 + 1;
-//     delta1 = temp1 - temp2;
-//     delta2 = temp2 - temp1
-//     if (turn == 1) {
-//       if (delta1 < 0) {
-//         temp = sortArr.shift();
-//         temp1 = temp1 + temp.value;
-//         tempArr1.push(temp);
-//       }
-//       else {
-//         temp = sortArr.pop();
-//         temp1 = temp1 + temp.value;
-//         tempArr1.push(temp);
-//       }
-
-//     }
-//     else {
-//       if (delta2 < 0) {
-//         temp = sortArr.shift();
-//         temp2 = temp2 + temp.value;
-//         tempArr2.push(temp);
-//       }
-//       else {
-//         temp = sortArr.pop();
-//         temp2 = temp2 + temp.value;
-//         tempArr2.push(temp);
-//       }
-//     }
-//   }
-//   tempArr = tempArr1.concat(tempArr2);
-//   // Adding numbers from sorted array  
-//   // to new array accordingly
-//   //let ArrIndex = 0;
-//   //let splitVal = parseInt(n/2); 
-
-//   // Traverse from begin and end simultaneously 
-
-//   return tempArr;
-// }
 
 function sectionTwo(url) {
   $.get(url, function (data, status) {
@@ -1038,15 +371,7 @@ function sectionTwo(url) {
     let beginVal = $("#sAwalTujuan").val();
     let endVal = $("#sAkhirTujuan").val();
     let kdWil = Object.keys(kdProvJSON[0]);
-    // console.log(beginVal);
-    // console.log(endVal);
     let a = -1;
-    // for (let n = 0; n < Wisnus.tahun.length; n++) {
-    //   var optionHTML = document.createElement("option");
-    //   optionHTML.value = Wisnus.tahun[n].val.toString();
-    //   optionHTML.text = Wisnus.tahun[n].label.toString();
-    //   selectTahun.add(optionHTML);
-    // }
     let boolAdd = $("#sAwalTujuan").children('option').length<2;
     for (let i = 0; i < (kdWil.length - 1); i++) {
       if (!kdNew.includes(kdWil[i])) {
@@ -1085,16 +410,16 @@ function sectionTwo(url) {
     let text;
     if(endVal=="Pilih Rentang Waktu Akhir" & !beginVal){
      timeline = labelMonths.slice();
-    text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan (Kumulatif)'+'\n('+timeline[0]+
+    text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan '+'('+timeline[0]+
     ' — '+timeline[timeline.length-1]+")";
     }else if(endVal=="Pilih Rentang Waktu Akhir"){timeline=labelMonths[beginVal];
-      text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan (Kumulatif)'+'\n('+timeline+")";
+      text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan '+timeline;
 
       // console.log(beginVal);
     }
     else{
      timeline = labelMonths.slice(beginVal,parseInt(endVal)+1);
-     text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan (Kumulatif)'+'\n('+timeline[0]+'-'+timeline[timeline.length-1]+")";
+     text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan '+'('+timeline[0]+'-'+timeline[timeline.length-1]+")";
     
     //  console.log(beginVal);
     }
@@ -1158,7 +483,7 @@ function sectionTwo(url) {
           return value
         },
         textStyle:{
-          fontFamily:"serif",
+          fontFamily:"sans-serif",
           fontSize:15
         }
       },
@@ -1241,6 +566,12 @@ function sectionTwo(url) {
       tooltip: {
         show: true,
         trigger: 'item',
+        textStyle: {
+          fontSize: 15,
+          fontWeight:'normal',
+          fontFamily:'sans-serif',
+          color:'black'
+        },
         formatter: function (params) {
           return `<span style="font-weight: bold;">${params.name}</span> : ${(params.data.number/1000000).toFixed(2)} juta`;
           ;
@@ -1251,8 +582,7 @@ function sectionTwo(url) {
         max: 'dataMax',
         axisLabel:{
           show :false,
-          fontFamily:'sans-serif',
-          fontSize:'15',
+        
           
         },
         axisLine:{show:true},
@@ -1262,7 +592,7 @@ function sectionTwo(url) {
         axisLabel:{
           show :true,
           fontFamily:'sans-serif',
-          fontSize:'10',
+          fontSize:'8',
           fontWeight:'bold',
           color:'black'
           
@@ -1295,6 +625,7 @@ function sectionTwo(url) {
             y: 'name'
           },
           type: 'bar',
+          barWidth:'70%',
           markArea: {
             silent:true,
             data: [
@@ -1315,7 +646,7 @@ function sectionTwo(url) {
             position:['65%','100%'],
             color:'black',
             fontFamily:'sans-serif',
-            fontSize:'14px'
+            fontSize:'12px'
             // verticalAlign:'bottom'
           }
        },
@@ -1327,7 +658,7 @@ function sectionTwo(url) {
             position: 'right',
             fontFamily: 'sans-serif',
             fontWeight:'bold',
-            fontSize: '12'
+            fontSize: '10'
           },
           backgroundStyle: {
             color: 'rgba(180, 180, 180, 0.2)'
@@ -1449,16 +780,16 @@ function sectionTwoAsal(url) {
     let text;
     if(endVal=="Pilih Rentang Waktu Akhir" & !beginVal){
       timeline = labelMonths.slice();
-     text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal (Kumulatif)'+'\n('+timeline[0]+
+     text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal '+'('+timeline[0]+
      ' — '+timeline[timeline.length-1]+")";
      }else if(endVal=="Pilih Rentang Waktu Akhir"){timeline=labelMonths[beginVal];
-       text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal (Kumulatif)'+'\n('+timeline+")";
+       text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal '+timeline;
  
        // console.log(beginVal);
      }
      else{
       timeline = labelMonths.slice(beginVal,parseInt(endVal)+1);
-      text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal (Kumulatif)'+'\n('+timeline[0]+'-'+timeline[timeline.length-1]+")";
+      text='Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Asal '+'('+timeline[0]+'-'+timeline[timeline.length-1]+")";
      
      //  console.log(beginVal);
      }
@@ -1519,7 +850,7 @@ function sectionTwoAsal(url) {
           return value
         },
         textStyle:{
-          fontFamily:"serif",
+          fontFamily:"sans-serif",
           fontSize:15
         }
       },
@@ -1542,10 +873,13 @@ function sectionTwoAsal(url) {
         })),
         inRange: {
           color: [
-            '#EEF5FF',
-            '#B4D4FF',
-            '#86B6F6',
-            '#176B87'
+            '#D8F3DC',
+            
+            '#95D5B2',
+            '#52B788',
+            '#2D6A4F',
+            '#1B4332',
+            
           ]
         },
         text: ['Tinggi', 'Rendah'],
@@ -1593,6 +927,7 @@ function sectionTwoAsal(url) {
       left:'3%',
       containLabel:true
     },
+    color:'#2D6A4F',
       tooltip: {
         show: true,
         trigger: 'item',
@@ -1617,7 +952,7 @@ function sectionTwoAsal(url) {
         axisLabel:{
           show :true,
           fontFamily:'sans-serif',
-          fontSize:'10',
+          fontSize:'8',
           fontWeight:'bold',
           color:'black'
           
@@ -1650,6 +985,7 @@ function sectionTwoAsal(url) {
             y: 'name'
           },
           type: 'bar',
+          barWidth:'70%',
           markArea: {
             silent:true,
             data: [
@@ -1670,7 +1006,7 @@ function sectionTwoAsal(url) {
             position:['65%','100%'],
             color:'black',
             fontFamily:'sans-serif',
-            fontSize:'14px'
+            fontSize:'12px'
             // verticalAlign:'bottom'
           }
        },
@@ -1682,7 +1018,7 @@ function sectionTwoAsal(url) {
             position: 'right',
             fontFamily: 'sans-serif',
             fontWeight:'bold',
-            fontSize: '12'
+            fontSize: '10'
           },
           backgroundStyle: {
             color: 'rgba(180, 180, 180, 0.2)'
@@ -1755,702 +1091,7 @@ function ExportToExcel(type, fn, dl) {
 }
 
 
-
-function tabulasiWisnus(url,sumFunction,tahun){
-  $.get(url,function(data,status){
-    let wisnus = JSON.parse(JSON.stringify(data));
-    let roman = ["I","II","III","IV","V","VI"] ;
-    let dom =$('#tabCont');
-    
-    if(sumFunction==0){
-
-      // $("#tabulasiWisnus").DataTable({
-      //   order:[],
-      // });
-      // Create table headers
-      
-      
-      // var column = [];
-      // dom.append('<table id="tabulasiWisnus"></table>');
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara Tahunan Berdasarkan Provinsi Tujuan.</caption>");
-      var thead = $("<thead></thead>");
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-      // column.push("Provinsi Tujuan");
-      
-  
-      for(let k = 0;k<tahun.length;k++){
-        let temp = parseInt(tahun[k])+1900;
-          headers.append("<th class='font-semibold'>"+temp.toString()+"</th>");
-          // column.push("Tahun "+temp.toString());
-      }
-      headers.append('<th class="font-semibold" align="right">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      let tbody = $("<tbody></tbody>");
-      //loop rows
-      for(let i=0;i<wisnus.vervar.length;i++){
-        // var temp={};
-        var row = $("<tr></tr>");
-        row.append("<td>" + wisnus.vervar[i].label + '</td>');
-        // temp[column[0]]= wisnus.vervar[i].label;
-        let total = 0;
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + 13;
-          
-          if(wisnus.datacontent[keyData]){
-            total = total + parseInt(wisnus.datacontent[keyData]);
-            row.append('<td align="right">' + new Intl.NumberFormat().format(wisnus.datacontent[keyData]) + '</td>');
-            // temp[column[j+1]]= wisnus.datacontent[keyData];
-
-          }
-                      
-        }
-        row.append('<td align="right">' + new Intl.NumberFormat().format(total) + '</td>');
-
-        tbody.append(row);
-        // modifiedJson.push(temp);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Tahunan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        // scrollCollapse: true,
-        paging:false,
-        info:false
-      });
-      
-      
-    
-    }
-    else if(sumFunction==1){
-      // Create table headers
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara Bulanan Berdasarkan Provinsi Tujuan.</caption>");
-      var thead = $('<thead></thead>');
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-      // let text = '<th colspan="'+tahun.length+'">Tahun</th>';
-      // headers.append(text);
-      
-
-      //subheaders
-      //var subhead = $('<tr></tr>');
-         
-            for(let k = 0;k<tahun.length;k++){
-              for(let m = 0;m<12;m++){
-              let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="font-semibold">'+months[m]+' '+temp+'</th>');
-              }
-          }
-      headers.append('<th class="font-semibold" align="right">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      // table.append(headers);
-      //table.append(subhead);
-      let tbody = $('<tbody></tbody>');
-
-      //loop rows
-      for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
-        let total = 0;
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          for (let k =0;k<wisnus.turtahun.length-1;k++){
-            
-          let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-          if(wisnus.datacontent[keyData]){
-            total = total + parseInt(wisnus.datacontent[keyData]);
-            row.append('<td>' + new Intl.NumberFormat().format(wisnus.datacontent[keyData])+ '</td>');
-          
-          }
-          else{
-            row.append("<td>-</td>")
-          }
-          }
-          }
-        row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-        tbody.append(row);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        fixedColumns: {
-          start: 1
-    
-      },
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Periode Bulanan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        scrollX:'92dvw',
-        paging:false,
-        info:false
-      });
-      // $(".tr").css({"width":"9000px"});
-      // $('#tabulasiWisnus').append(table);
-      
-      // $("#btnExportTab").click(function(){ExportToExcel()});
-    }
-    else if(sumFunction==2){
-      // Create table headers
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara Dwiwulanan Berdasarkan Provinsi Tujuan.</caption>");
-      var thead = $("<thead></thead>");
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-         
-            for(let k = 0;k<tahun.length;k++){
-              for(let m = 0;m<6;m++){
-              let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="font-semibold">DW '+roman[m] +'-'+temp+'</th>');
-              }
-          }
-      headers.append('<th class="font-semibold">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      
-      //table.append(subhead);
-
-      //loop rows
-      var tbody = $("<tbody></tbody>");
-      for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
-        let total = 0;
-        let sumDwi = 0
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          for (let k =0;k<wisnus.turtahun.length-1;k++){
-            let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-            if(wisnus.datacontent[keyData]){
-              if(k%2 ==0){
-                total = 0
-                total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              else{
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-                  
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                  
-                }
-                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
-              }
-              else{
-                if(k%2==1){
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                }
-                else{
-                  total=0;
-                }
-              }
-              
-                
-            
-          }
-        }
-        row.append('<td>' + new Intl.NumberFormat().format(sumDwi) + '</td>');
-        tbody.append(row);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        fixedColumns: {
-          start: 1
-    
-      },
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Periode Dwiwulanan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        scrollX:'92dvw',
-        paging:false,
-        info:false
-      });
-
-      // $("#btnExportTab").click(function(){ExportToExcel()});
-
-
-    }
-    else if(sumFunction==3){
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-    
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara Triwulanan Berdasarkan Provinsi Tujuan.</caption>");
-
-      var thead = $("<thead></thead>");
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-         
-            for(let k = 0;k<tahun.length;k++){
-              for(let m = 0;m<4;m++){
-              let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="font-semibold">TW '+roman[m] +'-'+temp+'</th>');
-              }
-          }
-      headers.append('<th class="font-semibold">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      
-      //table.append(subhead);
-
-      //loop rows
-      var tbody = $("<tbody></tbody>");
-      for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
-        let total = 0;
-        let sumDwi = 0
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          for (let k =0;k<wisnus.turtahun.length-1;k++){
-            let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-            if(wisnus.datacontent[keyData]){
-              if(k%3 ==0){
-                total = 0
-                total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              else if(k%3==2){
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-                  
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                  
-                  
-                }
-                else{
-                  total = total+parseInt(wisnus.datacontent[keyData]);
-                }
-                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
-              }
-              else{
-                if(k%3==2){
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                }
-                else if(k%3==0){
-                  total=0;
-                }
-              }
-              
-                
-            
-          }
-        }
-        row.append('<td>' + new Intl.NumberFormat().format(sumDwi) + '</td>');
-        tbody.append(row);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        fixedColumns: {
-          start: 1
-    
-      },
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Periode Triwulanan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        scrollX:'92dvw',
-        paging:false,
-        info:false
-      });
-
-      // $("#btnExportTab").click(function(){ExportToExcel()});
-
-
-
-    }
-    
-    else if(sumFunction==4){
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara CaturWulanan Berdasarkan Provinsi Tujuan.</caption>");
-
-      var thead = $("<thead></thead>");
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-         
-            for(let k = 0;k<tahun.length;k++){
-              for(let m = 0;m<3;m++){
-              let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="font-semibold">CW '+roman[m] +'-'+temp+'</th>');
-              }
-          }
-      headers.append('<th class="font-semibold">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      
-      var tbody = $("<tbody></tbody>");
-      for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
-        let total = 0;
-        let sumDwi = 0
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          for (let k =0;k<wisnus.turtahun.length-1;k++){
-            let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-            if(wisnus.datacontent[keyData]){
-              if(k%4 ==0){
-                total = 0
-                total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              else if(k%4==3){
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-                  
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                  
-                }
-                else{
-                  total = total+parseInt(wisnus.datacontent[keyData]);
-                }
-                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
-              }
-              else{
-                if(k%4==3){
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                }
-                else if(k%4==0){
-                  total=0;
-                }
-              }
-              
-                
-            
-          }
-        }
-        row.append('<td>' + new Intl.NumberFormat().format(sumDwi) + '</td>');
-        tbody.append(row);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        fixedColumns: {
-          start: 1
-    
-      },
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Periode Caturwulan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        scrollX:'92dvw',
-        paging:false,
-        info:false
-      });
-
-
-    }
-    else if(sumFunction==5){
-      var table = $("<table id='tabulasiWisnus' class='display nowrap bg-white' style='font-family:Poppins;'></table");
-    
-      table.append("<caption class='text-left italic font-semibold'>Tabel 1: Perjalan Wisatawan Nusantara Tahunan Berdasarkan Provinsi Tujuan.</caption>");
-
-      var thead = $("<thead></thead>");
-      var headers = $('<tr></tr>');
-      headers.append('<th class="font-semibold">Provinsi Tujuan</th>');
-         
-            for(let k = 0;k<tahun.length;k++){
-              for(let m = 0;m<2;m++){
-              let temp = parseInt(tahun[k])+1900;
-                headers.append('<th class="font-semibold">Sem '+roman[m] +'-'+temp+'</th>');
-              }
-          }
-      headers.append('<th class="font-semibold">Total</th>');
-      thead.append(headers);
-      table.append(thead);
-      
-      //table.append(subhead);
-
-      //loop rows
-      var tbody = $("<tbody></tbody>");
-      for(let i=0;i<wisnus.vervar.length;i++){
-        var row = $('<tr></tr>');
-        row.append('<td>' + wisnus.vervar[i].label + '</td>');
-        let total = 0;
-        let sumDwi = 0
-        //loop columns in rows
-        for(let j=0; j<tahun.length;j++){
-          for (let k =0;k<wisnus.turtahun.length-1;k++){
-            let keyData = wisnus.vervar[i].val + wisnus.var[0].val.toString() + wisnus.turvar[0].val.toString() + tahun[j] + wisnus.turtahun[k].val;
-            if(wisnus.datacontent[keyData]){
-              if(k%6 ==0){
-                total = 0
-                total = total + parseInt(wisnus.datacontent[keyData]);
-              }
-              else if(k%6==5){
-                  total = total + parseInt(wisnus.datacontent[keyData]);
-                  
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                  
-                }
-                else{
-                  total = total+parseInt(wisnus.datacontent[keyData]);
-                }
-                sumDwi = sumDwi +parseInt(wisnus.datacontent[keyData]);
-              }
-              else{
-                if(k%6==5){
-                    row.append('<td>' + new Intl.NumberFormat().format(total) + '</td>');
-                }
-                else if(k%6==0){
-                  total=0;
-                }
-              }
-              
-                
-            
-          }
-        }
-        row.append('<td>' + new Intl.NumberFormat().format(sumDwi) + '</td>');
-        tbody.append(row);
-      }
-      table.append(tbody);
-      dom.append(table);
-      new DataTable('#tabulasiWisnus',{
-        order:[],
-        fixedColumns: {
-          start: 1
-    
-      },
-        layout:{
-          topStart:'search',
-          topEnd:{
-            buttons:[ {
-              extend: 'excel',
-              text: 'Export to Excel',
-              title:'Jumlah Perjalanan Wisatawan Nusantara Periode Caturwulanan Berdasarkan Provinsi Tujuan',
-      
-            }]
-          }
-        }
-        ,
-        scrollY:'16.5rem',
-        scrollX:'92dvw',
-        paging:false,
-        info:false
-      });
-
-      
-      // $("#btnExportTab").click(function(){ExportToExcel()});
-
-
-
-    
-    }
-    
-
-  })
-
-}
-
-var page = 1;
-function mapStory(){
-  var mapCanvas = echarts.init(document.getElementById("mapStory"));
-  mapCanvas.showLoading()
-  $.get("./indicator",function(data,status){
-    echarts.registerMap('CInd', CityINAJSON);
-    let storyData = data.database;
-    let idx = data.index;
-    
-    var option = {
-      // title: {
-      //   text: 'Persebaran Jumlah Perjalanan Wisatawan Nusantara' + '\n' + 'Menurut Provinsi Tujuan (Kumulatif)',
-      //   left: 'center',
-      //   textStyle: {
-      //     fontSize: 18,
-      //     fontFamily:'serif',
-      //     fontWeight:'bold',
-      //     color:'black'
-      //   },
-
-      // },
-      tooltip: {
-        trigger: 'item',
-        // formatter: function (params) {
-        //   var value = params.seriesName + "<br>" + params.name + ' : ' + (params.value / 1000000).toFixed(2) + ' juta';
-        //   return value
-        // }
-      },
-       
-      // visualMap: {
-      //   right: 'center',
-      //   bottom: '15%',
-      //   min: 0,
-      //   max: Math.max.apply(Math, group.map(function (event) {
-      //     return event.value;
-      //   })),
-      //   inRange: {
-      //     color: [
-      //       '#EEF5FF',
-      //       '#B4D4FF',
-      //       '#86B6F6',
-      //       '#176B87'
-      //     ]
-      //   },
-      //   text: ['Tinggi', 'Rendah'],
-      //   calculable: false,
-      //   orient: 'horizontal',
-      // },
-
-      grid: {
-        top: 10,
-        left: '2%',
-        right: '2%',
-        bottom: '3%',
-        containLabel: true
-      },
-      geo:[{map:"CInd",
-      zoom:1
-    }],
-
-      series: [{
-        name: 'TPK',
-        type: 'scatter',
-        coordinateSystem:'geo',
-        data:storyData,
-        encode:{value:3},
-        symbolSize:function(val){
-          return val[3]/2
-        },
-        itemStyle:{
-          borderColor:"blue",
-          borderWidth:2,
-          color:"white"
-        }
-        
-      }]
-    };
-    option && mapCanvas.setOption(option);
-    mapCanvas.hideLoading();
-    $('#nextBtnStory').click(function(){
-      let row = storyData[idx[1]];
-      if(page==1){
-        option.geo[0].zoom =30;
-        //console.log(storyData);
-        
-        //console.log(row);
-        option.geo[0].center = [row.value[0],row.value[1]];
-        //console.log(option.geo.center);
-        mapCanvas.setOption(option);
-        setTimeout(()=>mapCanvas.dispatchAction({
-          type: 'highlight',
-          geoIndex:0,
-          name: row.name
-        }),700);
-        setTimeout(()=>mapCanvas.dispatchAction({
-          type: 'showTip',
-          seriesIndex:0,
-          dataIndex:idx[1]
-        }),1000);
-        page=page+1
-        //alert('Hi');
-      }
-      else if(page==2){
-        let mapCanvas = echarts.init(document.getElementById("mapStory"));
-        
-        mapCanvas.dispatchAction({
-          type: 'downplay',
-          geoIndex:0,
-          name: row.name
-        });
-        mapCanvas.dispatchAction({
-          type: 'hideTip',
-        });
-        option.geo[0].zoom =1;
-        option.geo[0].center ="";
-        
-        option.series = [{
-          name: 'Tamu Nusantara',
-          type: 'scatter',
-          coordinateSystem:'geo',
-          data:storyData,
-          encode:{value:2},
-          symbolSize:function(val){
-            return val[2]/100000
-          },
-          itemStyle:{
-            borderColor:"purple",
-            borderWidth:2,
-            color:"white"
-          }
-          
-        }];
-        option.tooltip={trigger:'item',
-          formatter: function (params) {
-            // console.log(params);
-             var value = params.seriesName + "<br>" + params.name + ' : ' + (params.data.value[2] / 100000).toFixed(2) + ' ratus ribu';
-          return value
-        }};
-        mapCanvas.setOption(option);
-        page=page+1;
-
-
-      }
-    })
-
-
-  })
-} 
-
-function passExSur(){
-
-}
-
 function tpkSectionOne(url){
-  
   tpkLine.showLoading();
   var optSeries = $('input[type=radio][name=seriesTPK]').val();
   var wilayah = [];
@@ -2484,7 +1125,7 @@ function tpkSectionOne(url){
             if(tpkData.datacontent[key]){
               temp.push(tpkData.datacontent[key]);
               if(k==0){
-                labelTpkLine.push(months[j-1]+parseInt(parseInt(i)+1900));
+                labelTpkLine.push(months[j-1]+'-'+parseInt(parseInt(i)+1900));
               }
             }
             else{
@@ -2494,10 +1135,13 @@ function tpkSectionOne(url){
           
   
         }
-        contentTpkLine.push({
+        
+          let seriesOption = {
           name: kdProvJSON[0][wilayah[k]],
           type: "line",
           data:temp,
+          seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' },
       // contentTpkLine,
           symbolSize:1,
           colorBy:'series',
@@ -2509,7 +1153,7 @@ function tpkSectionOne(url){
             fontSize:10,
             distance:5,            
           },
-          labelLayout:{hideOverlap:true},
+          // labelLayout:{hideOverlap:true},
           endLabel:{
             show:true,
             formatter:function(params){
@@ -2519,7 +1163,30 @@ function tpkSectionOne(url){
             fontWeight:'bold',
             fontSize:10,
           }
-          })
+          }
+          console.log(temp);
+          if(wilayah.length==1){
+            seriesOption["label"]= {
+              show:true,
+              position:'top',
+              formatter :function(params){
+                let monYoy = temp.length%12;
+                  if((params.dataIndex+1)%12==monYoy){
+                    return params.data.toFixed(2);
+                  }
+                  else{
+                    return '';
+                  }
+
+              },
+              fontFamily:'sans-serif',
+              fontWeight:'bold',
+              fontSize:10,
+              distance:3,            
+            }
+          }
+
+          contentTpkLine.push(seriesOption)
       }
       
       }
@@ -2549,6 +1216,8 @@ function tpkSectionOne(url){
           contentTpkLine.push({
             name: kdProvJSON[0][wilayah[k]] +"\n"+ parseInt(parseInt(tahun[i])+1900),
             type: "line",
+            seriesLayoutBy: 'row',
+        emphasis: { focus: 'series' },
             data:temp,
             symbolSize:1,
             colorBy:'series',
@@ -2603,14 +1272,14 @@ function tpkSectionOne(url){
       },
       grid: {
         left: '3%%',
-        right: '8%',
+        right: '10%',
         bottom: '9%',
         containLabel: true
       },
       toolbox: {
         feature: {
           saveAsImage: {},
-          restore:{}
+          
         }
       },
       // color: '#0284C7',
@@ -2635,9 +1304,9 @@ function tpkSectionOne(url){
         type: 'value',
         splitLine:{show:true},
         axisLine:{
-          show:true
+          show:false
         },
-        name:"TPK",
+        name:"TPK (%)",
         nameLocation:"center",
         nameTextStyle:{
           fontFamily:'sans-serif',
@@ -2684,7 +1353,7 @@ function tpkCombineSeries(wilayah){
     }
     let tpkOption = {
       title: {
-        text: 'Tingkat Penghunian Kamar Hotel Bintang dan Nonbintang'+'\ndan Akomdasi Lainnya di '+kdProvJSON[0][wilayah],
+        text: 'Tingkat Penghunian Kamar Hotel Bintang dan Nonbintang'+'\ndan Akomdasi Lainnya di '+kdProvJSON[0][wilayah] +' (%)',
         left: '1%',
         top:'0',
         textStyle: {
@@ -2726,11 +1395,11 @@ function tpkCombineSeries(wilayah){
       yAxis: {
         show:true,
         type: 'value',
-        splitLine:{show:false},
+        splitLine:{show:true},
         axisLine:{
-          show:true
+          show:false
         },
-        name:"TPK",
+        name:"TPK (%)",
         nameLocation:"center",
         nameTextStyle:{
           fontFamily:'sans-serif',
@@ -2741,13 +1410,13 @@ function tpkCombineSeries(wilayah){
       },
       series: [
         {
-        name: "Hotel Bintang",
+        name: "Hotel\n Bintang",
         type: "line",
         data:seriesBintang,
         // contentTpkLine,
         symbolSize:1,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
@@ -2771,13 +1440,13 @@ function tpkCombineSeries(wilayah){
         
       },
       {
-        name: "Hotel Nonbintang\ndan Akomodasi\nLainnya",
+        name: "Hotel \nNonbintang\ndan Akomodasi\nLainnya",
         type: "line",
         data:seriesNonBintang,
         // contentTpkLine,
         symbolSize:1,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
@@ -2815,7 +1484,8 @@ function tpkCreateFilter(){
   
   $.get("https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/122/"+APIkey,function(data,status){
     var TPK = JSON.parse(JSON.stringify(data));
-    for(let i=0;i<TPK.tahun.length;i++){
+    let index=0;
+    for(let i=TPK.tahun.length-1;i>-1;i--){
       // var optionDd = document.createElement("option");
       // optionDd.value = TPK.tahun[i].val;
       // optionDd.text = TPK.tahun[i].label;
@@ -2824,6 +1494,7 @@ function tpkCreateFilter(){
       // optionDd2.value = TPK.tahun[i].val;
       // optionDd2.text = TPK.tahun[i].label;
       // maxYearTPK.appendChild(optionDd2);
+      
       var optionBox = document.createElement("input");
       optionBox.type="checkbox";
       optionBox.value = TPK.tahun[i].val;
@@ -2831,14 +1502,15 @@ function tpkCreateFilter(){
       optionBox.classList.add("cbTPK");
       yearTPK.appendChild(optionBox);
       var labelBox = document.createElement("label");
-      if(i%4==3){
-        labelBox.innerHTML=" "+TPK.tahun[i].label+"&nbsp;&nbsp;&nbsp";
+      if(index%4==3){
+        labelBox.innerHTML=" "+TPK.tahun[i].label;
         yearTPK.appendChild(labelBox);
         yearTPK.appendChild(document.createElement("br"));
       }else{
         labelBox.innerHTML=" "+TPK.tahun[i].label+"&nbsp;&nbsp;&nbsp;";
         yearTPK.appendChild(labelBox);
       }
+      index++;
     }
     $('.cbTPK').change(function(){
       tpkLine.clear();
@@ -2850,7 +1522,7 @@ function tpkCreateFilter(){
 }
 
 function wismanDoor(){
-$.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/1150/vervar/26;18;1/key/cf78d9c72e168bfe677972ba792787af',function(data,status){
+$.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/1150/vervar/26;18;1;33/key/cf78d9c72e168bfe677972ba792787af',function(data,status){
   let wisman = JSON.parse(JSON.stringify(data));
   var instanceBar = echarts.init(document.getElementById('barPintuMasuk'));
   var instanceLine = echarts.init(document.getElementById('linePintuMasuk'));
@@ -2858,8 +1530,9 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
   instanceLine.showLoading();
   let barSeries=[];
   let lineSeries =[];
-  barSeries.push(["Tahun","Pintu Udara","Pintu Laut","Pintu Darat"]);
-  lineSeries.push(["Waktu","Pintu Udara","Pintu Laut","Pintu Darat"]);
+  barSeries.push(["Tahun","Pintu Udara","Pintu Laut","Pintu Darat","Total"]);
+  lineSeries.push(["Waktu","Pintu Udara","Pintu Laut","Pintu Darat","Total"]);
+  // let totalSeries=[];
   for(let i=0;i<wisman.tahun.length;i++){
     let seriesTahun=[];
     seriesTahun.push(wisman.tahun[i].label);
@@ -2885,16 +1558,18 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
           let udara=0;
           let darat=0;
           let laut=0;
+          let total =0;
           
             for(let x=0;x<12;x++){
               udara+=parseInt(countData[x][1]);
               laut+=parseInt(countData[x][2]);
               darat+=parseInt(countData[x][3]);
-
+              total+=parseInt(countData[x][4])
             }
             seriesTahun.push(udara);
             seriesTahun.push(laut);
             seriesTahun.push(darat);
+            seriesTahun.push(total);
           
 
 
@@ -2913,9 +1588,11 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
     
     
   }
+  
+
   let lineOption = {
     title: {
-      text: 'Jumlah Kunjungan Wisatawan Mancanegara ke Indonesia\nMenurut Pintu Masuk' ,
+      text: 'Total Kunjungan Wisatawan Mancanegara ke Indonesia\nMenurut Pintu Masuk (Juta)' ,
       left: 'left',
       top:'2%',
       textStyle: {
@@ -2930,7 +1607,7 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
     },
     grid: {
       left: '3%%',
-      right: '3%',
+      right: '7%',
       bottom: '9%',
       containLabel: true
     },
@@ -2954,21 +1631,30 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
       type: 'value',
       axisLabel:{
         formatter:function (value) {
-          return (value/1000).toFixed(0);
+          return (value/1000000).toFixed(1);
       }
       },
+      name:"Wisatawan Mancanegara (Juta)",
+        nameLocation:"center",
+        nameTextStyle:{
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:14,
+        },
+        nameGap:25,
+
       splitLine:{show:true},
       axisLine:{
-        show:true
+        show:false
       }
     },
     series: [{
       
       type: "line",
       
-      symbolSize:2,
+      symbolSize:1,
       label:{
-        show:true,
+        show:false,
         position:'top',
         fontFamily:'sans-serif',
         fontWeight:'bold',
@@ -2992,9 +1678,9 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
       
       type: "line",
       
-      symbolSize:2,
+      symbolSize:1,
       label:{
-        show:true,
+        show:false,
         position:'top',
         fontFamily:'sans-serif',
         fontWeight:'bold',
@@ -3019,9 +1705,9 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
       
       type: "line",
       
-      symbolSize:2,
+      symbolSize:1,
       label:{
-        show:true,
+        show:false,
         position:'top',
         fontFamily:'sans-serif',
         fontWeight:'bold',
@@ -3063,7 +1749,7 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
     legend:{
       show:true,
       orient:'horizontal',
-      top:'10%'
+      top:'12%'
 
     },
     tooltip: {
@@ -3074,9 +1760,9 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
 
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '7%',
+      left: '5%',
+      right: '2%',
+      bottom: '2%',
       containLabel:true
     },
     dataset:{source:barSeries},
@@ -3103,8 +1789,17 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
           show:true
         },
         axisLine:{
-          show:true
+          show:false
         },
+        name:'Wistatawan Mancanegara (Juta)',
+        // name:"TPK (%)",
+        nameLocation:"center",
+        nameTextStyle:{
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:14,
+        },
+        nameGap:25,
         axisLabel:{
           show:true,
           formatter:function(params){
@@ -3115,7 +1810,7 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
       }
     ],
     // color:pallete,
-    series: [{type:'bar'},{type:'bar'},{type:'bar'}]
+    series: [{type:'bar'},{type:'bar'},{type:'bar'}, {type:'line',symbolSize:1,itemStyle: {color: 'black'},}]
   };
   instanceBar.setOption(barOption);
   instanceBar.hideLoading();
@@ -3471,9 +2166,38 @@ function wismanBar(url){
         }
       }
     }
+
+    let units=[];
+    let unitLabel =[];
+    
+    if(contentWisman[0]["data"][0]>=1000000){
+      units.push(1000000);
+      unitLabel.push('(Juta)')
+    }
+    else if(contentWisman[0]["data"][0]=1000){
+      units.push(1000);
+      unitLabel.push('(Ribu)');
+    }
+    else{
+      units.push(1);
+      unitLabel.push('');
+    }
+    if(contentLineWisman[0]>=1000000){
+      units.push(1000000);
+      unitLabel.push('(Juta)')
+    }
+    else if(contentLineWisman[0]>=1000){
+      units.push(1000);
+      unitLabel.push('(Ribu)')
+    }
+    else{
+      units.push(1);
+      unitLabel.push('');
+    }
+
     let lineOption = {
       title: {
-        text: 'Jumlah Kunjungan Wisatawan Mancanegara \n(Grand Total) (Juta)' ,
+        text: 'Jumlah Kunjungan Wisatawan Mancanegara \nGrand Total '+unitLabel[1] ,
         left: 'left',
         top:'2%',
         textStyle: {
@@ -3487,7 +2211,7 @@ function wismanBar(url){
         trigger: 'axis'
       },
       grid: {
-        left: '3%%',
+        left: '7%%',
         right: '3%',
         bottom: '9%',
         containLabel: true
@@ -3510,13 +2234,21 @@ function wismanBar(url){
         type: 'value',
         axisLabel:{
           formatter:function (value) {
-            return (value/1000000).toFixed(1);
+            return (value/units[1]).toFixed(1);
         }
         },
         splitLine:{show:true},
         axisLine:{
-          show:true
-        }
+          show:false
+        },
+        name:"Wisatawan Mancanegara (Juta)",
+        nameLocation:"center",
+        nameTextStyle:{
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:14,
+        },
+        nameGap:30
       },
       series: {
         name: "Kunjungan Wisatawan Mancanegara",
@@ -3524,14 +2256,14 @@ function wismanBar(url){
         data:contentLineWisman,
         symbolSize:1,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
           fontSize:10,
           distance:10,
           formatter:function(params){
-            return (params.data/1000000).toFixed(1) ;
+            return (params.data/units[1]).toFixed(1) ;
 
           },
           
@@ -3543,7 +2275,7 @@ function wismanBar(url){
 
     let barOption = {
       title: {
-        text: 'Jumlah Perjalanan Wisatawan Mancanegara' +'\n Berdasarkan Tahun (Ribu)',
+        text: 'Jumlah Perjalanan Wisatawan Mancanegara' +'\n Berdasarkan Tahun '+unitLabel[0],
         left: '2%',
         top:'0%',
         textStyle: {
@@ -3556,9 +2288,15 @@ function wismanBar(url){
       
       legend:{
         show:true,
-        orient:'vertical',
-        left:'11%',
-        top:'10%',
+        orient:'horizontal',
+        left:'1%',
+        bottom:'2%',
+        textStyle:{
+          fontSize : 10,
+          fontFamily:'sans-serif',
+          fontWeight:'bold'
+        }
+        
         
 
       },
@@ -3570,9 +2308,9 @@ function wismanBar(url){
   
       },
       grid: {
-        left: '3%',
-        right: '4%',
-        bottom: '7%',
+        left: '9%',
+        right: '3%',
+        bottom: '12%',
         containLabel:true
       },
       // color: '#0284C7',
@@ -3598,18 +2336,26 @@ function wismanBar(url){
             show:true
           },
           axisLine:{
-            show:true
+            show:false
           },
           axisLabel:{
             show:true,
             formatter:function(params){
-              return (params/1000).toFixed(0);
+              return (params/units[0]).toFixed(0);
             }
-          }
+          },
+          name:"Wisatawan Nusantara (Juta)",
+        nameLocation:"center",
+        nameTextStyle:{
+          fontFamily:'sans-serif',
+          fontWeight:'bold',
+          fontSize:14,
+        },
+        nameGap:30
           
         }
       ],
-      color:pallete,
+      // color:pallete,
       series: contentWisman
     };
     contEl.setOption(barOption);
@@ -3744,19 +2490,48 @@ function geoScatterWisman(){
         tooltip:{
           show:true
         },
-        legend:{},
+        grid: {
+          left: '7%',
+          right: '6%',
+          top:'15%',
+          bottom: '3%',
+          containLabel:true
+        },
+        legend:{
+          top:'5%',
+          left:'right',
+          width:'30%',
+          height:'20%',
+          
+          data: [{
+            name: 'Rata-rata Biaya per Kunjungan',
+            // compulsorily set icon as a circle
+            icon: 'image://https://www.pngall.com/wp-content/uploads/12/USD-No-Background.png',
+            // set up the text in red
+            textStyle: {
+                color: 'black',
+                fontWeight:'semibold'
+            }
+        }]
+        },
         visualMap:{
-          right: 'center',
+          right: 'right',
           bottom: '15%',
           seriesIndex:0,
           min: 0,
           max: 100000,
         inRange: {
           color: [
-            '#ffbaba',
-            '#ff5252',
-            '#ff0000',
-            '#a70000'
+            // '#ffbaba',
+            // '#ff5252',
+            // '#ff0000',
+            // '#a70000'
+            
+            '#FEFFD2',
+'#FFEEA9',
+'#FFBF78',
+'#FF7D29',
+
             
             
             
@@ -3790,14 +2565,14 @@ function geoScatterWisman(){
             name:'Rata-rata Biaya per Kunjungan',
             type:'scatter',
             symbolSize:function(val){
-              var n = 10+val[2]/300;
+              var n = 20+val[2]/300;
               return n;
               
             },
             encode:{value:2},
             coordinateSystem:'geo',
             geoIndex:0,
-            symbol:'image://https://cdn-icons-png.freepik.com/256/893/893097.png?semt=ais_hybrid',
+            symbol:'image://https://www.pngall.com/wp-content/uploads/12/USD-No-Background.png',
             itemStyle:{
               opacity:0.9
             },
@@ -3846,16 +2621,11 @@ var tpkLine = echarts.init(document.getElementById("tpkBintang"));
 
 
 ///event handlers///
-$('#exportChart1').click(function(){
-  let modifiedURL = url+APIkey;
-  $.get(modifiedURL,function(data,status){
-    exportAllChart1(data);
-  })
-});
+
 
 $("#provWisnus").change (function () {
   let value = $(this).val();
-  firstSection(url, ["barYearWisnus", "lineYearWisnus"], value);
+  firstSection(url,value);
 });
 $("#provTPK").change (function () {
   let value = $(this).val();
@@ -4420,28 +3190,7 @@ window.onload = function () {
 
     
 
-    //section two
-    // var element = document.createElement("input");
-    // element.type = "checkbox";
-    // element.value = options[i][0];
-    // element.classList.add("checkBoxWilayah");
-    // element.checked = true;
-    // //element.innerHTML = options[i][1];
-    // checkBoxWilayahTujuan.appendChild(element);
-    // var elementAsal = document.createElement("input");
-    // elementAsal.type = "checkbox";
-    // elementAsal.value = options[i][0];
-    // elementAsal.classList.add("checkBoxWilayahAsal");
-    // elementAsal.checked = true;
-    // checkBoxWilayahAsal.appendChild(elementAsal);
-    // var element2 = document.createElement("label");
-    // element2.innerHTML = options[i][1];
-    // var element3 = document.createElement("label");
-    // element3.innerHTML = options[i][1];
-    // checkBoxWilayahTujuan.appendChild(element2);
-    // checkBoxWilayahAsal.appendChild(element3);
-    // checkBoxWilayahTujuan.appendChild(document.createElement("br"));
-    // checkBoxWilayahAsal.appendChild(document.createElement("br"));
+    
   }
   let strUrl = 'https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/'+$('#varWisnus').val()+'/key/cf78d9c72e168bfe677972ba792787af/';
   $.get(strUrl,function(data,status){
@@ -4521,7 +3270,7 @@ window.onload = function () {
   //     }
   //     });
   
-  firstSection(url, ["barYearWisnus", "lineYearWisnus"], '9999');
+  firstSection(url, '9999');
   sectionTwo(url+APIkey);
   sectionTwoAsal(urlAsal);
   //reloadData(url+APIkey);

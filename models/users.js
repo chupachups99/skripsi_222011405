@@ -26,7 +26,7 @@ const deleteUser = (idUser) => {
 }
 
 const ifUser = (body)=>{
-     const SQLQuery = `SELECT * FROM userid WHERE email='${body.email}' AND pwd='${body.password}'`;
+     const SQLQuery = `SELECT email,nama,role FROM userid WHERE email='${body.email}' AND pwd='${body.password}'`;
      const data = dbPool.execute(SQLQuery); 
      return data;
     //const SQLQuery = `SELECT * FROM userid WHERE email='admin@bps.id' AND pwd='123'`;

@@ -723,10 +723,6 @@ video {
   display: none;
 }
 
-.h-1\/2 {
-  height: 50%;
-}
-
 .h-11 {
   height: 2.75rem;
 }
@@ -773,6 +769,10 @@ video {
 
 .h-\[30rem\] {
   height: 30rem;
+}
+
+.h-\[32rem\] {
+  height: 32rem;
 }
 
 .h-\[39rem\] {
@@ -1114,11 +1114,6 @@ video {
 .bg-sky-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(2 132 199 / var(--tw-bg-opacity));
-}
-
-.bg-sky-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(3 105 161 / var(--tw-bg-opacity));
 }
 
 .bg-slate-200 {
