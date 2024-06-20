@@ -162,7 +162,7 @@ function firstSection(url, kode) {
   
       },
       grid: {
-        left: '7%',
+        left: '40',
         right: '6%',
         bottom: '7%',
         containLabel:true
@@ -254,7 +254,7 @@ function firstSection(url, kode) {
         trigger: 'axis'
       },
       grid: {
-        left: '5%%',
+        left: '40',
         right: '5%',
         bottom: '9%',
         containLabel: true
@@ -1261,7 +1261,7 @@ function tpkSectionOne(url){
         left: '2%',
         top:'0',
         textStyle: {
-          fontSize: 16,
+          fontSize: 15,
           fontWeight:'normal',
           fontFamily:'sans-serif',
           color:'black'
@@ -1271,8 +1271,8 @@ function tpkSectionOne(url){
         trigger: 'axis'
       },
       grid: {
-        left: '3%%',
-        right: '10%',
+        left: '40',
+        right: '100',
         bottom: '9%',
         containLabel: true
       },
@@ -1354,10 +1354,10 @@ function tpkCombineSeries(wilayah){
     let tpkOption = {
       title: {
         text: 'Tingkat Penghunian Kamar Hotel Bintang dan Nonbintang'+'\ndan Akomdasi Lainnya di '+kdProvJSON[0][wilayah] +' (%)',
-        left: '1%',
+        left: '2%',
         top:'0',
         textStyle: {
-          fontSize: 16,
+          fontSize: 15,
           fontWeight:'normal',
           fontFamily:'sans-serif',
           color:'black'
@@ -1367,8 +1367,8 @@ function tpkCombineSeries(wilayah){
         trigger: 'axis'
       },
       grid: {
-        left: '3%%',
-        right: '8%',
+        left: '40',
+        right: '100',
         bottom: '9%',
         containLabel: true
       },
@@ -1749,7 +1749,7 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
     legend:{
       show:true,
       orient:'horizontal',
-      top:'12%'
+      top:'40'
 
     },
     tooltip: {
@@ -1763,7 +1763,8 @@ $.get('https://webapi.bps.go.id/v1/api/list/model/data/lang/ind/domain/0000/var/
       left: '5%',
       right: '2%',
       bottom: '2%',
-      containLabel:true
+      top:'60',
+      // containLabel:true
     },
     dataset:{source:barSeries},
     // color: '#0284C7',
@@ -1901,7 +1902,7 @@ function wisnasDoor(){
         trigger: 'axis'
       },
       grid: {
-        left: '3%%',
+        left: '40',
         right: '3%',
         bottom: '9%',
         containLabel: true
@@ -1940,7 +1941,7 @@ function wisnasDoor(){
         
         symbolSize:2,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
@@ -1966,7 +1967,7 @@ function wisnasDoor(){
         
         symbolSize:2,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
@@ -1993,7 +1994,7 @@ function wisnasDoor(){
         
         symbolSize:2,
         label:{
-          show:true,
+          show:false,
           position:'top',
           fontFamily:'sans-serif',
           fontWeight:'bold',
@@ -2035,7 +2036,7 @@ function wisnasDoor(){
       legend:{
         show:true,
         orient:'horizontal',
-        top:'10%'
+        top:'40'
   
       },
       tooltip: {
@@ -2046,10 +2047,11 @@ function wisnasDoor(){
   
       },
       grid: {
-        left: '3%',
+        left: '40',
         right: '4%',
         bottom: '7%',
-        containLabel:true
+        top:'60'
+        // containLabel:true
       },
       dataset:{source:barSeries},
       // color: '#0284C7',
@@ -2211,9 +2213,9 @@ function wismanBar(url){
         trigger: 'axis'
       },
       grid: {
-        left: '7%%',
+        left: '40',
         right: '3%',
-        bottom: '9%',
+        bottom: '20',
         containLabel: true
       },
       toolbox: {
@@ -2292,7 +2294,7 @@ function wismanBar(url){
         left:'1%',
         bottom:'2%',
         textStyle:{
-          fontSize : 10,
+          fontSize : 8,
           fontFamily:'sans-serif',
           fontWeight:'bold'
         }
@@ -2493,20 +2495,20 @@ function geoScatterWisman(){
         grid: {
           left: '7%',
           right: '6%',
-          top:'15%',
+          top:'60',
           bottom: '3%',
-          containLabel:true
+          // containLabel:true
         },
         legend:{
-          top:'5%',
-          left:'right',
+          top:'40',
+          left:'left',
           width:'30%',
           height:'20%',
           
           data: [{
             name: 'Rata-rata Biaya per Kunjungan',
             // compulsorily set icon as a circle
-            icon: 'image://https://www.pngall.com/wp-content/uploads/12/USD-No-Background.png',
+            icon: 'image://https://www.pngall.com/wp-content/uploads/2016/07/Dollar-PNG.png',
             // set up the text in red
             textStyle: {
                 color: 'black',
@@ -2565,14 +2567,14 @@ function geoScatterWisman(){
             name:'Rata-rata Biaya per Kunjungan',
             type:'scatter',
             symbolSize:function(val){
-              var n = 20+val[2]/300;
+              var n = val[2]/100;
               return n;
               
             },
             encode:{value:2},
             coordinateSystem:'geo',
             geoIndex:0,
-            symbol:'image://https://www.pngall.com/wp-content/uploads/12/USD-No-Background.png',
+            symbol:'image://https://www.pngall.com/wp-content/uploads/2016/07/Dollar-PNG.png',
             itemStyle:{
               opacity:0.9
             },

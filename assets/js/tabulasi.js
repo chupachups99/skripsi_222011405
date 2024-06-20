@@ -406,8 +406,8 @@ $(document).ready(function () {
                         },
                         data: data["data"],
 
-                        scrollX: '63dvw',
-                        scrollY: '10rem',
+                        // scrollX: '92dvw',
+                        scrollY: '90dvh',
                         // scrollCollapse: 'true',
                         columns: data["columns"],
                         paging: false,
